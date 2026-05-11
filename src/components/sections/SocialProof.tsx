@@ -122,7 +122,7 @@ export default function SocialProof() {
           top: -200,
           left: "50%",
           transform: "translateX(-50%)",
-          width: 1200,
+          width: "min(1200px, 200vw)",
           height: 700,
           background:
             "radial-gradient(ellipse at center, rgba(201,169,97,0.14) 0%, transparent 60%)",
@@ -135,7 +135,7 @@ export default function SocialProof() {
         style={{
           bottom: -100,
           left: "20%",
-          width: 600,
+          width: "min(600px, 100vw)",
           height: 400,
           background:
             "radial-gradient(ellipse at center, rgba(17,166,117,0.10) 0%, transparent 60%)",
