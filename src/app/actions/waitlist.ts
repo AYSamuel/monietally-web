@@ -4,7 +4,7 @@ import { resolveMx } from 'dns/promises';
 import { supabase } from '@/lib/supabase';
 import { validateEmail } from '@/lib/emailValidation';
 
-export type WaitlistSource = 'hero' | 'cta';
+export type WaitlistSource = 'hero' | 'cta' | 'social-proof';
 
 export type WaitlistResult =
   | { success: true }

@@ -5,91 +5,154 @@ export default function Footer() {
 
   return (
     <footer
-      className="border-t"
       style={{
         background: "var(--bg-secondary)",
-        borderColor: "var(--border-subtle)",
+        borderTop: "1px solid var(--border)",
       }}
     >
-      <div className="section-container py-12">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-          {/* Brand */}
-          <div className="md:col-span-2">
-            <div className="flex items-center gap-2.5 mb-4">
-              <div className="w-8 h-8 rounded-lg bg-gradient-card-blue flex items-center justify-center">
-                <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                  <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
-                </svg>
-              </div>
-              <span className="text-lg font-semibold tracking-tight" style={{ color: "var(--text-primary)" }}>
-                MonieTally
-              </span>
-            </div>
-            <p className="text-sm max-w-xs leading-relaxed" style={{ color: "var(--text-tertiary)" }}>
-              A finance app that forgets you the moment you close it. Your
-              money lives on your phone. Not in our database. Not in an ad
-              algorithm. Not for sale.
+      <div className="section-container py-16 md:py-20">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-y-12 md:gap-x-10">
+          {/* ── Brand + tagline ──────────────────────────────────── */}
+          <div className="md:col-span-6">
+            <span
+              className="text-display"
+              style={{
+                fontSize: 28,
+                color: "var(--text-primary)",
+                fontVariationSettings: '"opsz" 96',
+              }}
+            >
+              MonieTally
+            </span>
+            <p
+              className="text-sm mt-4 max-w-md leading-relaxed"
+              style={{ color: "var(--text-secondary)" }}
+            >
+              A finance app that respects your privacy by default. Your money,
+              clearly seen. Encrypted with a key your phone holds, not ours.
             </p>
+
+            <div
+              className="mt-6 inline-flex items-center gap-2 text-xs"
+              style={{ color: "var(--text-tertiary)" }}
+            >
+              <span
+                aria-hidden="true"
+                style={{
+                  width: 6,
+                  height: 6,
+                  borderRadius: 9999,
+                  background: "var(--gold)",
+                }}
+              />
+              Hosted in the EU (Frankfurt). GDPR by design.
+            </div>
           </div>
 
-          {/* Links */}
-          <div>
-            <h4 className="text-sm font-medium mb-3" style={{ color: "var(--text-primary)" }}>
+          {/* ── Product links ────────────────────────────────────── */}
+          <div className="md:col-span-3">
+            <h4
+              className="text-xs font-medium uppercase mb-5"
+              style={{
+                letterSpacing: "0.18em",
+                color: "var(--gold)",
+              }}
+            >
               Product
             </h4>
-            <ul className="space-y-2">
+            <ul className="space-y-3">
               <li>
-                <Link href="/#features" className="text-sm transition-colors hover:text-brand-blue" style={{ color: "var(--text-secondary)" }}>
-                  Features
+                <Link
+                  href="/#hero"
+                  className="text-sm transition-opacity hover:opacity-100"
+                  style={{ color: "var(--text-secondary)", opacity: 0.85 }}
+                >
+                  Why MonieTally
                 </Link>
               </li>
               <li>
-                <Link href="/#privacy" className="text-sm transition-colors hover:text-brand-blue" style={{ color: "var(--text-secondary)" }}>
-                  Privacy
+                <Link
+                  href="/#social-proof"
+                  className="text-sm transition-opacity hover:opacity-100"
+                  style={{ color: "var(--text-secondary)", opacity: 0.85 }}
+                >
+                  Community
                 </Link>
               </li>
               <li>
-                <Link href="/#waitlist" className="text-sm transition-colors hover:text-brand-blue" style={{ color: "var(--text-secondary)" }}>
-                  Waitlist
+                <Link
+                  href="/#faq"
+                  className="text-sm transition-opacity hover:opacity-100"
+                  style={{ color: "var(--text-secondary)", opacity: 0.85 }}
+                >
+                  FAQ
                 </Link>
               </li>
             </ul>
           </div>
 
-          <div>
-            <h4 className="text-sm font-medium mb-3" style={{ color: "var(--text-primary)" }}>
+          {/* ── Legal + contact ──────────────────────────────────── */}
+          <div className="md:col-span-3">
+            <h4
+              className="text-xs font-medium uppercase mb-5"
+              style={{
+                letterSpacing: "0.18em",
+                color: "var(--gold)",
+              }}
+            >
               Company
             </h4>
-            <ul className="space-y-2">
+            <ul className="space-y-3">
               <li>
-                <Link href="/about" className="text-sm transition-colors hover:text-brand-blue" style={{ color: "var(--text-secondary)" }}>
+                <Link
+                  href="/about"
+                  className="text-sm transition-opacity hover:opacity-100"
+                  style={{ color: "var(--text-secondary)", opacity: 0.85 }}
+                >
                   About
                 </Link>
               </li>
               <li>
-                <Link href="/privacy" className="text-sm transition-colors hover:text-brand-blue" style={{ color: "var(--text-secondary)" }}>
+                <Link
+                  href="/privacy"
+                  className="text-sm transition-opacity hover:opacity-100"
+                  style={{ color: "var(--text-secondary)", opacity: 0.85 }}
+                >
                   Privacy policy
                 </Link>
               </li>
               <li>
-                <Link href="/terms" className="text-sm transition-colors hover:text-brand-blue" style={{ color: "var(--text-secondary)" }}>
+                <Link
+                  href="/terms"
+                  className="text-sm transition-opacity hover:opacity-100"
+                  style={{ color: "var(--text-secondary)", opacity: 0.85 }}
+                >
                   Terms of service
                 </Link>
+              </li>
+              <li>
+                <a
+                  href="mailto:hello@monietally.com"
+                  className="text-sm transition-opacity hover:opacity-100"
+                  style={{ color: "var(--text-secondary)", opacity: 0.85 }}
+                >
+                  hello@monietally.com
+                </a>
               </li>
             </ul>
           </div>
         </div>
 
-        {/* Bottom bar */}
+        {/* ── Bottom bar ────────────────────────────────────────── */}
         <div
-          className="mt-10 pt-6 flex flex-col md:flex-row items-center justify-between gap-4 border-t"
-          style={{ borderColor: "var(--border-subtle)" }}
+          className="mt-16 pt-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-3"
+          style={{ borderTop: "1px solid var(--border)" }}
         >
-          <p className="text-xs" style={{ color: "var(--text-tertiary)" }}>
+          <p className="text-xs" style={{ color: "var(--text-muted)" }}>
             &copy; {currentYear} MonieTally. All rights reserved.
           </p>
-          <p className="text-xs" style={{ color: "var(--text-tertiary)" }}>
-            Built for people who&apos;d rather not be the product.
+          <p className="text-xs" style={{ color: "var(--text-muted)" }}>
+            Designed for clarity. Built for privacy.
           </p>
         </div>
       </div>

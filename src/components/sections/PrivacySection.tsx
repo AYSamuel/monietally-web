@@ -1,164 +1,287 @@
 "use client";
 
-import { useScrollReveal } from "../../hooks/useScrollReveal";
+import { motion, useReducedMotion } from "framer-motion";
 
-const cards = [
+const pillars = [
   {
-    title: "Nothing leaves your phone",
-    detail: "Truly local-first",
-    description:
-      "Your financial data is never transmitted, never backed up, never stored anywhere outside your device. We physically cannot see it.",
-    accentColor: "#11A675",
-    icon: (
-      <svg
-        width="22"
-        height="22"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      >
-        <line x1="1" y1="1" x2="23" y2="23" />
-        <path d="M9.73 9.73A4.5 4.5 0 0 0 7.5 14H4a3 3 0 0 1-.35-5.97A5 5 0 0 1 9.73 9.73z" />
-        <path d="M16.8 14H19a3 3 0 0 0 0-6h-.25A5.003 5.003 0 0 0 10.5 5c-.27 0-.53.02-.79.06" />
-      </svg>
-    ),
+    headline: "End-to-end encrypted",
+    body: "Your transactions, budgets, and goals are encrypted on your device with AES-256-GCM before sync. The server stores blobs it cannot decrypt.",
   },
   {
-    title: "No accounts to hack",
-    detail: "Nothing to sign up for",
-    description:
-      "No email. No password. No profile. There is nothing for an attacker to breach because there is nothing on our end.",
-    accentColor: "#00C98B",
-    icon: (
-      <svg
-        width="22"
-        height="22"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      >
-        <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-        <circle cx="9" cy="7" r="4" />
-        <line x1="17" y1="11" x2="23" y2="17" />
-        <line x1="23" y1="11" x2="17" y2="17" />
-      </svg>
-    ),
+    headline: "Your key, your devices",
+    body: "The encryption key is generated on your phone and synced to your other devices through your OS keychain (iCloud or Google Block Store). It never passes through our servers.",
   },
   {
-    title: "Bank-level encryption",
-    detail: "AES-256, on your device",
-    description:
-      "Your data is encrypted on your phone using AES-256, the same standard banks use to secure their own systems.",
-    accentColor: "#0A6E4D",
-    icon: (
-      <svg
-        width="22"
-        height="22"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      >
-        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-        <polyline points="9 12 11 14 15 10" />
-      </svg>
-    ),
+    headline: "No bank login, ever",
+    body: "MonieTally does not connect to your bank. No screen scraping. No Plaid. Nothing in our system has read access to your accounts.",
   },
 ];
 
 export default function PrivacySection() {
-  const { ref, isVisible } = useScrollReveal<HTMLElement>();
+  const reducedMotion = useReducedMotion();
 
   return (
     <section
-      ref={ref}
       id="privacy"
-      className="py-20 md:py-28 relative overflow-hidden"
+      className="py-20 md:py-28"
+      style={{ background: "var(--inv-bg)" }}
     >
-      {/* Subtle background shift, emerald wash */}
-      <div
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          background:
-            "radial-gradient(ellipse at 30% 50%, rgba(17,166,117,0.06) 0%, transparent 60%)",
-        }}
-      />
-
-      <div className="section-container relative">
+      <div className="section-container">
         {/* Header */}
-        <div
-          className={`text-center mb-14 transition-all duration-700 ${
-            isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5"
-          }`}
-        >
-          <p className="section-label mb-3">Privacy by architecture</p>
-          <h2 className="section-heading mb-4">
-            Your money.{" "}
-            <span className="text-gradient">Your business.</span>
+        <div className="text-center mb-14 max-w-2xl mx-auto">
+          <p
+            className="text-xs font-medium uppercase tracking-[0.2em] mb-3"
+            style={{ color: "var(--gold)" }}
+          >
+            How privacy actually works
+          </p>
+          <h2
+            className="text-display text-3xl md:text-4xl tracking-tight mb-5"
+            style={{ color: "var(--inv-text-primary)" }}
+          >
+            Encrypted with a key your phone holds. Not ours.
           </h2>
           <p
-            className="text-base max-w-md mx-auto"
-            style={{ color: "var(--text-secondary)" }}
+            className="text-base leading-relaxed"
+            style={{ color: "var(--inv-text-secondary)" }}
           >
-            No accounts. No cloud. No trackers. No compromises.
+            MonieTally syncs across your devices, but the server only ever sees
+            ciphertext. Your data is encrypted before it leaves your phone, with
+            a key that lives in your OS keychain. We could not read your records
+            if a court asked us to.
           </p>
         </div>
 
-        {/* Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-          {cards.map((card, i) => (
-            <div
-              key={card.title}
-              className={`glass rounded-2xl p-6 transition-all duration-700 ${
-                isVisible
-                  ? "opacity-100 translate-y-0"
-                  : "opacity-0 translate-y-8"
-              }`}
+        {/* Conceptual SVG diagram */}
+        <motion.div
+          className="flex justify-center mb-16"
+          initial={reducedMotion ? undefined : { opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true, margin: "-40px" }}
+          transition={{ duration: 0.6 }}
+        >
+          <EncryptionDiagram reducedMotion={!!reducedMotion} />
+        </motion.div>
+
+        {/* Pillar cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-10">
+          {pillars.map((pillar, i) => (
+            <motion.div
+              key={pillar.headline}
+              className="rounded-2xl p-6"
               style={{
-                transitionDelay: `${i * 120}ms`,
-                borderTop: `2px solid ${card.accentColor}`,
+                background: "var(--inv-surface)",
+                border: "1px solid var(--inv-border-subtle)",
               }}
+              initial={reducedMotion ? undefined : { opacity: 0, y: 16 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-40px" }}
+              transition={{ duration: 0.5, delay: i * 0.1 }}
             >
-              <div
-                aria-hidden="true"
-                className="w-10 h-10 rounded-xl flex items-center justify-center mb-4"
-                style={{
-                  background: `${card.accentColor}18`,
-                  color: card.accentColor,
-                }}
-              >
-                {card.icon}
-              </div>
               <h3
-                className="text-base font-semibold mb-1"
-                style={{ color: "var(--text-primary)" }}
+                className="text-base font-semibold mb-2"
+                style={{ color: "var(--inv-text-primary)" }}
               >
-                {card.title}
+                {pillar.headline}
               </h3>
               <p
-                className="text-xs font-medium mb-3"
-                style={{ color: card.accentColor }}
-              >
-                {card.detail}
-              </p>
-              <p
                 className="text-sm leading-relaxed"
-                style={{ color: "var(--text-secondary)" }}
+                style={{ color: "var(--inv-text-secondary)" }}
               >
-                {card.description}
+                {pillar.body}
               </p>
-            </div>
+            </motion.div>
           ))}
         </div>
+
+        {/* Closing line */}
+        <p
+          className="text-center text-sm"
+          style={{ color: "var(--inv-text-tertiary)" }}
+        >
+          Built on the architecture in our public spec. Hosted in the EU
+          (Frankfurt) for GDPR. Audited before v1 release.
+        </p>
       </div>
     </section>
+  );
+}
+
+function EncryptionDiagram({ reducedMotion }: { reducedMotion: boolean }) {
+  return (
+    <svg
+      viewBox="0 0 480 260"
+      className="w-full max-w-lg"
+      role="img"
+      aria-label="Diagram showing data encrypted on your phone, stored as ciphertext on the server, and decrypted on your other devices using the same key"
+    >
+      {/* Phone 1 (top left) */}
+      <rect
+        x="20"
+        y="20"
+        width="120"
+        height="80"
+        rx="12"
+        fill="none"
+        stroke="var(--inv-text-primary)"
+        strokeWidth="1.5"
+        opacity="0.4"
+      />
+      <text
+        x="80"
+        y="50"
+        textAnchor="middle"
+        fontSize="11"
+        fill="var(--inv-text-primary)"
+        opacity="0.9"
+      >
+        Your phone
+      </text>
+      <text
+        x="80"
+        y="70"
+        textAnchor="middle"
+        fontSize="10"
+        fill="var(--inv-text-secondary)"
+      >
+        data + key
+      </text>
+      <text
+        x="80"
+        y="87"
+        textAnchor="middle"
+        fontSize="12"
+        fill="var(--gold)"
+      >
+        🔑
+      </text>
+
+      {/* Arrow: phone → server */}
+      <motion.path
+        d="M 140 60 L 220 130"
+        fill="none"
+        stroke="var(--gold)"
+        strokeWidth="1.5"
+        strokeDasharray="4 3"
+        initial={reducedMotion ? { pathLength: 1 } : { pathLength: 0 }}
+        whileInView={{ pathLength: 1 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.8, delay: 0.3 }}
+      />
+      <text
+        x="155"
+        y="82"
+        fontSize="9"
+        fill="var(--inv-text-tertiary)"
+        transform="rotate(35, 155, 82)"
+      >
+        encrypts on device
+      </text>
+
+      {/* Server (center) */}
+      <rect
+        x="195"
+        y="110"
+        width="150"
+        height="60"
+        rx="8"
+        fill="var(--inv-border-subtle)"
+        opacity="0.5"
+        stroke="var(--inv-border-subtle)"
+        strokeWidth="1"
+      />
+      <text
+        x="270"
+        y="138"
+        textAnchor="middle"
+        fontSize="11"
+        fontWeight="500"
+        fill="var(--inv-text-primary)"
+        opacity="0.8"
+      >
+        MonieTally server
+      </text>
+      <text
+        x="270"
+        y="156"
+        textAnchor="middle"
+        fontSize="10"
+        fill="var(--inv-text-tertiary)"
+      >
+        ciphertext blobs only
+      </text>
+
+      {/* Arrow: server → phone 2 */}
+      <motion.path
+        d="M 220 170 L 140 210"
+        fill="none"
+        stroke="var(--gold)"
+        strokeWidth="1.5"
+        strokeDasharray="4 3"
+        initial={reducedMotion ? { pathLength: 1 } : { pathLength: 0 }}
+        whileInView={{ pathLength: 1 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.8, delay: 0.6 }}
+      />
+      <text
+        x="148"
+        y="203"
+        fontSize="9"
+        fill="var(--inv-text-tertiary)"
+        transform="rotate(-30, 148, 203)"
+      >
+        decrypts with same key
+      </text>
+
+      {/* Phone 2 (bottom left) */}
+      <rect
+        x="20"
+        y="190"
+        width="120"
+        height="60"
+        rx="12"
+        fill="none"
+        stroke="var(--inv-text-primary)"
+        strokeWidth="1.5"
+        opacity="0.4"
+      />
+      <text
+        x="80"
+        y="215"
+        textAnchor="middle"
+        fontSize="11"
+        fill="var(--inv-text-primary)"
+        opacity="0.9"
+      >
+        Your other device
+      </text>
+      <text
+        x="80"
+        y="235"
+        textAnchor="middle"
+        fontSize="10"
+        fill="var(--inv-text-secondary)"
+      >
+        data + key
+      </text>
+      <text
+        x="125"
+        y="236"
+        fontSize="10"
+        fill="var(--gold)"
+      >
+        🔑
+      </text>
+
+      {/* Side annotation */}
+      <text
+        x="370"
+        y="145"
+        fontSize="9"
+        fill="var(--inv-text-tertiary)"
+      >
+        ← server only sees this
+      </text>
+    </svg>
   );
 }

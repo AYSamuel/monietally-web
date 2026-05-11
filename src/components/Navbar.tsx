@@ -1,48 +1,72 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import ThemeToggle from "./ThemeToggle";
 
 export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 16);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   return (
     <nav
-      className="sticky top-0 z-50 backdrop-blur-xl transition-colors duration-300"
+      className={`fixed inset-x-0 top-0 z-50 transition-all duration-300 ${scrolled ? "backdrop-blur-xl" : ""}`}
       style={{
-        background: "var(--nav-bg)",
-        borderBottom: "1px solid var(--nav-border)",
+        background: scrolled
+          ? "var(--nav-bg, color-mix(in srgb, var(--cream) 85%, transparent))"
+          : "transparent",
       }}
     >
       <div className="section-container">
-        <div className="flex items-center justify-between h-16">
-          {/* Logo */}
-          <Link href="/" className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-gradient-card-blue flex items-center justify-center">
-              <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
-              </svg>
-            </div>
-            <span className="text-lg font-semibold tracking-tight" style={{ color: "var(--text-primary)" }}>
-              MonieTally
-            </span>
+        <div className="flex items-center justify-between h-14">
+          {/* Logo wordmark — Fraunces */}
+          <Link
+            href="/"
+            className="font-display text-xl tracking-tight transition-colors"
+            style={{
+              color: "var(--text-primary)",
+              fontVariationSettings: '"opsz" 72',
+            }}
+          >
+            MonieTally
           </Link>
 
           {/* Desktop nav */}
           <div className="hidden md:flex items-center gap-8">
-            <Link href="/#features" className="text-sm transition-colors duration-200 hover:text-brand-blue" style={{ color: "var(--text-secondary)" }}>
-              Features
+            <Link
+              href="/#hero"
+              className="text-sm transition-colors duration-200"
+              style={{ color: "var(--text-secondary)" }}
+            >
+              Why MonieTally
             </Link>
-            <Link href="/#privacy" className="text-sm transition-colors duration-200 hover:text-brand-blue" style={{ color: "var(--text-secondary)" }}>
-              Privacy
+            <Link
+              href="/#social-proof"
+              className="text-sm transition-colors duration-200"
+              style={{ color: "var(--text-secondary)" }}
+            >
+              Community
             </Link>
-            <Link href="/about" className="text-sm transition-colors duration-200 hover:text-brand-blue" style={{ color: "var(--text-secondary)" }}>
-              About
+            <Link
+              href="/#faq"
+              className="text-sm transition-colors duration-200"
+              style={{ color: "var(--text-secondary)" }}
+            >
+              FAQ
             </Link>
             <ThemeToggle />
-            <Link href="/#waitlist" className="btn-primary text-sm !py-2 !px-4">
-              Get early access
+            <Link
+              href="/#social-proof"
+              className="btn-primary text-sm"
+              style={{ padding: "8px 18px" }}
+            >
+              Join waitlist
             </Link>
           </div>
 
@@ -51,11 +75,20 @@ export default function Navbar() {
             <ThemeToggle />
             <button
               onClick={() => setMobileOpen(!mobileOpen)}
-              className="w-11 h-11 rounded-lg flex items-center justify-center transition-colors"
-              style={{ border: "1px solid var(--border-subtle)" }}
+              className="w-10 h-10 flex items-center justify-center"
               aria-label="Toggle menu"
             >
-              <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" style={{ color: "var(--text-secondary)" }}>
+              <svg
+                aria-hidden="true"
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.8"
+                strokeLinecap="round"
+                style={{ color: "var(--text-primary)" }}
+              >
                 {mobileOpen ? (
                   <>
                     <line x1="18" y1="6" x2="6" y2="18" />
@@ -63,42 +96,59 @@ export default function Navbar() {
                   </>
                 ) : (
                   <>
-                    <line x1="3" y1="6" x2="21" y2="6" />
-                    <line x1="3" y1="12" x2="21" y2="12" />
-                    <line x1="3" y1="18" x2="21" y2="18" />
+                    <line x1="4" y1="7" x2="20" y2="7" />
+                    <line x1="4" y1="12" x2="20" y2="12" />
+                    <line x1="4" y1="17" x2="20" y2="17" />
                   </>
                 )}
               </svg>
             </button>
           </div>
         </div>
-
       </div>
 
-      {/* Mobile menu, fixed overlay, never pushes content */}
+      {/* Mobile menu */}
       {mobileOpen && (
         <div
-          className="md:hidden fixed left-0 right-0 z-50 animate-fade-in"
+          className="md:hidden animate-fade-in"
           style={{
-            top: "64px",
-            background: "var(--nav-bg)",
-            borderBottom: "1px solid var(--border-subtle)",
-            backdropFilter: "blur(20px)",
-            WebkitBackdropFilter: "blur(20px)",
+            background: "var(--nav-bg, color-mix(in srgb, var(--cream) 95%, transparent))",
+            backdropFilter: "blur(16px)",
+            WebkitBackdropFilter: "blur(16px)",
           }}
         >
-          <div className="section-container py-3 space-y-1">
-            <Link href="/#features" onClick={() => setMobileOpen(false)} className="block py-2.5 text-sm" style={{ color: "var(--text-secondary)" }}>
-              Features
+          <div className="section-container py-4 space-y-1">
+            <Link
+              href="/#hero"
+              onClick={() => setMobileOpen(false)}
+              className="block py-2.5 text-sm"
+              style={{ color: "var(--text-secondary)" }}
+            >
+              Why MonieTally
             </Link>
-            <Link href="/#privacy" onClick={() => setMobileOpen(false)} className="block py-2.5 text-sm" style={{ color: "var(--text-secondary)" }}>
-              Privacy
+            <Link
+              href="/#social-proof"
+              onClick={() => setMobileOpen(false)}
+              className="block py-2.5 text-sm"
+              style={{ color: "var(--text-secondary)" }}
+            >
+              Community
             </Link>
-            <Link href="/about" onClick={() => setMobileOpen(false)} className="block py-2.5 text-sm" style={{ color: "var(--text-secondary)" }}>
-              About
+            <Link
+              href="/#faq"
+              onClick={() => setMobileOpen(false)}
+              className="block py-2.5 text-sm"
+              style={{ color: "var(--text-secondary)" }}
+            >
+              FAQ
             </Link>
-            <Link href="/#waitlist" onClick={() => setMobileOpen(false)} className="btn-primary text-sm !py-2 mt-2 w-full text-center">
-              Get early access
+            <Link
+              href="/#social-proof"
+              onClick={() => setMobileOpen(false)}
+              className="block py-2.5 text-sm font-medium"
+              style={{ color: "var(--gold)" }}
+            >
+              Join the waitlist
             </Link>
           </div>
         </div>

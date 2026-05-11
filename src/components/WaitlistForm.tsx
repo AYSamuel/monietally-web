@@ -6,11 +6,12 @@ import { validateEmail, EMAIL_ERROR_MESSAGES } from "@/lib/emailValidation";
 
 interface WaitlistFormProps {
   source?: WaitlistSource;
+  inverted?: boolean;
 }
 
 type Status = "idle" | "loading" | "success" | "duplicate" | "no_mx" | "error";
 
-export default function WaitlistForm({ source = "hero" }: WaitlistFormProps) {
+export default function WaitlistForm({ source = "hero", inverted = false }: WaitlistFormProps) {
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<Status>("idle");
   const [inlineError, setInlineError] = useState<string | null>(null);
@@ -108,9 +109,9 @@ export default function WaitlistForm({ source = "hero" }: WaitlistFormProps) {
           disabled={status === "loading"}
           className="flex-1 px-4 py-3 min-h-[44px] rounded-xl text-sm outline-none transition-all duration-200 focus:ring-2 disabled:opacity-60"
           style={{
-            background: "var(--surface)",
-            border: `1px solid ${hasError ? "var(--accent-pink)" : "var(--border)"}`,
-            color: "var(--text-primary)",
+            background: inverted ? "var(--inv-surface)" : "var(--surface)",
+            border: `1px solid ${hasError ? "var(--accent-pink)" : inverted ? "var(--inv-border-subtle)" : "var(--border)"}`,
+            color: inverted ? "var(--inv-text-primary)" : "var(--text-primary)",
             boxShadow: hasError ? "0 0 0 2px rgba(var(--accent-pink-rgb, 236,72,153),0.15)" : undefined,
           }}
         />
@@ -118,6 +119,7 @@ export default function WaitlistForm({ source = "hero" }: WaitlistFormProps) {
           type="submit"
           disabled={status === "loading"}
           className="btn-primary whitespace-nowrap disabled:opacity-60 min-h-[44px]"
+          style={inverted ? { background: "var(--inv-text-primary)", color: "var(--inv-bg)" } : undefined}
         >
           {status === "loading" ? (
             <>
@@ -152,7 +154,7 @@ export default function WaitlistForm({ source = "hero" }: WaitlistFormProps) {
         </p>
       )}
       {!inlineError && status === "duplicate" && (
-        <p role="alert" className="text-xs" style={{ color: "var(--text-secondary)" }}>
+        <p role="alert" className="text-xs" style={{ color: inverted ? "var(--inv-text-secondary)" : "var(--text-secondary)" }}>
           This email is already on the list.
         </p>
       )}

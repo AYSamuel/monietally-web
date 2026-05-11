@@ -103,7 +103,10 @@ export default function AboutPage() {
       <Navbar />
       <main>
         {/* Hero */}
-        <section className="relative overflow-hidden pt-16 pb-20 md:pt-24 md:pb-24">
+        <section
+          className="relative overflow-hidden pt-24 pb-20 md:pt-32 md:pb-24"
+          style={{ background: "var(--bg-primary)" }}
+        >
           <div
             className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[400px] pointer-events-none"
             style={{
@@ -113,7 +116,7 @@ export default function AboutPage() {
           />
           <div className="section-container relative text-center max-w-3xl mx-auto">
             <p className="section-label mb-4">Why we exist</p>
-            <h1 className="text-4xl md:text-5xl font-bold tracking-tight leading-[1.1] mb-6">
+            <h1 className="text-display text-4xl md:text-5xl tracking-tight mb-6">
               Why we don&apos;t want{" "}
               <span className="text-gradient">your data.</span>
             </h1>

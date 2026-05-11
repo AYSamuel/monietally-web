@@ -20,7 +20,7 @@ Effective date: April 30, 2026.`,
     title: "2. Description of service",
     content: `MonieTally is a personal finance application that helps users track spending, visualise financial data, and manage budgets. The app connects to financial institutions via third-party bank aggregation providers (Plaid, Tink, Mono) to sync transaction data.
 
-All financial data is stored locally on the user's device. MonieTally does not provide banking services, investment advice, or any regulated financial service.`,
+All financial data is encrypted on the user's device and stored locally. Encrypted data may be synced across the user's devices. MonieTally does not provide banking services, investment advice, or any regulated financial service.`,
   },
   {
     id: "responsibilities",
@@ -103,7 +103,10 @@ export default function TermsPage() {
   return (
     <>
       <Navbar />
-      <main className="py-16 md:py-24">
+      <main
+        className="pt-24 pb-16 md:pt-32 md:pb-24"
+        style={{ background: "var(--bg-primary)" }}
+      >
         <div className="section-container">
           <div className="max-w-3xl mx-auto">
             {/* Header */}

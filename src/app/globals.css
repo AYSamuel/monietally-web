@@ -2,236 +2,457 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ── Google Fonts ── */
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap");
-
 /* ══════════════════════════════════════════════
-   MONIETALLY DESIGN SYSTEM, CSS Custom Properties
-   Brand: emerald-forward, money-coded, calm.
+   MONIETALLY DESIGN SYSTEM
+   Editorial cream/ink/gold palette + emerald brand
+   that matches the in-app theme. Linear-style
+   structural tokens (gradient utilities, glass cards,
+   aurora mesh) layered on top, but valued with the
+   editorial palette so the marketing site reads as
+   one with the product.
    ══════════════════════════════════════════════ */
 
 @layer base {
   :root {
-    /* ── Surfaces ── */
-    --bg-primary: #F8F9FD;
-    --bg-secondary: #FFFFFF;
+    /* ── Surfaces (cream system, light mode) ── */
+    --bg-primary: #FAF8F1;
+    --bg-secondary: #F5F1E8;
+    --bg-tertiary: #ECE7D7;
     --surface: #FFFFFF;
-    --surface-elevated: #F5F6FA;
-    --surface-glass: rgba(255, 255, 255, 0.7);
+    --surface-elevated: #FAF8F1;
+    --surface-glass: rgba(250, 248, 241, 0.72);
+    --surface-card: rgba(255, 255, 255, 0.78);
 
-    /* ── Text ── */
-    --text-primary: #1A1B1E;
-    --text-secondary: #6B6C73;
-    --text-tertiary: #9B9BA5;
+    /* ── Text (ink on cream) ── */
+    --text-primary: #0F1117;
+    --text-secondary: rgba(15, 17, 23, 0.62);
+    --text-tertiary: rgba(15, 17, 23, 0.42);
+    --text-muted: rgba(15, 17, 23, 0.28);
 
     /* ── Borders ── */
-    --border: #D1D2D9;
-    --border-subtle: #E8E9EE;
-    --divider: #E8E9EE;
+    --border: #E8E3D6;
+    --border-subtle: rgba(15, 17, 23, 0.06);
+    --border-strong: rgba(15, 17, 23, 0.14);
+    --divider: #E8E3D6;
 
-    /* ── Brand (variable names kept; values now emerald-forward) ── */
-    --brand-blue: #11A675;       /* primary emerald */
-    --brand-purple: #0A6E4D;     /* deep emerald */
-    --brand-deep-blue: #084034;  /* deepest emerald */
-    --brand-mint: #5DDDA8;        /* light mint accent */
-    --brand-gold: #F4B860;        /* warm gold accent for highlights */
+    /* ── Brand spectrum (emerald + gold, app-aligned) ── */
+    --brand-emerald: #11A675;       /* primary, money-coded */
+    --brand-emerald-deep: #0A6E4D;
+    --brand-emerald-light: #5DDDA8;
+    --brand-gold: #C9A961;          /* premium / editorial accent */
+    --brand-gold-warm: #F4B860;
+    /* Aliases for any legacy refs */
+    --brand-blue: #11A675;
+    --brand-purple: #0A6E4D;
+    --brand-mint: #5DDDA8;
+    --brand-violet: #11A675;
+    --brand-cyan: #5DDDA8;
+    --brand-teal: #11A675;
 
-    /* ── Accents ── */
+    /* ── Editorial palette ── */
+    --cream: #F5F1E8;
+    --cream-soft: #FAF8F1;
+    --cream-line: #E8E3D6;
+    --ink: #0F1117;
+    --ink-soft: #1A1C24;
+    --ink-line: #2A2A30;
+    --gold: #C9A961;
+
+    /* ── Gradient tokens (emerald → mint → gold) ── */
+    --gradient-brand: linear-gradient(135deg, #0A6E4D 0%, #11A675 35%, #5DDDA8 70%, #C9A961 100%);
+    --gradient-brand-soft: linear-gradient(135deg, rgba(17, 166, 117, 0.16) 0%, rgba(93, 221, 168, 0.16) 50%, rgba(201, 169, 97, 0.16) 100%);
+    --gradient-aurora: radial-gradient(at 20% 20%, rgba(17, 166, 117, 0.32) 0px, transparent 50%),
+                       radial-gradient(at 80% 30%, rgba(93, 221, 168, 0.26) 0px, transparent 50%),
+                       radial-gradient(at 50% 80%, rgba(201, 169, 97, 0.24) 0px, transparent 50%);
+    --gradient-mesh: conic-gradient(from 180deg at 50% 50%,
+                       #11A675 0deg,
+                       #5DDDA8 90deg,
+                       #C9A961 180deg,
+                       #0A6E4D 270deg,
+                       #11A675 360deg);
+
+    /* ── Glow shadows (emerald + gold) ── */
+    --glow-emerald: 0 0 60px rgba(17, 166, 117, 0.42);
+    --glow-mint:    0 0 60px rgba(93, 221, 168, 0.40);
+    --glow-gold:    0 0 60px rgba(201, 169, 97, 0.40);
+    --glow-soft:    0 8px 40px rgba(17, 166, 117, 0.18);
+
+    /* ── Functional (in-data only) ── */
+    --income: #2D8B5C;
+    --expense: #B8503C;
+    --warning: #D89A3F;
     --accent-pink: #E85D8A;
     --accent-orange: #E67A3D;
     --accent-cyan: #00B8D9;
     --accent-green: #00C98B;
 
+    /* ── Inverted (ink island in cream page) ── */
+    --inv-bg: #0F1117;
+    --inv-surface: #1A1C24;
+    --inv-text-primary: #F5F1E8;
+    --inv-text-secondary: rgba(245, 241, 232, 0.65);
+    --inv-text-tertiary: rgba(245, 241, 232, 0.42);
+    --inv-border-subtle: rgba(245, 241, 232, 0.10);
+
     /* ── Shadows ── */
-    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.06);
-    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
-    --shadow-lg: 0 8px 30px rgba(0, 0, 0, 0.1);
-    --shadow-glow-blue: 0 0 40px rgba(17, 166, 117, 0.18);
-    --shadow-glow-purple: 0 0 40px rgba(10, 110, 77, 0.18);
+    --shadow-sm: 0 1px 3px rgba(15, 17, 23, 0.05), 0 1px 2px rgba(15, 17, 23, 0.03);
+    --shadow-md: 0 4px 16px rgba(15, 17, 23, 0.07), 0 2px 4px rgba(15, 17, 23, 0.04);
+    --shadow-lg: 0 12px 40px rgba(15, 17, 23, 0.09), 0 4px 12px rgba(15, 17, 23, 0.05);
+    --shadow-xl: 0 24px 64px -12px rgba(15, 17, 23, 0.18);
 
     /* ── Nav ── */
-    --nav-bg: rgba(255, 255, 255, 0.85);
-    --nav-border: #E8E9EE;
+    --nav-bg: rgba(250, 248, 241, 0.78);
+    --nav-border: rgba(15, 17, 23, 0.06);
 
-    /* ── Feature card icon bg ── */
-    --feature-icon-blue: rgba(17, 166, 117, 0.1);
-    --feature-icon-green: rgba(0, 201, 139, 0.1);
-    --feature-icon-purple: rgba(10, 110, 77, 0.1);
-    --feature-icon-pink: rgba(232, 93, 138, 0.1);
-    --feature-icon-orange: rgba(230, 122, 61, 0.1);
-    --feature-icon-cyan: rgba(0, 184, 217, 0.1);
+    /* ── Phone shell tokens (PhoneFrame depends on these names) ── */
+    --phone-shell: linear-gradient(160deg, #E8E9EE 0%, #D1D2D9 50%, #B8B9C2 100%);
+    --phone-border: #C8C8CE;
+    --phone-shell-shadow: 0 32px 80px -16px rgba(17, 166, 117, 0.22), 0 0 0 1px rgba(15, 17, 23, 0.04);
+    --phone-screen: var(--cream-soft);
+    --phone-screen-fg: var(--ink);
+    --phone-home-indicator: rgba(15, 17, 23, 0.4);
+    --income-cream: #6FB28E;
+    --expense-cream: #D6826F;
 
-    /* ── Phone mockup ──
-       Light theme: silver/white iPhone finish + bright screen.
-       Screen tinted with emerald to match brand. */
-    --mockup-screen: linear-gradient(180deg, rgba(17, 166, 117, 0.06) 0%, #FFFFFF 100%);
-    --mockup-shell: linear-gradient(160deg, #E8E9EE 0%, #D1D2D9 50%, #B8B9C2 100%);
-    --mockup-bezel: #FFFFFF;
-    --mockup-island: #1A1B1E;
-    --mockup-shell-shadow: 0 22px 48px -22px rgba(17, 166, 117, 0.28), 0 0 0 1px rgba(0, 0, 0, 0.04);
-    --mockup-shell-shadow-featured: 0 32px 64px -22px rgba(17, 166, 117, 0.45), 0 18px 40px -18px rgba(17, 166, 117, 0.3), 0 0 0 1px rgba(0, 0, 0, 0.04);
+    /* ── Mockup-internal tints (used inside the phone screen) ── */
+    --m-fg-04: rgba(15, 17, 23, 0.04);
+    --m-fg-05: rgba(15, 17, 23, 0.05);
+    --m-fg-06: rgba(15, 17, 23, 0.06);
+    --m-fg-08: rgba(15, 17, 23, 0.08);
+    --m-fg-10: rgba(15, 17, 23, 0.10);
+    --m-fg-12: rgba(15, 17, 23, 0.12);
+    --m-fg-25: rgba(15, 17, 23, 0.25);
+    --m-fg-30: rgba(15, 17, 23, 0.30);
+    --m-fg-40: rgba(15, 17, 23, 0.40);
+    --m-fg-45: rgba(15, 17, 23, 0.45);
+    --m-fg-50: rgba(15, 17, 23, 0.50);
+    --m-fg-55: rgba(15, 17, 23, 0.55);
+    --m-fg-60: rgba(15, 17, 23, 0.60);
+    --m-fg-70: rgba(15, 17, 23, 0.70);
+    --m-fg-72: rgba(15, 17, 23, 0.72);
+    --m-fg-78: rgba(15, 17, 23, 0.78);
+    --m-fg-85: rgba(15, 17, 23, 0.85);
+    --m-fg-90: rgba(15, 17, 23, 0.90);
+    --m-fg-95: rgba(15, 17, 23, 0.95);
+    --m-income: var(--income);
+    --m-expense: var(--expense);
   }
 
   .dark {
-    /* ── Surfaces ── */
-    --bg-primary: #0A0B0D;
-    --bg-secondary: #12131A;
-    --surface: #16171D;
-    --surface-elevated: #1D1E26;
-    --surface-glass: rgba(22, 23, 29, 0.8);
+    /* ── Surfaces (ink system, dark mode) ── */
+    --bg-primary: #0F1117;
+    --bg-secondary: #1A1C24;
+    --bg-tertiary: #20232C;
+    --surface: #1A1C24;
+    --surface-elevated: #20232C;
+    --surface-glass: rgba(15, 17, 23, 0.72);
+    --surface-card: rgba(26, 28, 36, 0.65);
 
-    /* ── Text ── */
-    --text-primary: #E8E9ED;
-    --text-secondary: #8A8B95;
-    --text-tertiary: #5A5B65;
+    /* ── Text (cream on ink) ── */
+    --text-primary: #F5F1E8;
+    --text-secondary: rgba(245, 241, 232, 0.68);
+    --text-tertiary: rgba(245, 241, 232, 0.42);
+    --text-muted: rgba(245, 241, 232, 0.28);
 
     /* ── Borders ── */
-    --border: #2D2E35;
-    --border-subtle: #23242B;
-    --divider: #23242B;
+    --border: rgba(245, 241, 232, 0.10);
+    --border-subtle: rgba(245, 241, 232, 0.06);
+    --border-strong: rgba(245, 241, 232, 0.16);
+    --divider: rgba(245, 241, 232, 0.08);
 
-    /* ── Shadows ── */
+    /* ── Aurora more vivid on dark ── */
+    --gradient-aurora: radial-gradient(at 20% 20%, rgba(17, 166, 117, 0.40) 0px, transparent 50%),
+                       radial-gradient(at 80% 30%, rgba(93, 221, 168, 0.32) 0px, transparent 50%),
+                       radial-gradient(at 50% 80%, rgba(201, 169, 97, 0.30) 0px, transparent 50%);
+
+    /* ── Glow stronger on dark ── */
+    --glow-emerald: 0 0 80px rgba(17, 166, 117, 0.55);
+    --glow-mint:    0 0 80px rgba(93, 221, 168, 0.50);
+    --glow-gold:    0 0 80px rgba(201, 169, 97, 0.50);
+    --glow-soft:    0 8px 50px rgba(17, 166, 117, 0.30);
+
+    /* ── Inverted (cream island in ink page) ── */
+    --inv-bg: #FAF8F1;
+    --inv-surface: #FFFFFF;
+    --inv-text-primary: #0F1117;
+    --inv-text-secondary: rgba(15, 17, 23, 0.62);
+    --inv-text-tertiary: rgba(15, 17, 23, 0.42);
+    --inv-border-subtle: rgba(15, 17, 23, 0.08);
+
+    /* ── Shadows on dark ── */
     --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
-    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
-    --shadow-lg: 0 8px 30px rgba(0, 0, 0, 0.5);
-    --shadow-glow-blue: 0 0 60px rgba(17, 166, 117, 0.22);
-    --shadow-glow-purple: 0 0 60px rgba(10, 110, 77, 0.22);
+    --shadow-md: 0 6px 24px rgba(0, 0, 0, 0.45);
+    --shadow-lg: 0 14px 48px rgba(0, 0, 0, 0.55);
+    --shadow-xl: 0 28px 80px -16px rgba(0, 0, 0, 0.7);
 
     /* ── Nav ── */
-    --nav-bg: rgba(10, 11, 13, 0.85);
-    --nav-border: #23242B;
+    --nav-bg: rgba(15, 17, 23, 0.72);
+    --nav-border: rgba(245, 241, 232, 0.08);
 
-    /* ── Feature card icon bg ── */
-    --feature-icon-blue: rgba(17, 166, 117, 0.15);
-    --feature-icon-green: rgba(0, 201, 139, 0.15);
-    --feature-icon-purple: rgba(10, 110, 77, 0.15);
-    --feature-icon-pink: rgba(232, 93, 138, 0.15);
-    --feature-icon-orange: rgba(230, 122, 61, 0.15);
-    --feature-icon-cyan: rgba(0, 184, 217, 0.15);
+    /* ── Phone shell tokens (dark) ── */
+    --phone-shell: linear-gradient(160deg, #2A2B33 0%, #18181C 50%, #0E0F14 100%);
+    --phone-border: #2A2A30;
+    --phone-shell-shadow: 0 32px 80px -12px rgba(17, 166, 117, 0.30), 0 0 0 1px rgba(245, 241, 232, 0.05);
+    --phone-screen: var(--ink);
+    --phone-screen-fg: var(--cream);
+    --phone-home-indicator: rgba(245, 241, 232, 0.45);
 
-    /* ── Phone mockup ──
-       Dark theme: black iPhone finish + dark screen. Halo tinted emerald. */
-    --mockup-screen: linear-gradient(180deg, #0A0B0D 0%, #122019 100%);
-    --mockup-shell: linear-gradient(160deg, #2A2B33 0%, #16171D 50%, #0E0F14 100%);
-    --mockup-bezel: #000000;
-    --mockup-island: #000000;
-    --mockup-shell-shadow: 0 18px 40px -18px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(255, 255, 255, 0.04);
-    --mockup-shell-shadow-featured: 0 30px 60px -22px rgba(0, 0, 0, 0.55), 0 18px 40px -16px rgba(17, 166, 117, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.04);
+    /* ── Mockup tints flip cream-based on dark ── */
+    --m-fg-04: rgba(245, 241, 232, 0.04);
+    --m-fg-05: rgba(245, 241, 232, 0.05);
+    --m-fg-06: rgba(245, 241, 232, 0.06);
+    --m-fg-08: rgba(245, 241, 232, 0.08);
+    --m-fg-10: rgba(245, 241, 232, 0.10);
+    --m-fg-12: rgba(245, 241, 232, 0.12);
+    --m-fg-25: rgba(245, 241, 232, 0.25);
+    --m-fg-30: rgba(245, 241, 232, 0.30);
+    --m-fg-40: rgba(245, 241, 232, 0.40);
+    --m-fg-45: rgba(245, 241, 232, 0.45);
+    --m-fg-50: rgba(245, 241, 232, 0.50);
+    --m-fg-55: rgba(245, 241, 232, 0.55);
+    --m-fg-60: rgba(245, 241, 232, 0.60);
+    --m-fg-70: rgba(245, 241, 232, 0.70);
+    --m-fg-72: rgba(245, 241, 232, 0.72);
+    --m-fg-78: rgba(245, 241, 232, 0.78);
+    --m-fg-85: rgba(245, 241, 232, 0.85);
+    --m-fg-90: rgba(245, 241, 232, 0.90);
+    --m-fg-95: rgba(245, 241, 232, 0.95);
+    --m-income: var(--income-cream);
+    --m-expense: var(--expense-cream);
   }
 
+  /* Force-light scope (used by mockup comparisons / forceLight prop) */
+  .force-light {
+    --phone-shell: linear-gradient(160deg, #E8E9EE 0%, #D1D2D9 50%, #B8B9C2 100%);
+    --phone-border: #C8C8CE;
+    --phone-shell-shadow: 0 32px 80px -16px rgba(17, 166, 117, 0.22), 0 0 0 1px rgba(15, 17, 23, 0.04);
+    --phone-screen: var(--cream-soft);
+    --phone-screen-fg: var(--ink);
+    --phone-home-indicator: rgba(15, 17, 23, 0.4);
+    --m-fg-04: rgba(15, 17, 23, 0.04);
+    --m-fg-05: rgba(15, 17, 23, 0.05);
+    --m-fg-06: rgba(15, 17, 23, 0.06);
+    --m-fg-08: rgba(15, 17, 23, 0.08);
+    --m-fg-10: rgba(15, 17, 23, 0.10);
+    --m-fg-12: rgba(15, 17, 23, 0.12);
+    --m-fg-25: rgba(15, 17, 23, 0.25);
+    --m-fg-30: rgba(15, 17, 23, 0.30);
+    --m-fg-40: rgba(15, 17, 23, 0.40);
+    --m-fg-45: rgba(15, 17, 23, 0.45);
+    --m-fg-50: rgba(15, 17, 23, 0.50);
+    --m-fg-55: rgba(15, 17, 23, 0.55);
+    --m-fg-60: rgba(15, 17, 23, 0.60);
+    --m-fg-70: rgba(15, 17, 23, 0.70);
+    --m-fg-72: rgba(15, 17, 23, 0.72);
+    --m-fg-78: rgba(15, 17, 23, 0.78);
+    --m-fg-85: rgba(15, 17, 23, 0.85);
+    --m-fg-90: rgba(15, 17, 23, 0.90);
+    --m-fg-95: rgba(15, 17, 23, 0.95);
+    --m-income: var(--income);
+    --m-expense: var(--expense);
+  }
+
+  /* Lenis owns smooth scroll. */
   html {
-    scroll-behavior: smooth;
+    scroll-behavior: auto;
   }
 
   body {
     background-color: var(--bg-primary);
     color: var(--text-primary);
-    font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-family: var(--font-body), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-size: 16px;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+  }
+
+  html.lenis,
+  html.lenis body {
+    height: auto;
+  }
+  .lenis.lenis-smooth {
+    scroll-behavior: auto !important;
+  }
+  .lenis.lenis-smooth [data-lenis-prevent] {
+    overscroll-behavior: contain;
+  }
+  .lenis.lenis-stopped {
+    overflow: clip;
   }
 
   ::selection {
-    background-color: rgba(17, 166, 117, 0.3);
+    background-color: rgba(17, 166, 117, 0.32);
     color: var(--text-primary);
   }
 
-  /* Keyboard focus, visible ring on all interactive elements */
   a:focus-visible,
-  button:focus-visible {
-    outline: 2px solid var(--brand-blue);
+  button:focus-visible,
+  input:focus-visible {
+    outline: 2px solid var(--brand-emerald);
     outline-offset: 2px;
     border-radius: 4px;
   }
 }
 
 /* ══════════════════════════════════════════════
-   UTILITY CLASSES
+   COMPONENT LAYER
    ══════════════════════════════════════════════ */
 
 @layer components {
-  /* Gradient text, emerald-forward */
-  .text-gradient {
-    @apply bg-clip-text text-transparent;
-    background-image: linear-gradient(135deg, #14B881, #0A6E4D);
-  }
-
-  .text-gradient-green {
-    @apply bg-clip-text text-transparent;
-    background-image: linear-gradient(135deg, #14B881, #0A6E4D);
-  }
-
-  .text-gradient-gold {
-    @apply bg-clip-text text-transparent;
-    background-image: linear-gradient(135deg, #F4B860, #D89A3F);
-  }
-
-  /* Glass effect */
-  .glass {
-    background: var(--surface-glass);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    border: 1px solid var(--border-subtle);
-  }
-
-  /* Surface card */
-  .surface-card {
-    background: var(--surface);
-    border: 1px solid var(--border-subtle);
-    border-radius: 16px;
-  }
-
-  .surface-card-elevated {
-    background: var(--surface-elevated);
-    border: 1px solid var(--border-subtle);
-    border-radius: 16px;
-  }
-
-  /* Section container */
   .section-container {
-    @apply max-w-6xl mx-auto px-4 sm:px-6 md:px-8;
+    @apply max-w-7xl mx-auto px-5 sm:px-6 md:px-10 lg:px-12;
   }
 
-  /* Section label */
-  .section-label {
-    @apply text-xs font-medium tracking-[0.15em] uppercase;
-    color: var(--text-tertiary);
+  /* Editorial display */
+  .text-display {
+    font-family: var(--font-display), var(--font-body), -apple-system, BlinkMacSystemFont, sans-serif;
+    font-weight: 600;
+    letter-spacing: -0.03em;
+    line-height: 1.04;
   }
 
-  /* Section heading */
-  .section-heading {
-    @apply text-3xl md:text-4xl font-semibold tracking-tight;
-    color: var(--text-primary);
+  /* Headline accent — emerald-only gradient (deep → primary → light).
+     Stays in the green family for calm money-coded contrast against
+     ink/cream surfaces. The full multi-color --gradient-brand (with
+     gold) remains available for decorative places like the aurora
+     bg and gradient-pill buttons. */
+  .text-gradient {
+    background: linear-gradient(135deg, #0A6E4D 0%, #11A675 50%, #5DDDA8 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
   }
 
-  /* CTA button, emerald gradient */
+  /* Optional: gold-only accent for editorial moments where you want
+     premium warmth instead of money green. */
+  .text-gradient-gold {
+    background: linear-gradient(135deg, #C9A961 0%, #F4B860 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+  }
+
+  /* Glass card */
+  .glass-card {
+    background: var(--surface-card);
+    backdrop-filter: blur(20px) saturate(140%);
+    -webkit-backdrop-filter: blur(20px) saturate(140%);
+    border: 1px solid var(--border-subtle);
+    border-radius: 16px;
+  }
+
+  /* Gradient-bordered card (1px brand-gradient ring via mask trick) */
+  .gradient-border {
+    position: relative;
+    border-radius: 18px;
+    background: var(--surface);
+  }
+  .gradient-border::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    padding: 1px;
+    border-radius: inherit;
+    background: var(--gradient-brand);
+    -webkit-mask:
+      linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+            mask-composite: exclude;
+    pointer-events: none;
+    opacity: 0.5;
+  }
+  .gradient-border:hover::before {
+    opacity: 1;
+  }
+
+  /* Aurora background */
+  .aurora-bg {
+    background: var(--gradient-aurora);
+  }
+
+  /* Subtle dot grid */
+  .grid-bg {
+    background-image:
+      radial-gradient(circle at 1px 1px, var(--border) 1px, transparent 0);
+    background-size: 32px 32px;
+  }
+
+  /* Primary CTA — refined dark pill (editorial) with emerald glow on hover */
   .btn-primary {
-    @apply inline-flex items-center justify-center px-6 py-3 rounded-xl text-sm font-medium text-white transition-all duration-200;
-    background: linear-gradient(135deg, #14B881, #0A6E4D);
-    box-shadow: 0 2px 12px rgba(17, 166, 117, 0.35);
+    @apply inline-flex items-center justify-center gap-2 px-7 py-3 rounded-full text-sm font-medium transition-all duration-200;
+    background: var(--text-primary);
+    color: var(--bg-primary);
+    box-shadow: 0 8px 24px -8px rgba(15, 17, 23, 0.40), inset 0 1px 0 rgba(245, 241, 232, 0.10);
   }
   .btn-primary:hover {
     transform: translateY(-1px);
-    box-shadow: 0 4px 20px rgba(17, 166, 117, 0.45);
+    box-shadow: 0 14px 36px -10px rgba(17, 166, 117, 0.45), 0 8px 24px -8px rgba(15, 17, 23, 0.45);
   }
   .btn-primary:active {
     transform: translateY(0);
   }
 
+  /* Gradient-pill variant for moments where you want extra pop */
+  .btn-gradient {
+    @apply inline-flex items-center justify-center gap-2 px-7 py-3 rounded-full text-sm font-medium transition-all duration-200;
+    background: var(--gradient-brand);
+    color: #FFFFFF;
+    box-shadow: 0 8px 32px -8px rgba(17, 166, 117, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.20);
+  }
+  .btn-gradient:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 12px 40px -8px rgba(17, 166, 117, 0.70), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  }
+
   .btn-secondary {
-    @apply inline-flex items-center justify-center px-6 py-3 rounded-xl text-sm font-medium transition-all duration-200;
+    @apply inline-flex items-center justify-center gap-2 px-7 py-3 rounded-full text-sm font-medium transition-all duration-200;
+    background: var(--surface);
     color: var(--text-primary);
     border: 1px solid var(--border);
-    background: transparent;
   }
   .btn-secondary:hover {
     background: var(--surface-elevated);
-    border-color: var(--brand-blue);
+    border-color: var(--border-strong);
   }
 
-  /* Feature icon container */
-  .feature-icon {
-    @apply w-11 h-11 rounded-xl flex items-center justify-center;
+  /* Ghost button — for glassy chrome surfaces */
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2 px-7 py-3 rounded-full text-sm font-medium transition-all duration-200;
+    background: transparent;
+    color: var(--text-primary);
+    border: 1px solid var(--border);
+  }
+  .btn-ghost:hover {
+    background: var(--surface-card);
+    border-color: var(--border-strong);
+  }
+
+  /* Section eyebrow — gold uppercase, editorial */
+  .section-label {
+    @apply text-xs font-medium uppercase;
+    letter-spacing: 0.22em;
+    color: var(--gold);
+  }
+
+  /* Eyebrow label — alias for section-label */
+  .eyebrow {
+    @apply text-xs font-medium uppercase;
+    letter-spacing: 0.22em;
+    color: var(--gold);
+  }
+
+  /* Section heading */
+  .section-heading {
+    font-family: var(--font-display), var(--font-body), -apple-system, BlinkMacSystemFont, sans-serif;
+    font-weight: 600;
+    letter-spacing: -0.03em;
+    line-height: 1.08;
+    font-size: clamp(28px, 3.6vw, 48px);
+    color: var(--text-primary);
   }
 }
 
@@ -245,6 +466,22 @@
   100% { background-position: 0% 50%; }
 }
 
+@keyframes auroraDrift {
+  0%   { transform: translate3d(0, 0, 0) scale(1); }
+  50%  { transform: translate3d(2%, -2%, 0) scale(1.04); }
+  100% { transform: translate3d(0, 0, 0) scale(1); }
+}
+
+@keyframes pulseGlow {
+  0%, 100% { opacity: 0.6; }
+  50%      { opacity: 1; }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50%      { transform: translateY(-12px); }
+}
+
 @layer utilities {
   .animate-delay-100 { animation-delay: 100ms; }
   .animate-delay-200 { animation-delay: 200ms; }
@@ -254,7 +491,19 @@
 
   .animate-gradient {
     background-size: 250% 250%;
-    animation: gradientShift 10s ease infinite;
+    animation: gradientShift 12s ease infinite;
+  }
+
+  .animate-aurora {
+    animation: auroraDrift 20s ease-in-out infinite;
+  }
+
+  .animate-pulse-glow {
+    animation: pulseGlow 3s ease-in-out infinite;
+  }
+
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
   }
 
   .scrollbar-hide {
