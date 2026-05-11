@@ -90,7 +90,7 @@ export default function HowItWorks() {
             return (
               <motion.article
                 key={step.headline}
-                className="flex flex-col"
+                className="flex flex-col items-center md:items-start text-center md:text-left"
                 initial={reducedMotion ? undefined : { opacity: 0, y: 28 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-12% 0px" }}
@@ -103,6 +103,7 @@ export default function HowItWorks() {
                 {/* Phone mockup, scaled. Fixed wrapper width so the
                     scaled inner doesn't break the column layout. */}
                 <div
+                  className="mx-auto md:mx-0"
                   style={{
                     width: PHONE_FRAME_WIDTH * SCALE,
                     height: PHONE_FRAME_HEIGHT * SCALE,

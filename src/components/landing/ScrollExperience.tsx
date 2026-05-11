@@ -911,9 +911,9 @@ function MobileStack({ panels }: { panels: ReadonlyArray<PanelDef> }) {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-15% 0px" }}
             transition={{ duration: 0.6, ease: [0.22, 0.61, 0.36, 1] }}
-            className="flex flex-col items-start text-left"
+            className="flex flex-col items-center text-center"
           >
-            <div style={{ width: SCALED_W, height: SCALED_H, position: "relative", marginBottom: 24 }}>
+            <div className="mx-auto" style={{ width: SCALED_W, height: SCALED_H, position: "relative", marginBottom: 24 }}>
               <div
                 style={{
                   position: "absolute",
@@ -930,7 +930,7 @@ function MobileStack({ panels }: { panels: ReadonlyArray<PanelDef> }) {
             </div>
 
             {panel.type === "hero" ? (
-              <div className="max-w-md">
+              <div className="max-w-md text-left">
                 <div
                   className="mb-5 inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium"
                   style={{
@@ -966,7 +966,7 @@ function MobileStack({ panels }: { panels: ReadonlyArray<PanelDef> }) {
                 </div>
               </div>
             ) : (
-              <div className="max-w-md">
+              <div className="max-w-md text-left">
                 <div className="text-xs font-medium uppercase mb-3" style={{ letterSpacing: "0.18em", color: "var(--gold)" }}>
                   {panel.number} / {panel.label}
                 </div>
