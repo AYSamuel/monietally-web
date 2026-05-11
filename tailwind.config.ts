@@ -73,10 +73,25 @@ const config: Config = {
           800: "#2D2E33",
           900: "#1A1B1E",
         },
+        // ── Editorial palette (landing redesign v2) ──
+        // Static color tokens. Theme-swap behavior is handled per-section
+        // with `bg-cream dark:bg-ink` etc., not by remapping these tokens.
+        cream: {
+          DEFAULT: "#F5F1E8",
+          soft: "#FAF8F1",
+        },
+        ink: {
+          DEFAULT: "#0F1117",
+          soft: "#1A1C24",
+        },
+        gold: {
+          DEFAULT: "#C9A961",
+        },
       },
       fontFamily: {
         sans: [
-          "Inter",
+          "var(--font-body)",
+          "DM Sans",
           "-apple-system",
           "BlinkMacSystemFont",
           "Segoe UI",
@@ -84,10 +99,11 @@ const config: Config = {
           "sans-serif",
         ],
         display: [
-          "Inter",
-          "-apple-system",
-          "BlinkMacSystemFont",
-          "sans-serif",
+          "var(--font-display)",
+          "Playfair Display",
+          "ui-serif",
+          "Georgia",
+          "serif",
         ],
       },
       backgroundImage: {

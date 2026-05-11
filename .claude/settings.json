@@ -1,7 +1,10 @@
 {
   "permissions": {
     "allow": [
-      "Bash(npm install *)"
+      "Bash(npm install *)",
+      "Bash(ls \"C:/Users/AY/Desktop/monietally/design-mockups\")",
+      "Read(//c/Users/AY/Desktop/monietally/design-mockups/**)",
+      "Read(//c/Users/AY/Desktop/monietally/**)"
     ]
   }
 }
