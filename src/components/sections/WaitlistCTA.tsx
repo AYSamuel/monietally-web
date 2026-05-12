@@ -28,9 +28,9 @@ export default function WaitlistCTA() {
         aria-hidden="true"
         className="absolute pointer-events-none"
         style={{
-          top: -160,
+          top: "50%",
           left: "50%",
-          transform: "translateX(-50%)",
+          transform: "translate(-50%, -50%)",
           width: 1000,
           height: 620,
           background:
@@ -39,7 +39,7 @@ export default function WaitlistCTA() {
         }}
       />
 
-      <div className="section-container relative py-28 md:py-44 text-center">
+      <div className="section-container relative py-20 md:py-28 text-center">
         <motion.div
           initial={reducedMotion ? undefined : { opacity: 0, y: 18 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -104,7 +104,7 @@ export default function WaitlistCTA() {
                 maxWidth: 540,
               }}
             >
-              Be first when we launch. No spam, no data hoarding — we store
+              Be first when we launch. No spam, no data hoarding. We store
               your email to notify you, nothing more.
             </p>
           </div>
@@ -117,7 +117,7 @@ export default function WaitlistCTA() {
           viewport={{ once: true }}
           transition={{ duration: 0.55, delay: 0.12 }}
         >
-          <WaitlistForm source="cta" inverted />
+          <WaitlistForm source="cta" />
         </motion.div>
 
         {/* Reassurance row — two short proofs side by side. */}
@@ -160,7 +160,7 @@ export default function WaitlistCTA() {
                 background: "var(--gold)",
               }}
             />
-            Hosted in the EU. GDPR by design.
+            Your data lives in the EU. Privacy by design.
           </span>
         </motion.div>
       </div>

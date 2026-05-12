@@ -114,6 +114,19 @@ export function SmoothScroll({ children }: { children: ReactNode }) {
     };
     document.addEventListener("click", onAnchorClick);
 
+    // On initial load with a hash, jump instantly so deep links feel snappy.
+    if (window.location.hash) {
+      const hashEl = document.querySelector(window.location.hash);
+      if (hashEl) {
+        requestAnimationFrame(() => {
+          instance.scrollTo(hashEl as HTMLElement, {
+            offset: offsetByHash[window.location.hash] ?? -64,
+            immediate: true,
+          });
+        });
+      }
+    }
+
     return () => {
       cancelAnimationFrame(rafId);
       document.removeEventListener("click", onAnchorClick);

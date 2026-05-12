@@ -12,8 +12,8 @@ const pillars = [
     body: "The encryption key is generated on your phone and synced to your other devices through your OS keychain (iCloud or Google Block Store). It never passes through our servers.",
   },
   {
-    headline: "No bank login, ever",
-    body: "MonieTally does not connect to your bank. No screen scraping. No Plaid. Nothing in our system has read access to your accounts.",
+    headline: "Bank sync is optional",
+    body: "MonieTally works fully with manual entry. If you choose to connect a bank, we use read-only aggregators (Plaid, Tink, or Mono). No screen scraping, no stored credentials.",
   },
 ];
 
@@ -99,8 +99,8 @@ export default function PrivacySection() {
           className="text-center text-sm"
           style={{ color: "var(--inv-text-tertiary)" }}
         >
-          Built on the architecture in our public spec. Hosted in the EU
-          (Frankfurt) for GDPR. Audited before v1 release.
+          Built on the architecture in our public spec. Your data lives in
+          the EU. Privacy by design. Audited before v1 release.
         </p>
       </div>
     </section>

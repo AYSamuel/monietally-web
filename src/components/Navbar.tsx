@@ -40,11 +40,11 @@ export default function Navbar() {
           {/* Desktop nav */}
           <div className="hidden md:flex items-center gap-8">
             <Link
-              href="/#hero"
+              href="/"
               className="text-sm transition-colors duration-200"
               style={{ color: "var(--text-secondary)" }}
             >
-              Why MonieTally
+              Home
             </Link>
             <Link
               href="/#social-proof"
@@ -54,20 +54,27 @@ export default function Navbar() {
               Community
             </Link>
             <Link
+              href="/about"
+              className="text-sm transition-colors duration-200"
+              style={{ color: "var(--text-secondary)" }}
+            >
+              About
+            </Link>
+            <Link
               href="/#faq"
               className="text-sm transition-colors duration-200"
               style={{ color: "var(--text-secondary)" }}
             >
               FAQ
             </Link>
-            <ThemeToggle />
             <Link
-              href="/#social-proof"
+              href="/#waitlist"
               className="btn-primary text-sm"
               style={{ padding: "8px 18px" }}
             >
               Join waitlist
             </Link>
+            <ThemeToggle />
           </div>
 
           {/* Mobile hamburger */}
@@ -112,19 +119,19 @@ export default function Navbar() {
         <div
           className="md:hidden animate-fade-in"
           style={{
-            background: "var(--nav-bg, color-mix(in srgb, var(--cream) 95%, transparent))",
-            backdropFilter: "blur(16px)",
+            background: "var(--nav-bg, color-mix(in srgb, var(--cream) 90%, transparent))",
+            backdropFilter: "blur(20px)",
             WebkitBackdropFilter: "blur(16px)",
           }}
         >
           <div className="section-container py-4 space-y-1">
             <Link
-              href="/#hero"
+              href="/"
               onClick={() => setMobileOpen(false)}
               className="block py-2.5 text-sm"
               style={{ color: "var(--text-secondary)" }}
             >
-              Why MonieTally
+              Home
             </Link>
             <Link
               href="/#social-proof"
@@ -135,6 +142,14 @@ export default function Navbar() {
               Community
             </Link>
             <Link
+              href="/about"
+              onClick={() => setMobileOpen(false)}
+              className="block py-2.5 text-sm"
+              style={{ color: "var(--text-secondary)" }}
+            >
+              About
+            </Link>
+            <Link
               href="/#faq"
               onClick={() => setMobileOpen(false)}
               className="block py-2.5 text-sm"
@@ -143,7 +158,7 @@ export default function Navbar() {
               FAQ
             </Link>
             <Link
-              href="/#social-proof"
+              href="/#waitlist"
               onClick={() => setMobileOpen(false)}
               className="block py-2.5 text-sm font-medium"
               style={{ color: "var(--gold)" }}

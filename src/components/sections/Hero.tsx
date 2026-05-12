@@ -138,7 +138,7 @@ export default function Hero() {
             >
               MonieTally turns every spend into clarity. Beautifully designed,
               quietly private, and genuinely useful from the first transaction.
-              Encrypted with a key your phone holds — not ours.
+              Encrypted with a key your phone holds, not ours.
             </p>
 
             <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">

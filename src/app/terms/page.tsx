@@ -18,7 +18,7 @@ Effective date: April 30, 2026.`,
   {
     id: "description",
     title: "2. Description of service",
-    content: `MonieTally is a personal finance application that helps users track spending, visualise financial data, and manage budgets. The app connects to financial institutions via third-party bank aggregation providers (Plaid, Tink, Mono) to sync transaction data.
+    content: `MonieTally is a personal finance application that helps users track spending, visualise financial data, and manage budgets. Users can enter transactions manually or optionally connect to financial institutions via third-party bank aggregation providers (Plaid, Tink, Mono) to sync transaction data automatically.
 
 All financial data is encrypted on the user's device and stored locally. Encrypted data may be synced across the user's devices. MonieTally does not provide banking services, investment advice, or any regulated financial service.`,
   },
@@ -63,7 +63,7 @@ Our total liability for any claim related to MonieTally shall not exceed the amo
     title: "7. Bank sync disclaimer",
     content: `MonieTally is not a bank, financial institution, or registered financial advisor. We do not hold, move, or custody any funds.
 
-Bank sync is provided via third-party aggregators (Plaid, Tink, Mono). MonieTally is not responsible for:
+If you choose to enable bank sync, it is provided via third-party aggregators (Plaid, Tink, Mono). Bank sync is optional. The app is fully functional with manual entry. MonieTally is not responsible for:
 • Errors, delays, or interruptions in data from these providers.
 • Changes to provider APIs that affect sync functionality.
 • Your relationship with your financial institution.
@@ -112,20 +112,23 @@ export default function TermsPage() {
             {/* Header */}
             <div className="mb-12">
               <h1
-                className="text-4xl font-bold tracking-tight mb-3"
+                className="text-display text-4xl tracking-tight mb-3"
                 style={{ color: "var(--text-primary)" }}
               >
                 Terms of Service
               </h1>
               <p className="text-sm" style={{ color: "var(--text-tertiary)" }}>
-                Effective date: April 30, 2026
+                Effective date: April 30, 2026 · Version 1.0
               </p>
             </div>
 
             {/* Table of contents */}
             <div
-              className="surface-card p-6 mb-12"
-              style={{ boxShadow: "var(--shadow-sm)" }}
+              className="rounded-xl p-6 mb-12"
+              style={{
+                background: "var(--surface-elevated)",
+                border: "1px solid var(--border-subtle)",
+              }}
             >
               <h2
                 className="text-sm font-semibold mb-4"
@@ -151,7 +154,7 @@ export default function TermsPage() {
             {/* Sections */}
             <div className="space-y-10">
               {sections.map((s) => (
-                <div key={s.id} id={s.id}>
+                <div key={s.id} id={s.id} style={{ scrollMarginTop: 80 }}>
                   <h2
                     className="text-lg font-semibold mb-3"
                     style={{ color: "var(--text-primary)" }}
@@ -166,6 +169,15 @@ export default function TermsPage() {
                   </div>
                 </div>
               ))}
+              <div className="pt-8 text-center">
+                <a
+                  href="#"
+                  className="text-xs font-medium transition-colors hover:text-brand-blue"
+                  style={{ color: "var(--text-tertiary)" }}
+                >
+                  Back to top
+                </a>
+              </div>
             </div>
           </div>
         </div>
