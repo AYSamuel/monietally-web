@@ -26,7 +26,6 @@
  * Mobile: standard stacked cards.
  */
 
-import Link from "next/link";
 import {
   useRef,
   useState,
@@ -44,6 +43,7 @@ import {
   type MotionValue,
 } from "framer-motion";
 import { useTheme } from "next-themes";
+import WaitlistForm from "@/components/WaitlistForm";
 import { useLenis } from "@/components/SmoothScroll";
 import {
   PhoneFrame,
@@ -74,8 +74,6 @@ interface HeroPanelDef extends BasePanelDef {
   headlinePrimary: string;
   headlineAccent: string;
   body: string;
-  primaryCta: { label: string; href: string };
-  secondaryCta: { label: string; href: string };
   trust: ReadonlyArray<{ icon: ReactNode; label: string }>;
 }
 
@@ -122,9 +120,7 @@ const PANELS: ReadonlyArray<PanelDef> = [
     headlinePrimary: "Your money,",
     headlineAccent: "finally legible.",
     body:
-      "MonieTally turns every spend into clarity. Beautifully designed, quietly private, and genuinely useful from the first transaction. Encrypted with a key your phone holds — not ours.",
-    primaryCta: { label: "Join the waitlist", href: "#waitlist" },
-    secondaryCta: { label: "See the app", href: "#social-proof" },
+      "MonieTally turns every spend into clarity. Beautifully designed, quietly private, and genuinely useful from the first transaction. Encrypted with a key your phone holds, not ours.",
     trust: [
       { icon: TRUST_ICONS.lock, label: "End-to-end encrypted" },
       { icon: TRUST_ICONS.globe, label: "Hosted in the EU" },
@@ -191,8 +187,9 @@ const PANEL_COUNT = PANELS.length;
  *  scroll progress 0→1 spans exactly this × PANEL_COUNT vh (= 150vh total).
  *  No sticky-exit dead-scroll: the container is the scroll distance. */
 const PANEL_HEIGHT_VH = 30;
-/** Phone slide distance from container center, in CSS pixels. */
-const PHONE_SLIDE_PX = 370;
+/** Phone slide distance — computed dynamically from container width.
+ *  Stored as state so it updates on resize. Fraction of container half-width. */
+const PHONE_SLIDE_FRAC = 0.31;
 /** Inward tilt at each rest position, in radians (~5.7°). */
 const PHONE_TILT_RAD = 0.10;
 /** Constant rear tilt for editorial depth (~2.3°). */
@@ -206,11 +203,8 @@ const PHONE_SCALE = 1.05;
  *  midpoint moment is brief. */
 const TRANSITION_HALF = 0.025;
 
-const xForSide = (side: "left" | "right") =>
-  side === "right" ? PHONE_SLIDE_PX : -PHONE_SLIDE_PX;
-// Tilt INWARD toward the text. Phone on right (X > 0) needs its left
-// edge forward (toward the text on the left), which is negative rotateY
-// in CSS3D. Phone on left mirrors the other way.
+const xForSide = (side: "left" | "right", px: number) =>
+  side === "right" ? px : -px;
 const ryForSide = (side: "left" | "right") =>
   side === "right" ? -PHONE_TILT_RAD : PHONE_TILT_RAD;
 
@@ -220,25 +214,44 @@ const ryForSide = (side: "left" | "right") =>
 
 export default function ScrollExperience() {
   const containerRef = useRef<HTMLDivElement>(null);
+  const phoneContainerRef = useRef<HTMLDivElement>(null);
   const reducedMotion = useReducedMotion() ?? false;
   const { resolvedTheme } = useTheme();
-  const isDark = resolvedTheme === "dark";
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+  const isDark = mounted && resolvedTheme === "dark";
 
-  // Lenis already smooths raw wheel input. With offset
-  // ["start start", "end start"], progress=0 maps to scrollY=0 (section
-  // top at viewport top) and progress=1 maps to scrollY=container.height
-  // (section bottom at viewport top). So progress 0→1 spans the FULL
-  // container height — no sticky exit phase, no wasted scroll.
+  // Compute phone slide distance from the actual container width so the
+  // phone aligns with the grid columns, not arbitrary viewport pixels.
+  // Clamp so the phone frame never extends past the container edge.
+  // On short viewports the Phone3DScene fitScale shrinks the coordinate
+  // system, pulling the phone toward center — compensate by dividing
+  // the offset by that same factor so the visual position holds.
+  const [phoneSlidePx, setPhoneSlidePx] = useState(280);
+  useEffect(() => {
+    const el = phoneContainerRef.current;
+    if (!el) return;
+    const update = () => {
+      const w = el.offsetWidth;
+      const phoneNeeded = PHONE_FRAME_HEIGHT * PHONE_SCALE;
+      const availableH = el.clientHeight;
+      const fitScale = availableH < phoneNeeded ? availableH / phoneNeeded : 1;
+      const scaledPhoneHalf = (PHONE_FRAME_WIDTH * PHONE_SCALE * fitScale) / 2;
+      const maxOffset = (w / 2 - scaledPhoneHalf - 16) / fitScale;
+      const desired = (w * PHONE_SLIDE_FRAC) / fitScale;
+      setPhoneSlidePx(Math.min(desired, maxOffset));
+    };
+    update();
+    const ro = new ResizeObserver(update);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start start", "end start"],
   });
 
-  // Overlay opacity — visible during the experience (progress < 0.95),
-  // fades out over the last 5% of progress. By the time the user reaches
-  // progress=1 (= scrollY=container.height = end of section), the overlay
-  // is fully transparent and the next section (rendered immediately after)
-  // is in view.
   const overlayOpacity = useTransform(scrollYProgress, [0.97, 0.99], [1, 0]);
 
   // ── Phone X / rotateY keyframes tied to panel boundaries ──
@@ -248,13 +261,13 @@ export default function ScrollExperience() {
   const ryOutputs: number[] = [];
   for (let i = 0; i < PANEL_COUNT; i++) {
     const start = i / PANEL_COUNT;
-    const x = xForSide(PANELS[i].phoneSide);
+    const x = xForSide(PANELS[i].phoneSide, phoneSlidePx);
     const ry = ryForSide(PANELS[i].phoneSide);
     if (i === 0) {
       xInputs.push(start); xOutputs.push(x);
       ryInputs.push(start); ryOutputs.push(ry);
     } else {
-      const prevX = xForSide(PANELS[i - 1].phoneSide);
+      const prevX = xForSide(PANELS[i - 1].phoneSide, phoneSlidePx);
       const prevRY = ryForSide(PANELS[i - 1].phoneSide);
       xInputs.push(start - TRANSITION_HALF); xOutputs.push(prevX);
       xInputs.push(start + TRANSITION_HALF); xOutputs.push(x);
@@ -262,7 +275,7 @@ export default function ScrollExperience() {
       ryInputs.push(start + TRANSITION_HALF); ryOutputs.push(ry);
     }
   }
-  xInputs.push(1); xOutputs.push(xForSide(PANELS[PANEL_COUNT - 1].phoneSide));
+  xInputs.push(1); xOutputs.push(xForSide(PANELS[PANEL_COUNT - 1].phoneSide, phoneSlidePx));
   ryInputs.push(1); ryOutputs.push(ryForSide(PANELS[PANEL_COUNT - 1].phoneSide));
 
   const phoneX = useTransform(
@@ -275,14 +288,10 @@ export default function ScrollExperience() {
     reducedMotion ? [0, 1] : ryInputs,
     reducedMotion ? [0, 0] : ryOutputs,
   );
-  // (Removed Y-drift: it was decoupled from panel transitions, causing
-  // the phone to descend/ascend even when text wasn't changing yet, and
-  // overshooting beyond the last panel. The side rail indicator is the
-  // "going down" cue now.)
 
   // Stable pose ref — mutated every frame by the motion value subscriptions.
   const poseRef = useRef<PhonePose>({
-    position: [xForSide(PANELS[0].phoneSide), 0, 0],
+    position: [xForSide(PANELS[0].phoneSide, phoneSlidePx), 0, 0],
     rotation: [reducedMotion ? 0 : PHONE_BASE_TILT_X, ryForSide(PANELS[0].phoneSide), 0],
     scale: PHONE_SCALE,
   });
@@ -320,13 +329,13 @@ export default function ScrollExperience() {
   const targetPanelRef = useRef(0);
   const isAnimatingRef = useRef(false);
   const exitCooldownRef = useRef(false);
+  const scrollCooldownRef = useRef(false);
 
   const animateScrollTo = (target: number, duration: number, onDone?: () => void) => {
     const start = window.scrollY;
     const distance = target - start;
-    if (Math.abs(distance) < 1) { onDone?.(); return; }
+    if (Math.abs(distance) < 1) { isAnimatingRef.current = false; onDone?.(); return; }
     const startTime = performance.now();
-    isAnimatingRef.current = true;
 
     function step(now: number) {
       const elapsed = now - startTime;
@@ -337,6 +346,8 @@ export default function ScrollExperience() {
         requestAnimationFrame(step);
       } else {
         isAnimatingRef.current = false;
+        scrollCooldownRef.current = true;
+        setTimeout(() => { scrollCooldownRef.current = false; }, 80);
         onDone?.();
       }
     }
@@ -347,6 +358,7 @@ export default function ScrollExperience() {
     if (!containerRef.current) return 0;
     const rect = containerRef.current.getBoundingClientRect();
     const containerTop = rect.top + window.scrollY;
+    if (panel === 0) return 0;
     const centerProgress = (panel + 0.5) / PANEL_COUNT;
     return containerTop + centerProgress * rect.height;
   };
@@ -363,7 +375,7 @@ export default function ScrollExperience() {
   };
 
   useEffect(() => {
-    if (!containerRef.current) return;
+    if (!containerRef.current || reducedMotion) return;
 
     const isInSection = () => {
       if (exitCooldownRef.current) return false;
@@ -373,7 +385,7 @@ export default function ScrollExperience() {
     };
 
     const handleScroll = (direction: 1 | -1) => {
-      if (isAnimatingRef.current) return;
+      if (isAnimatingRef.current || scrollCooldownRef.current) return;
       const p = scrollYProgress.get();
 
       if (p <= 0 && direction < 0) return;
@@ -386,9 +398,10 @@ export default function ScrollExperience() {
 
       const next = targetPanelRef.current + direction;
 
+      isAnimatingRef.current = true;
+
       if (next < 0) {
-        // Scroll to the very top of the section so normal scrolling resumes
-        if (!containerRef.current) return;
+        if (!containerRef.current) { isAnimatingRef.current = false; return; }
         const containerTop = containerRef.current.getBoundingClientRect().top + window.scrollY;
         animateScrollTo(Math.max(0, containerTop - 1), 400);
         return;
@@ -454,7 +467,7 @@ export default function ScrollExperience() {
       window.removeEventListener("touchstart", onTouchStart, { capture: true });
       window.removeEventListener("touchmove", onTouchMove, { capture: true });
     };
-  }, [lenis, scrollYProgress]);
+  }, [lenis, scrollYProgress, reducedMotion]);
 
   // Per-panel surface color. 6 stops for 5 panels (one stop per panel
   // boundary + final). Subtle within the cream/ink family.
@@ -478,7 +491,7 @@ export default function ScrollExperience() {
   return (
     <section
       id="hero"
-      aria-label="MonieTally — your money, finally legible"
+      aria-label="MonieTally - your money, finally legible"
       className="relative"
     >
       {/* ══════ Side scroll progress rail (fades with overlay) ══════ */}
@@ -495,10 +508,13 @@ export default function ScrollExperience() {
           inside this container, so there's no sticky exit dead-scroll. */}
       <div
         ref={containerRef}
-        className="hidden md:block"
-        style={{ height: `${PANEL_COUNT * PANEL_HEIGHT_VH}vh`, position: "relative" }}
+        style={{ position: "relative" }}
         aria-hidden="true"
-      />
+      >
+        <div className="hidden md:block" style={{ height: `${PANEL_COUNT * PANEL_HEIGHT_VH}vh` }}>
+          <div id="showcase" style={{ position: "absolute", top: `${PANEL_HEIGHT_VH}vh` }} />
+        </div>
+      </div>
 
       {/* ══════ Desktop FIXED overlay (phone + text, full viewport) ══════
           Fixed to viewport, so it appears regardless of where the user
@@ -535,62 +551,70 @@ export default function ScrollExperience() {
             style={{ opacity: useTransform(auroraOpacity, [0, 1], [0, 0.4]) }}
           />
 
-          <div className="section-container relative w-full h-full">
-            {PANELS.map((panel, idx) => (
-              <PanelText
-                key={panel.id}
-                panel={panel}
-                idx={idx}
-                isActive={idx === activePanel}
-                totalPanels={PANEL_COUNT}
-                scrollYProgress={scrollYProgress}
-                reducedMotion={reducedMotion}
-              />
-            ))}
+          <div className="section-container w-full h-full">
+            <div className="relative w-full h-full">
+              {PANELS.map((panel, idx) => (
+                <PanelText
+                  key={panel.id}
+                  panel={panel}
+                  idx={idx}
+                  isActive={idx === activePanel}
+                  totalPanels={PANEL_COUNT}
+                  scrollYProgress={scrollYProgress}
+                  reducedMotion={reducedMotion}
+                />
+              ))}
+            </div>
           </div>
         </motion.div>
 
-        {/* PHONE LAYER (z-50, above text, only the phone is opaque) */}
+        {/* PHONE LAYER (z-50, above text, only the phone is opaque)
+            Wrapped in section-container so the phone's X offset is
+            relative to the same max-w-7xl container as the text grid. */}
         <div
-          className="absolute inset-0 pointer-events-none"
-          style={{ zIndex: 50 }}
+          className="absolute inset-x-0 bottom-0 overflow-hidden pointer-events-none"
+          style={{ zIndex: 50, top: 56 }}
         >
-          {/* Soft halo behind the phone, follows it via translateX */}
-          <motion.div
-            aria-hidden="true"
-            className="absolute pointer-events-none"
-            style={{
-              top: "50%",
-              left: "50%",
-              width: 600,
-              height: 600,
-              x: phoneX,
-              translateY: "-50%",
-              translateX: "-50%",
-              background:
-                "radial-gradient(ellipse at center, rgba(17, 166, 117, 0.32) 0%, rgba(201, 169, 97, 0.18) 45%, transparent 72%)",
-              filter: "blur(28px)",
-            }}
-          />
-          <Phone3DSceneLoader
-            pose={poseRef.current}
-            idleRotation={false}
-            ariaLabel={PANELS[activePanel].ariaLabel}
-            className="w-full h-full"
-          >
-            <AnimatePresence mode="sync" initial={false}>
+          <div className="section-container w-full h-full">
+            <div ref={phoneContainerRef} className="relative w-full h-full">
+              {/* Soft halo behind the phone, follows it via translateX */}
               <motion.div
-                key={PANELS[activePanel].id}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: reducedMotion ? 0 : 0.3 }}
-                style={{ position: "absolute", inset: 0 }}
+                aria-hidden="true"
+                className="absolute pointer-events-none"
+                style={{
+                  top: "50%",
+                  left: "50%",
+                  width: 600,
+                  height: 600,
+                  x: phoneX,
+                  translateY: "-50%",
+                  translateX: "-50%",
+                  background:
+                    "radial-gradient(ellipse at center, rgba(17, 166, 117, 0.32) 0%, rgba(201, 169, 97, 0.18) 45%, transparent 72%)",
+                  filter: "blur(28px)",
+                }}
+              />
+              <Phone3DSceneLoader
+                pose={poseRef.current}
+                idleRotation={false}
+                ariaLabel={PANELS[activePanel].ariaLabel}
+                className="w-full h-full"
               >
-                <ActiveMockup />
-              </motion.div>
-            </AnimatePresence>
-          </Phone3DSceneLoader>
+                <AnimatePresence mode="sync" initial={false}>
+                  <motion.div
+                    key={PANELS[activePanel].id}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: reducedMotion ? 0 : 0.3 }}
+                    style={{ position: "absolute", inset: 0 }}
+                  >
+                    <ActiveMockup />
+                  </motion.div>
+                </AnimatePresence>
+              </Phone3DSceneLoader>
+            </div>
+          </div>
         </div>
       </motion.div>
 
@@ -635,7 +659,7 @@ function ScrollProgressRail({
 
   return (
     <motion.div
-      className="hidden md:flex flex-col items-center gap-3 fixed right-6 top-1/2 -translate-y-1/2 pointer-events-none"
+      className="hidden xl:flex flex-col items-center gap-3 fixed right-6 top-1/2 -translate-y-1/2 pointer-events-none"
       style={{ zIndex: 60, opacity: opacity ?? 1 }}
       aria-hidden="true"
     >
@@ -764,9 +788,9 @@ function PanelText({
 
 function HeroPanelContent({ panel, isActive }: { panel: HeroPanelDef; isActive: boolean }) {
   return (
-    <div className="grid grid-cols-12 gap-6 lg:gap-10 items-center w-full" style={{ minHeight: "70vh" }}>
+    <div className="grid grid-cols-12 gap-6 lg:gap-10 items-center w-full" style={{ minHeight: "70vh", paddingTop: 80 }}>
       <div
-        className="col-span-12 md:col-span-7 relative z-10"
+        className="col-span-12 md:col-span-6 lg:col-span-8 relative z-10"
         style={{ pointerEvents: isActive ? "auto" : "none" }}
       >
         {/* Eyebrow pill */}
@@ -807,20 +831,8 @@ function HeroPanelContent({ panel, isActive }: { panel: HeroPanelDef; isActive: 
           {panel.body}
         </p>
 
-        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
-          <Link href={panel.primaryCta.href} className="btn-primary">
-            {panel.primaryCta.label}
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-              <line x1="5" y1="12" x2="19" y2="12" />
-              <polyline points="12 5 19 12 12 19" />
-            </svg>
-          </Link>
-          <Link href={panel.secondaryCta.href} className="btn-ghost">
-            {panel.secondaryCta.label}
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-              <polyline points="6 9 12 15 18 9" />
-            </svg>
-          </Link>
+        <div className="max-w-md">
+          <WaitlistForm source="hero" />
         </div>
 
         <div className="mt-12 flex flex-wrap items-center gap-x-6 gap-y-2 text-xs" style={{ color: "var(--text-tertiary)" }}>
@@ -834,7 +846,7 @@ function HeroPanelContent({ panel, isActive }: { panel: HeroPanelDef; isActive: 
       </div>
 
       {/* col 8-12 reserved for the sticky phone visually */}
-      <div className="hidden md:block md:col-span-5" aria-hidden="true" />
+      <div className="hidden md:block md:col-span-6 lg:col-span-4" aria-hidden="true" />
     </div>
   );
 }
@@ -846,7 +858,7 @@ function ShowcasePanelContent({ panel, isActive }: { panel: ShowcasePanelDef; is
       style={{ minHeight: "60vh" }}
     >
       <div
-        className={`max-w-md col-span-12 ${panel.phoneSide === "right" ? "md:col-start-1 md:col-span-7" : "md:col-start-6 md:col-span-7 md:ml-auto"}`}
+        className={`max-w-lg col-span-12 ${panel.phoneSide === "right" ? "md:col-start-1 md:col-span-6 lg:col-span-7" : "md:col-start-7 md:col-span-6 lg:col-start-6 lg:col-span-7"}`}
         style={{
           textAlign: panel.phoneSide === "right" ? "left" : "right",
           pointerEvents: isActive ? "auto" : "none",
@@ -913,24 +925,26 @@ function MobileStack({ panels }: { panels: ReadonlyArray<PanelDef> }) {
             transition={{ duration: 0.6, ease: [0.22, 0.61, 0.36, 1] }}
             className="flex flex-col items-center text-center"
           >
-            <div className="mx-auto" style={{ width: SCALED_W, height: SCALED_H, position: "relative", marginBottom: 24 }}>
-              <div
-                style={{
-                  position: "absolute",
-                  top: 0,
-                  left: 0,
-                  transform: `scale(${SCALE})`,
-                  transformOrigin: "top left",
-                }}
-              >
-                <PhoneFrame ariaLabel={panel.ariaLabel}>
-                  <Mockup />
-                </PhoneFrame>
+            {panel.type !== "hero" && (
+              <div className="mx-auto" style={{ width: SCALED_W, height: SCALED_H, position: "relative", marginBottom: 24 }}>
+                <div
+                  style={{
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    transform: `scale(${SCALE})`,
+                    transformOrigin: "top left",
+                  }}
+                >
+                  <PhoneFrame ariaLabel={panel.ariaLabel}>
+                    <Mockup />
+                  </PhoneFrame>
+                </div>
               </div>
-            </div>
+            )}
 
             {panel.type === "hero" ? (
-              <div className="max-w-md text-left">
+              <div className="max-w-md text-center pt-20">
                 <div
                   className="mb-5 inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium"
                   style={{
@@ -956,14 +970,7 @@ function MobileStack({ panels }: { panels: ReadonlyArray<PanelDef> }) {
                 <p className="text-base leading-relaxed mb-8" style={{ color: "var(--text-secondary)" }}>
                   {panel.body}
                 </p>
-                <div className="flex flex-col gap-3">
-                  <Link href={panel.primaryCta.href} className="btn-primary">
-                    {panel.primaryCta.label}
-                  </Link>
-                  <Link href={panel.secondaryCta.href} className="btn-ghost">
-                    {panel.secondaryCta.label}
-                  </Link>
-                </div>
+                <WaitlistForm source="hero" />
               </div>
             ) : (
               <div className="max-w-md text-left">

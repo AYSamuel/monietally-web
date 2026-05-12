@@ -4,7 +4,6 @@ import { useRef, useEffect, useState } from "react";
 import { motion, useInView } from "framer-motion";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { getWaitlistCount } from "@/app/actions/waitlistCount";
-import WaitlistForm from "../WaitlistForm";
 
 /* ── Stat data ─────────────────────────────────────────────────── */
 
@@ -127,19 +126,6 @@ export default function SocialProof() {
           background:
             "radial-gradient(ellipse at center, rgba(201,169,97,0.14) 0%, transparent 60%)",
           filter: "blur(40px)",
-        }}
-      />
-      <div
-        aria-hidden="true"
-        className="absolute pointer-events-none"
-        style={{
-          bottom: -100,
-          left: "20%",
-          width: "min(600px, 100vw)",
-          height: 400,
-          background:
-            "radial-gradient(ellipse at center, rgba(17,166,117,0.10) 0%, transparent 60%)",
-          filter: "blur(60px)",
         }}
       />
 
@@ -271,78 +257,12 @@ export default function SocialProof() {
                   color: "rgba(245, 241, 232, 0.45)",
                 }}
               >
-                — {t.attribution}
+                - {t.attribution}
               </cite>
             </div>
           ))}
         </motion.div>
 
-        {/* ── Inline waitlist CTA ──────────────────────────── */}
-        <motion.div
-          className="text-center"
-          initial={reducedMotion ? undefined : { opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.55, delay: 0.2, ease }}
-        >
-          <p
-            className="text-sm md:text-base mb-6"
-            style={{ color: "rgba(245, 241, 232, 0.65)" }}
-          >
-            Be first when we launch. No spam — just one email when
-            it&apos;s time.
-          </p>
-
-          <div className="flex justify-center">
-            <WaitlistForm source="social-proof" inverted />
-          </div>
-
-          {/* Reassurance pills */}
-          <div
-            className="mt-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs"
-            style={{ color: "rgba(245, 241, 232, 0.45)" }}
-          >
-            <span className="inline-flex items-center gap-2">
-              <span
-                aria-hidden="true"
-                style={{
-                  width: 5,
-                  height: 5,
-                  borderRadius: 9999,
-                  background: "var(--gold)",
-                  opacity: 0.7,
-                }}
-              />
-              Your key, your data
-            </span>
-            <span className="inline-flex items-center gap-2">
-              <span
-                aria-hidden="true"
-                style={{
-                  width: 5,
-                  height: 5,
-                  borderRadius: 9999,
-                  background: "var(--gold)",
-                  opacity: 0.7,
-                }}
-              />
-              EU-hosted
-            </span>
-            <span className="inline-flex items-center gap-2">
-              <span
-                aria-hidden="true"
-                style={{
-                  width: 5,
-                  height: 5,
-                  borderRadius: 9999,
-                  background: "var(--gold)",
-                  opacity: 0.7,
-                }}
-              />
-              GDPR by design
-            </span>
-          </div>
-        </motion.div>
       </div>
     </section>
   );

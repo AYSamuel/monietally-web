@@ -66,26 +66,34 @@ export default function WaitlistForm({ source = "hero", inverted = false }: Wait
     return (
       <div
         role="status"
-        className="flex items-center gap-2 px-4 py-3 rounded-xl"
+        className="px-4 py-4 rounded-xl space-y-2"
         style={{ background: "rgba(0, 201, 139, 0.1)", border: "1px solid rgba(0, 201, 139, 0.2)" }}
       >
-        <svg
-          aria-hidden="true"
-          width="18"
-          height="18"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="#00C98B"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
+        <div className="flex items-center gap-2">
+          <svg
+            aria-hidden="true"
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="#00C98B"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+            <polyline points="22 4 12 14.01 9 11.01" />
+          </svg>
+          <span className="text-sm font-medium" style={{ color: "#00C98B" }}>
+            You&apos;re on the list!
+          </span>
+        </div>
+        <p
+          className="text-xs"
+          style={{ color: inverted ? "var(--inv-text-secondary)" : "var(--text-secondary)" }}
         >
-          <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
-          <polyline points="22 4 12 14.01 9 11.01" />
-        </svg>
-        <span className="text-sm font-medium" style={{ color: "#00C98B" }}>
-          You&apos;re on the list! We&apos;ll be in touch.
-        </span>
+          We&apos;ll email you when MonieTally is ready. Check your spam folder if you don&apos;t hear from us.
+        </p>
       </div>
     );
   }

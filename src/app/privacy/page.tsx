@@ -21,9 +21,9 @@ Our core principle: your financial data is encrypted on your device before it le
   {
     id: "what-we-collect",
     title: "2. Information we collect",
-    content: `Website only: if you submit your email address via our waitlist form, we store that email address to notify you when MonieTally launches. Emails are stored securely in our database, hosted in the EU (Hetzner, Frankfurt). We do not share your address with third parties.
+    content: `Website only: if you submit your email address via our waitlist form, we store that email address to notify you when MonieTally launches. Emails are stored securely in our database, hosted in the EU. We do not share your address with third parties.
 
-The app: MonieTally syncs transactions from your bank via third-party aggregators (Plaid, Tink, Mono). Once received, all financial data (transactions, balances, budgets, goals, and analytics) is encrypted on your device using AES-256-GCM before being stored or synced. What reaches our servers is ciphertext. We cannot decrypt it. The encryption key is generated on your device and synced to your other devices through your OS keychain (iCloud Keychain or Google Block Store). It never passes through our servers.`,
+The app: MonieTally works with manual transaction entry by default. You may optionally connect your bank via third-party aggregators (Plaid, Tink, or Mono, depending on your region) to sync transactions automatically. Whether entered manually or synced, all financial data (transactions, balances, budgets, goals, and analytics) is encrypted on your device using AES-256-GCM before being stored or synced. What reaches our servers is ciphertext. We cannot decrypt it. The encryption key is generated on your device and synced to your other devices through your OS keychain (iCloud Keychain or Google Block Store). It never passes through our servers.`,
   },
   {
     id: "how-we-use",
@@ -48,18 +48,18 @@ The server stores ciphertext and metadata needed for sync (timestamps, blob size
   {
     id: "bank-sync",
     title: "5. Bank sync and third-party aggregators",
-    content: `MonieTally connects to your bank via third-party aggregators (Plaid, Tink, or Mono, depending on your region). These providers retrieve your transaction data using read-only access. MonieTally never stores your bank login credentials.
+    content: `If you choose to enable bank sync, MonieTally connects to your bank via third-party aggregators (Plaid, Tink, or Mono, depending on your region). These providers retrieve your transaction data using read-only access. MonieTally never stores your bank login credentials. Bank sync is entirely optional. The app is fully functional with manual entry alone.
 
-Once transactions reach your device, they are immediately encrypted with your local key before being stored or synced. The aggregator connection is used solely to fetch transaction data — we do not use it to initiate payments, transfers, or any other banking action.
+Once transactions reach your device, they are immediately encrypted with your local key before being stored or synced. The aggregator connection is used solely to fetch transaction data. We do not use it to initiate payments, transfers, or any other banking action.
 
 Your use of these bank sync services is also subject to their respective privacy policies and terms of service.`,
   },
   {
     id: "data-storage",
     title: "6. Data storage and hosting",
-    content: `Encrypted data: stored on servers hosted by Hetzner in Frankfurt, Germany (EU). Subject to GDPR.
+    content: `Encrypted data: stored on servers hosted in the EU. Subject to GDPR.
 
-Waitlist emails: stored in our PostgreSQL database, also hosted in the EU (Frankfurt).
+Waitlist emails: stored in our database, also hosted in the EU.
 
 Local data: your device holds both the plaintext and the encrypted form. Local storage is managed by the app's database engine.`,
   },
@@ -111,7 +111,7 @@ export default function PrivacyPage() {
                 Privacy Policy
               </h1>
               <p className="text-sm" style={{ color: "var(--text-tertiary)" }}>
-                Effective date: May 10, 2026
+                Effective date: May 10, 2026 · Version 1.0
               </p>
             </div>
 
@@ -147,7 +147,7 @@ export default function PrivacyPage() {
             {/* Sections */}
             <div className="space-y-10">
               {sections.map((s) => (
-                <div key={s.id} id={s.id}>
+                <div key={s.id} id={s.id} style={{ scrollMarginTop: 80 }}>
                   <h2
                     className="text-lg font-semibold mb-3"
                     style={{ color: "var(--text-primary)" }}
@@ -162,6 +162,15 @@ export default function PrivacyPage() {
                   </div>
                 </div>
               ))}
+              <div className="pt-8 text-center">
+                <a
+                  href="#"
+                  className="text-xs font-medium transition-colors hover:text-brand-blue"
+                  style={{ color: "var(--text-tertiary)" }}
+                >
+                  Back to top
+                </a>
+              </div>
             </div>
           </div>
         </div>

@@ -13,12 +13,12 @@ const FAQS: ReadonlyArray<FAQItem> = [
   {
     question: "Is MonieTally free?",
     answer:
-      "The core app is free — track transactions, set budgets, save toward goals, and see your spending patterns without paying a thing. We may introduce optional premium features later, but the fundamentals will always be free.",
+      "The core app is free. Track transactions, set budgets, save toward goals, and see your spending patterns without paying a thing. We may introduce optional premium features later, but the fundamentals will always be free.",
   },
   {
     question: "How does encryption work?",
     answer:
-      "Your data is encrypted on your device with a key that never leaves your phone. When it syncs to the cloud, only ciphertext travels — our servers store data they physically cannot read. Even if someone broke in, they'd get noise.",
+      "Your data is encrypted on your device with a key that never leaves your phone. When it syncs to the cloud, only ciphertext travels. Our servers store data they physically cannot read. Even if someone broke in, they'd get noise.",
   },
   {
     question: "What data do you collect?",
@@ -28,26 +28,29 @@ const FAQS: ReadonlyArray<FAQItem> = [
   {
     question: "Can I export my data?",
     answer:
-      "Yes — everything, anytime. One tap gives you a full CSV export of your transactions, budgets, and savings goals. No lock-in, no hostage data. If you ever leave, you walk out with every byte you put in.",
+      "Yes, everything, anytime. One tap gives you a full CSV export of your transactions, budgets, and savings goals. No lock-in, no hostage data. If you ever leave, you walk out with every byte you put in.",
   },
   {
     question: "When does it launch?",
     answer:
-      "We're in private beta right now and rolling out invites from the waitlist. Join and you'll get an email the moment it's your turn — no spam in between, just the one notification that matters.",
+      "We're in private beta right now and rolling out invites from the waitlist. Join and you'll get an email the moment it's your turn. No spam in between, just the one notification that matters.",
   },
 ];
 
 function FAQAccordionItem({
   item,
+  index,
   isOpen,
   onToggle,
   reducedMotion,
 }: {
   item: FAQItem;
+  index: number;
   isOpen: boolean;
   onToggle: () => void;
   reducedMotion: boolean;
 }) {
+  const panelId = `faq-panel-${index}`;
   return (
     <div
       style={{
@@ -58,6 +61,7 @@ function FAQAccordionItem({
         onClick={onToggle}
         className="w-full flex items-center justify-between gap-4 py-6 md:py-7 text-left transition-colors duration-200"
         aria-expanded={isOpen}
+        aria-controls={panelId}
       >
         <span
           className="text-base md:text-lg font-medium"
@@ -95,6 +99,8 @@ function FAQAccordionItem({
       <AnimatePresence initial={false}>
         {isOpen && (
           <motion.div
+            id={panelId}
+            role="region"
             initial={reducedMotion ? { height: "auto" } : { height: 0, opacity: 0 }}
             animate={{ height: "auto", opacity: 1 }}
             exit={reducedMotion ? undefined : { height: 0, opacity: 0 }}
@@ -177,6 +183,7 @@ export default function FAQ() {
                 <FAQAccordionItem
                   key={item.question}
                   item={item}
+                  index={i}
                   isOpen={openIndex === i}
                   onToggle={() =>
                     setOpenIndex(openIndex === i ? null : i)

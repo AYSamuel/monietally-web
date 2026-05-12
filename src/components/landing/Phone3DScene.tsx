@@ -26,7 +26,7 @@
  * call sites: position is in CSS pixels, rotation in radians.
  */
 
-import { ComponentType, ReactNode, useEffect } from "react";
+import { ComponentType, ReactNode, useEffect, useRef, useState } from "react";
 import { motion, useMotionValue } from "framer-motion";
 import { PhoneFrame, PHONE_FRAME_WIDTH, PHONE_FRAME_HEIGHT } from "./PhoneFrame";
 
@@ -67,13 +67,13 @@ export default function Phone3DScene({
   // CSS transform via motion values means React doesn't re-render the
   // tree on every mouse-move — Framer Motion writes directly to the
   // DOM transform.
-  const x = useMotionValue(0);
-  const y = useMotionValue(0);
-  const z = useMotionValue(0);
-  const rx = useMotionValue(0); // degrees
-  const ry = useMotionValue(0);
-  const rz = useMotionValue(0);
-  const sc = useMotionValue(1);
+  const x = useMotionValue(pose.position[0]);
+  const y = useMotionValue(pose.position[1]);
+  const z = useMotionValue(pose.position[2]);
+  const rx = useMotionValue(pose.rotation[0] * RAD_TO_DEG);
+  const ry = useMotionValue(pose.rotation[1] * RAD_TO_DEG);
+  const rz = useMotionValue(pose.rotation[2] * RAD_TO_DEG);
+  const sc = useMotionValue(pose.scale);
 
   useEffect(() => {
     let rafId = 0;
@@ -109,8 +109,26 @@ export default function Phone3DScene({
     return () => cancelAnimationFrame(rafId);
   }, [pose, idleRotation, x, y, z, rx, ry, rz, sc]);
 
+  const wrapperRef = useRef<HTMLDivElement>(null);
+  const [fitScale, setFitScale] = useState(1);
+
+  useEffect(() => {
+    const el = wrapperRef.current;
+    if (!el) return;
+    const update = () => {
+      const available = el.clientHeight;
+      const needed = PHONE_FRAME_HEIGHT * pose.scale;
+      setFitScale(available < needed ? available / needed : 1);
+    };
+    update();
+    const ro = new ResizeObserver(update);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [pose.scale]);
+
   return (
     <div
+      ref={wrapperRef}
       className={className}
       style={{
         perspective: "1600px",
@@ -122,28 +140,39 @@ export default function Phone3DScene({
         height: "100%",
       }}
     >
-      <motion.div
+      <div
         style={{
-          width: PHONE_FRAME_WIDTH,
-          height: PHONE_FRAME_HEIGHT,
+          transform: fitScale < 1 ? `scale(${fitScale})` : undefined,
           transformStyle: "preserve-3d",
-          x,
-          y,
-          z,
-          rotateX: rx,
-          rotateY: ry,
-          rotateZ: rz,
-          scale: sc,
-          willChange: "transform",
-          // Brand-emerald ambient drop shadow for depth + warmth.
-          filter:
-            "drop-shadow(0 30px 60px rgba(17, 166, 117, 0.28)) drop-shadow(0 12px 24px rgba(15, 17, 23, 0.35))",
+          width: "100%",
+          height: "100%",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
         }}
       >
-        <PhoneFrame ariaLabel={ariaLabel} forceDark={forceDark}>
-          {children ?? (Mockup ? <Mockup /> : null)}
-        </PhoneFrame>
-      </motion.div>
+        <motion.div
+          style={{
+            width: PHONE_FRAME_WIDTH,
+            height: PHONE_FRAME_HEIGHT,
+            transformStyle: "preserve-3d",
+            x,
+            y,
+            z,
+            rotateX: rx,
+            rotateY: ry,
+            rotateZ: rz,
+            scale: sc,
+            willChange: "transform",
+            filter:
+              "drop-shadow(0 30px 60px rgba(17, 166, 117, 0.28)) drop-shadow(0 12px 24px rgba(15, 17, 23, 0.35))",
+          }}
+        >
+          <PhoneFrame ariaLabel={ariaLabel} forceDark={forceDark}>
+            {children ?? (Mockup ? <Mockup /> : null)}
+          </PhoneFrame>
+        </motion.div>
+      </div>
     </div>
   );
 }
