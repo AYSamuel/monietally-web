@@ -102,7 +102,10 @@ export default function WaitlistForm({ source = "hero", inverted = false }: Wait
 
   return (
     <div className="w-full max-w-md space-y-2">
-      <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-3 w-full">
+      <form
+        onSubmit={handleSubmit}
+        className={`flex flex-col gap-3 w-full ${source === "hero" ? "lg:flex-row" : "sm:flex-row"}`}
+      >
         <input
           id="email"
           type="email"
