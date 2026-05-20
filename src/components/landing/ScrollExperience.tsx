@@ -820,7 +820,8 @@ function HeroPanelContent({ panel, isActive }: { panel: HeroPanelDef; isActive: 
             letterSpacing: "-0.035em",
           }}
         >
-          {panel.headlinePrimary}{" "}
+          {panel.headlinePrimary}
+          <br />
           <span className="text-gradient">{panel.headlineAccent}</span>
         </h1>
 
