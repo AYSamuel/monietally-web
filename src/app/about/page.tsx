@@ -13,7 +13,7 @@ const principles = [
   {
     title: "Privacy by architecture",
     description:
-      "We did not bolt privacy on. The whole architecture starts with one question: does this keep data on the device? If the answer is no, we don't build it.",
+      "We did not bolt privacy on. The whole architecture starts with one question: does this keep your data unreadable to anyone but you? If the answer is no, we don't build it.",
     color: "#11A675",
     icon: (
       <svg
@@ -33,7 +33,7 @@ const principles = [
   {
     title: "Local-first",
     description:
-      "Your phone, your data, your call. MonieTally runs fully offline. The internet exists only to fetch transactions from your bank. Then it gets out of the way.",
+      "Your phone, your data, your call. Your records live on your device first. When you turn on sync or automatic bank import, everything travels encrypted, so only your devices can ever read it.",
     color: "#00C98B",
     icon: (
       <svg
@@ -140,10 +140,10 @@ export default function AboutPage() {
                 Most finance apps are working against you. They harvest your transaction data, profile your spending habits, and sell those insights to advertisers and lenders. The price of using them is your dignity.
               </p>
               <p>
-                We started MonieTally with one rule: your money is yours to count, not ours to collect. So we built an app that physically cannot see your data, because there is nowhere for it to go. No servers. No accounts. No cloud.
+                We started MonieTally with one rule: your money is yours to count, not ours to collect. So we built an app that physically cannot read your data. Your records are encrypted on your phone with a key only you hold, so even when they sync between your devices, all our servers ever store is scrambled bytes we cannot open.
               </p>
               <p>
-                MonieTally counts your transactions on your phone, encrypts them on your phone, and shows you the picture on your phone. We never see a single dollar. We don&apos;t want to.
+                MonieTally counts your transactions on your phone and encrypts them there before anything ever syncs. We can&apos;t read them, and we don&apos;t want to.
               </p>
             </div>
           </div>

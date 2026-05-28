@@ -48,7 +48,7 @@ The server stores ciphertext and metadata needed for sync (timestamps, blob size
   {
     id: "bank-sync",
     title: "5. Bank sync and third-party aggregators",
-    content: `If you choose to enable bank sync, MonieTally connects to your bank via third-party aggregators (Plaid, Tink, or Mono, depending on your region). These providers retrieve your transaction data using read-only access. MonieTally never stores your bank login credentials. Bank sync is entirely optional. The app is fully functional with manual entry alone.
+    content: `If you choose to enable bank sync, MonieTally connects to your bank via a regulated third-party bank-connection provider (the specific provider depends on your region). These providers retrieve your transaction data using read-only access. MonieTally never stores your bank login credentials. Bank sync is entirely optional. The app is fully functional with manual entry alone.
 
 Once transactions reach your device, they are immediately encrypted with your local key before being stored or synced. The aggregator connection is used solely to fetch transaction data. We do not use it to initiate payments, transfers, or any other banking action.
 

@@ -18,7 +18,7 @@ Effective date: April 30, 2026.`,
   {
     id: "description",
     title: "2. Description of service",
-    content: `MonieTally is a personal finance application that helps users track spending, visualise financial data, and manage budgets. Users can enter transactions manually or optionally connect to financial institutions via third-party bank aggregation providers (Plaid, Tink, Mono) to sync transaction data automatically.
+    content: `MonieTally is a personal finance application that helps users track spending, visualise financial data, and manage budgets. Users can enter transactions manually or optionally connect to financial institutions via regulated third-party bank-connection providers to sync transaction data automatically.
 
 All financial data is encrypted on the user's device and stored locally. Encrypted data may be synced across the user's devices. MonieTally does not provide banking services, investment advice, or any regulated financial service.`,
   },
@@ -63,7 +63,7 @@ Our total liability for any claim related to MonieTally shall not exceed the amo
     title: "7. Bank sync disclaimer",
     content: `MonieTally is not a bank, financial institution, or registered financial advisor. We do not hold, move, or custody any funds.
 
-If you choose to enable bank sync, it is provided via third-party aggregators (Plaid, Tink, Mono). Bank sync is optional. The app is fully functional with manual entry. MonieTally is not responsible for:
+If you choose to enable bank sync, it is provided via regulated third-party bank-connection providers. Bank sync is optional. The app is fully functional with manual entry. MonieTally is not responsible for:
 • Errors, delays, or interruptions in data from these providers.
 • Changes to provider APIs that affect sync functionality.
 • Your relationship with your financial institution.
@@ -73,7 +73,7 @@ Always verify your financial data with your bank directly before making financia
   {
     id: "third-party-services",
     title: "8. Third-party services",
-    content: `MonieTally integrates with Plaid, Tink, and Mono. Your use of these services is subject to their respective terms of service and privacy policies. MonieTally is not responsible for the practices of these third parties.`,
+    content: `MonieTally integrates with regulated third-party bank-connection providers. Your use of these services is subject to their respective terms of service and privacy policies. MonieTally is not responsible for the practices of these third parties.`,
   },
   {
     id: "termination",

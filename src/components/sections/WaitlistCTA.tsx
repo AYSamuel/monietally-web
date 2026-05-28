@@ -92,9 +92,9 @@ export default function WaitlistCTA() {
                 fontVariationSettings: '"opsz" 96',
               }}
             >
-              Money on your mind.
+              Your money, clearly seen.
               <br />
-              Not on our servers.
+              Encrypted so only you can read it.
             </h2>
 
             <p

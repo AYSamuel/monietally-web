@@ -81,7 +81,7 @@ export default function Image() {
               letterSpacing: '-0.5px',
             }}
           >
-            Money on your mind. Not on our servers.
+            Your money, clearly seen.
           </div>
 
           {/* Privacy pill */}
@@ -97,7 +97,7 @@ export default function Image() {
             }}
           >
             <div style={{ fontSize: 20, color: '#6FE9B6' }}>
-              100% on your phone. 0% on our servers.
+              Encrypted so only you can read it.
             </div>
           </div>
         </div>

@@ -1,5 +1,7 @@
 # MonieTally Website, Build Plan
 
+> ⚠️ **SUPERSEDED (2026-05-28).** This early plan is replaced by `SPEC.md`, which holds the current copy, structure, and privacy guard rails (including the rule not to claim "your data never leaves your device"). Kept for historical reference only; follow `SPEC.md`.
+
 > **Status:** Planning  
 > **Last updated:** 2026-04-30  
 > **Target:** monietally.com (or monietally.com), currently deployed via Vercel
