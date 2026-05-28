@@ -55,7 +55,7 @@ We will verify your identity (typically by sending a verification link to the ad
   {
     id: "third-parties",
     title: "5. Third-party providers and bank sync",
-    content: `If you connected MonieTally to your bank via a third-party aggregator (Plaid, Tink, or Mono, depending on region), deleting your MonieTally account revokes our access token with that provider. The aggregator may retain logs of past sync activity per their own policies. To purge any data the aggregator separately holds about you, contact them directly.
+    content: `If you connected MonieTally to your bank via a regulated third-party bank-connection provider, deleting your MonieTally account revokes our access token with that provider. The aggregator may retain logs of past sync activity per their own policies. To purge any data the aggregator separately holds about you, contact them directly.
 
 Transactions that were already synced to your devices are encrypted under your key. Once your account is deleted from our servers, those encrypted blobs become unreadable on every other device as well, because the auth check fails before the decryption ever runs.`,
   },

@@ -47,7 +47,7 @@ Per `WEBSITE_PLAN.md`, the landing has these sections (planned or built). Here's
 | **Hero** | `10-home.html` (populated state, dark) | A single dark phone showing the populated Home dashboard with "+$2,847 LEFT THIS MONTH". This is the hero shot — it conveys "I see my money clearly" in one glance. Optionally fan two more phones behind it (Activity + Add transaction) for the staggered look the plan describes. |
 | **Features section** | `11-activity.html` (Activity dark, light), `12-add-edit-transaction.html` (idle dark) | Three feature cards. Card 1 = "Log in seconds" with the Add transaction phone. Card 2 = "See where your money goes" with Activity. Card 3 = "On-device, private" with biometric / PIN screens. |
 | **How It Works** | `02-onboarding.html` (each slide), `12-add-edit-transaction.html` (idle), `10-home.html` (populated) | Three-step illustration: 1) "Set up in 30 seconds" (onboarding slide), 2) "Tap + and log a spend" (add transaction), 3) "See your month at a glance" (home). |
-| **Privacy section** | `06-pin-create.html`, `08-biometric.html` | Visual proof of "your data never leaves your device" — show the actual security setup screens, not stock illustrations. |
+| **Privacy section** | `06-pin-create.html`, `08-biometric.html` | Visual proof of "encrypted so only your devices can read it" — show the actual security setup screens, not stock illustrations. |
 | **Empty-state showcase** (optional) | `10-home.html` welcome state, `11-activity.html` truly empty | "Beautiful from day one" — show the welcome states, not the populated ones. Differentiates against apps that look broken until you've used them for two weeks. |
 
 Three mockups still need to be designed in the app repo before the landing page can fully populate:

@@ -16,6 +16,11 @@ const FAQS: ReadonlyArray<FAQItem> = [
       "The core app is free. Track transactions, set budgets, save toward goals, and see your spending patterns without paying a thing. We may introduce optional premium features later, but the fundamentals will always be free.",
   },
   {
+    question: "Do I have to enter every transaction by hand?",
+    answer:
+      "No. Connect your bank once and your transactions arrive automatically, sorted and ready, with read-only access and no stored password. Prefer to add cash or a one-off by hand? You still can. Either way, every record is encrypted so only your devices can read it.",
+  },
+  {
     question: "How does encryption work?",
     answer:
       "Your data is encrypted on your device with a key that never leaves your phone. When it syncs to the cloud, only ciphertext travels. Our servers store data they physically cannot read. Even if someone broke in, they'd get noise.",

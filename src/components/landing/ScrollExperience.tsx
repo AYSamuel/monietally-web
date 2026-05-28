@@ -120,7 +120,7 @@ const PANELS: ReadonlyArray<PanelDef> = [
     headlinePrimary: "Your money,",
     headlineAccent: "finally legible.",
     body:
-      "MonieTally turns every spend into clarity. Beautifully designed, quietly private, and genuinely useful from the first transaction. Encrypted with a key your phone holds, not ours.",
+      "Connect your bank and every transaction arrives on its own, sorted into a picture you can actually read. Beautifully designed, quietly private, useful from day one. Encrypted with a key your phone holds, not ours.",
     trust: [
       { icon: TRUST_ICONS.lock, label: "End-to-end encrypted" },
       { icon: TRUST_ICONS.globe, label: "Hosted in the EU" },
@@ -137,7 +137,7 @@ const PANELS: ReadonlyArray<PanelDef> = [
     number: "01",
     headline: "Every spend, accounted for.",
     subhead:
-      "A clean log of every transaction. Searchable, filterable, yours.",
+      "Transactions flow in automatically from your bank, the moment they happen. Add cash by hand whenever you need to. Searchable, filterable, yours.",
     support: "Tap any entry to see the full story behind it.",
   },
   {

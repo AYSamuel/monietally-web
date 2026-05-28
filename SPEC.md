@@ -186,7 +186,7 @@ Three pillar cards beneath the lede:
 |---|---|---|
 | 1 | **End-to-end encrypted** | Your transactions, budgets, and goals are encrypted on your device with AES-256-GCM before sync. The server stores blobs it cannot decrypt. |
 | 2 | **Your key, your devices** | The encryption key is generated on your phone and synced to your other devices through your OS keychain (iCloud or Google Block Store). It never passes through our servers. |
-| 3 | **No bank login, ever** | MonieTally does not connect to your bank. No screen scraping. No Plaid. Nothing in our system has read access to your accounts. |
+| 3 | **Private bank connection** | When you connect a bank, it is through a regulated open-banking provider with read-only access. We never store your bank password, and your transactions are encrypted so only your devices can read them. |
 
 Closing line below the cards:
 
@@ -231,7 +231,7 @@ Render this as an inline SVG. Two phone outlines on the left (top and bottom), a
 - "We could not read your data if a court asked us to."
 - "End-to-end encrypted across your devices."
 - "AES-256-GCM, the same standard used by Signal and 1Password." (Argon2id for key derivation if specifically mentioned.)
-- "No bank login. No screen scraping. No Plaid."
+- "Read-only bank connection through a regulated open-banking provider. We never store your bank password."
 - "Hosted in the EU (Hetzner Frankfurt) for GDPR."
 - "Sync uses last-write-wins. Conflicts are rare and resolvable."
 
@@ -242,6 +242,7 @@ Render this as an inline SVG. Two phone outlines on the left (top and bottom), a
 - ~~"AES-256 encrypted on device at rest."~~ **Currently false.** Isar 3.x does not encrypt the local DB (`ACCOUNT_SYNC_SPEC.md` §2.1, gotcha #1). At-rest encryption ships in Phase 2. Until then, restrict the encryption claim to data **in transit and on the server** (which is true via the backup/sync ciphertext path).
 - ~~"Zero-knowledge"~~ as a marketing term. It's accurate but loaded; only use if we can defend the cryptographic detail.
 - ~~"Bank-grade encryption"~~ meaningless and overused.
+- ~~"No bank login. We never connect to your bank."~~ Bank connection (read-only, via a regulated open-banking provider, password never stored) is part of the product. Frame it as private, not absent.
 - ~~"Military-grade"~~ same.
 
 ⚠️ **Claims that need the v1 launch to be true:**
