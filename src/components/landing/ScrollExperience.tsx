@@ -198,21 +198,24 @@ function PanelText({ panel }: { panel: PanelDef }) {
           <span className="text-gradient">{panel.headlineAccent}</span>
         </h1>
         <p
-          className="text-lg md:text-xl leading-relaxed mb-4 max-w-md"
+          className="text-lg md:text-xl leading-relaxed mb-4 max-w-md mx-auto md:mx-0"
           style={{ color: "var(--text-primary)" }}
         >
           {panel.subline}
         </p>
         <p
-          className="text-base md:text-lg leading-relaxed mb-7 max-w-md"
+          className="text-base md:text-lg leading-relaxed mb-7 max-w-md mx-auto md:mx-0"
           style={{ color: "var(--text-secondary)" }}
         >
           {panel.body}
         </p>
-        <div className="mb-8 max-w-md">
+        <div className="mb-8 max-w-md mx-auto md:mx-0">
           <WaitlistForm source="hero" />
         </div>
-        <ul className="space-y-2.5">
+        {/* inline-block so the list centres as a block on mobile (under the
+            centred phone) while each tick row stays left-aligned for tidiness;
+            md+ reverts to a full-width block in the left-aligned column. */}
+        <ul className="space-y-2.5 inline-block text-left md:block">
           {panel.trust.map((t) => (
             <li
               key={t.label}
@@ -242,12 +245,15 @@ function PanelText({ panel }: { panel: PanelDef }) {
         {panel.headline}
       </h2>
       <p
-        className="text-base md:text-lg leading-relaxed mb-3 max-w-md"
+        className="text-base md:text-lg leading-relaxed mb-3 max-w-md mx-auto md:mx-0"
         style={{ color: "var(--text-secondary)" }}
       >
         {panel.subhead}
       </p>
-      <p className="text-sm max-w-md" style={{ color: "var(--text-tertiary)" }}>
+      <p
+        className="text-sm max-w-md mx-auto md:mx-0"
+        style={{ color: "var(--text-tertiary)" }}
+      >
         {panel.support}
       </p>
     </>
@@ -318,7 +324,10 @@ function FeatureSection({
             <PhoneShell panel={panel} scale={DESKTOP_SCALE} />
           </motion.div>
           <motion.div
-            className="md:w-1/2 w-full"
+            // Centre the copy on mobile (the phone stacks centred below it, so
+            // left-aligned text reads as lopsided); restore left-align from md+
+            // where the side-by-side layout returns. Matches HowItWorks.
+            className="md:w-1/2 w-full text-center md:text-left"
             variants={textVariants}
             {...motionProps}
           >
