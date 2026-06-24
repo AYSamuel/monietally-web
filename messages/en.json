@@ -1,0 +1,447 @@
+{
+  "site": {
+    "name": "MonieTally",
+    "tagline": "Your money, finally clear. Wherever you bank.",
+    "description": "MonieTally helps you see your money clearly, wherever you bank. Starting in Germany, built for internationals: connect your bank and understand your spending clearly. Africa next. Hosted in the EU, never sold."
+  },
+  "nav": {
+    "home": "Home",
+    "howItWorks": "How it works",
+    "about": "About",
+    "faq": "FAQ",
+    "joinWaitlist": "Join waitlist",
+    "joinWaitlistMobile": "Join the waitlist",
+    "toggleMenu": "Toggle menu"
+  },
+  "themeToggle": {
+    "toggle": "Toggle theme",
+    "switchToLight": "Switch to light mode",
+    "switchToDark": "Switch to dark mode"
+  },
+  "localeSwitcher": {
+    "label": "Language",
+    "switchTo": "Switch language to {language}",
+    "names": {
+      "en": "English",
+      "de": "Deutsch"
+    },
+    "short": {
+      "en": "EN",
+      "de": "DE"
+    }
+  },
+  "hero": {
+    "sectionAria": "MonieTally hero",
+    "phoneAria": "Home dashboard showing your month at a glance",
+    "eyebrow": "Now in private beta · Built for internationals",
+    "headline": "Understand your money,<br></br><gradient>wherever you bank.</gradient>",
+    "subline": "A money app built for internationals: connect your bank and finally make sense of your spending, automatically.",
+    "body": "Living abroad is hard enough. Your money shouldn’t feel foreign too.",
+    "trust": {
+      "free": "Free to start, no card needed",
+      "eu": "Hosted in the EU",
+      "readOnly": "Read-only bank access, never sold"
+    }
+  },
+  "features": {
+    "activity": {
+      "number": "01",
+      "headline": "Every transaction, accounted for.",
+      "subhead": "Transactions flow in automatically from your bank, the moment they happen, tidied up and easy to read. Add cash by hand whenever you need to.",
+      "support": "Tap any entry to see the full story behind it.",
+      "phoneAria": "Activity log of recent transactions"
+    },
+    "insights": {
+      "number": "02",
+      "headline": "Patterns you’d miss in a bank statement.",
+      "subhead": "Where your money actually went, by category and trend, with your bank’s merchant names made readable.",
+      "support": "The shape of your real life with money.",
+      "phoneAria": "Insights screen with categories and weekly trend"
+    },
+    "budgets": {
+      "number": "03",
+      "headline": "Budgets that breathe with you.",
+      "subhead": "Set monthly limits, watch progress fill in real time, get a quiet nudge before you cross a line.",
+      "support": "No guilt-trip notifications. Just calm awareness.",
+      "phoneAria": "Budgets screen with category caps and progress"
+    }
+  },
+  "howItWorks": {
+    "eyebrow": "How it works",
+    "headline": "Up and running in minutes.",
+    "steps": {
+      "connect": {
+        "title": "Connect your bank",
+        "body": "Link your bank once through a secure, read-only connection. We never see or store your bank login."
+      },
+      "arrive": {
+        "title": "Transactions arrive",
+        "body": "Every payment shows up on its own, sorted and easy to read, automatically."
+      },
+      "plan": {
+        "title": "Understand and plan",
+        "body": "See where your money goes, set budgets, and save toward what matters."
+      }
+    }
+  },
+  "mission": {
+    "eyebrow": "Why we built this",
+    "headline": "Built for the people big finance apps <gradient>overlook.</gradient>",
+    "body": "Internationals, newcomers, and anyone the system leaves guessing. We’re building the money app for them, and we won’t stop at the first border.",
+    "quote": "I’m an international living in Germany, and I built MonieTally because I couldn’t make sense of my own bank app. This is the tool I wished existed.",
+    "attribution": "Ayo, Founder"
+  },
+  "trustBar": {
+    "label": "Built to connect the banks you already use",
+    "footnote": "Bank connections go live as we launch. More banks and countries to follow."
+  },
+  "faq": {
+    "eyebrow": "Questions",
+    "headline": "You asked.<br></br>Here’s the short version.",
+    "items": [
+      {
+        "q": "Is MonieTally free?",
+        "a": "The core app is free. Track transactions, set budgets, save toward goals, and see your spending patterns without paying a thing. We may introduce optional premium features later, but the fundamentals will always be free."
+      },
+      {
+        "q": "Do I have to enter every transaction by hand?",
+        "a": "No. Connect your bank once and your transactions arrive automatically, sorted and easy to read, with read-only access and no password stored. Prefer to add cash or a one-off by hand? You still can."
+      },
+      {
+        "q": "How do you handle my data?",
+        "a": "Your bank connection is read-only through a regulated open-banking provider, so we never see or store your bank login. Your data is hosted in the EU under GDPR, encrypted in transit and at rest. We don’t sell data, run ads, or build profiles."
+      },
+      {
+        "q": "What data do you collect?",
+        "a": "Your email when you join the waitlist. In the app, the financial data needed to show you your spending, hosted in the EU and never sold. No ads, no profiles."
+      },
+      {
+        "q": "Is MonieTally only for Germany?",
+        "a": "No. We’re launching in Germany first, with nearby countries like Austria close behind, and Africa as our next major market. Join the waitlist and tell us where you bank, it helps us prioritise."
+      },
+      {
+        "q": "Which banks will work?",
+        "a": "At launch, MonieTally will connect to major banks via secure open banking (e.g. Sparkasse, Volksbank, N26, DKB, Commerzbank, ING), starting in Germany and adding more banks and countries over time. Bank connections aren’t live yet. Tell us your bank on the waitlist and we’ll prioritise it."
+      },
+      {
+        "q": "Can I export my data?",
+        "a": "Yes, everything, anytime. One tap gives you a full CSV export of your transactions, budgets, and savings goals. No lock-in, no hostage data. If you ever leave, you walk out with every byte you put in."
+      },
+      {
+        "q": "When does it launch?",
+        "a": "We’re in private beta right now and rolling out invites from the waitlist. Join and you’ll get an email the moment it’s your turn. No spam in between, just the one notification that matters."
+      }
+    ]
+  },
+  "waitlistCta": {
+    "eyebrow": "Get on the list",
+    "headline": "Understand your money,<br></br>wherever you bank.",
+    "subline": "Be first when we launch. No spam. We store your email to notify you, nothing more.",
+    "reassurance1": "Read-only access to your banks, no password stored",
+    "reassurance2": "Your data lives in the EU. Never sold."
+  },
+  "waitlist": {
+    "emailPlaceholder": "Enter your email",
+    "emailLabel": "Email address",
+    "submit": "Get early access",
+    "submitting": "Submitting…",
+    "bankPlaceholder": "Which bank(s) do you use? (optional)",
+    "bankLabel": "Which bank or banks do you use, optional",
+    "countryPlaceholder": "Country (optional)",
+    "countryLabel": "Country, optional",
+    "helper": "Optional, and just the bank name, so we can prioritise it. We never ask for your login, balance, or account number.",
+    "successTitle": "You’re on the list!",
+    "successBody": "We’ll email you when MonieTally is ready. Check your spam folder if you don’t hear from us.",
+    "errors": {
+      "format": "Please enter a valid email address.",
+      "disposable": "Disposable email addresses aren’t accepted. Please use your real email.",
+      "suspicious": "Please enter a valid email address.",
+      "no_mx": "That email domain doesn’t exist. Please check and try again.",
+      "duplicate": "This email is already on the list.",
+      "generic": "Something went wrong. Please try again."
+    }
+  },
+  "footer": {
+    "tagline": "The money app for people the big finance apps overlook. Starting in Germany, built for internationals, with Africa next. Your data kept in the EU.",
+    "euNote": "Your data lives in the EU. Never sold.",
+    "product": "Product",
+    "company": "Company",
+    "howItWorks": "How it works",
+    "faq": "FAQ",
+    "about": "About",
+    "privacy": "Privacy policy",
+    "terms": "Terms of service",
+    "rights": "© {year} MonieTally. All rights reserved.",
+    "signoff": "Designed for clarity. Built for people far from home.",
+    "instagramAria": "MonieTally on Instagram",
+    "linkedinAria": "MonieTally on LinkedIn"
+  },
+  "about": {
+    "hero": {
+      "eyebrow": "Why we exist",
+      "headline": "Clarity for everyone <gradient>the big apps overlook.</gradient>",
+      "body": "Most finance apps are built for locals who fit the mould. If you’re an international, a newcomer, or you live somewhere the big apps ignore, your own money can feel like a foreign document."
+    },
+    "mission": {
+      "p1": "We know the feeling. MonieTally is built by a Nigerian living in Germany, someone who has managed money across borders, banks and languages, and found that no app made it simple.",
+      "p2": "So we are building one that does. MonieTally brings your accounts into one clear picture and explains your money in plain language, wherever you bank.",
+      "p3": "We’re starting in Germany, where internationals are locked out of local-language apps. Nearby countries follow, and Africa is next, our home market, where millions still have no clean way to see their money."
+    },
+    "principles": {
+      "eyebrow": "How we build",
+      "headline": "Four rules. <gradient>No exceptions.</gradient>",
+      "items": {
+        "overlooked": {
+          "title": "Built for the overlooked",
+          "description": "For internationals, newcomers and emerging markets, not just locals who fit the mould."
+        },
+        "language": {
+          "title": "Clear, in your language",
+          "description": "Your money in plain language, never a wall of jargon or a foreign tongue. More languages on the way."
+        },
+        "banks": {
+          "title": "Connected to your banks",
+          "description": "Link your bank once and your spending arrives automatically, read-only, no password stored. Rolling out market by market."
+        },
+        "private": {
+          "title": "Private by default",
+          "description": "Read-only access, hosted in the EU under GDPR, never sold. Your money is yours."
+        }
+      }
+    },
+    "next": {
+      "eyebrow": "What’s next",
+      "headline": "More banks. <gradient>More countries.</gradient>",
+      "body": "After Germany, we’re bringing MonieTally to Africa, starting with Nigeria, and on to more places the big apps overlook. More banks, more languages, the same simple promise: your money, finally clear."
+    }
+  },
+  "privacyPage": {
+    "title": "Privacy Policy",
+    "effectiveLine": "Effective date: May 10, 2026 · Version 1.0",
+    "contents": "Contents",
+    "backToTop": "Back to top",
+    "sections": [
+      {
+        "title": "1. Introduction",
+        "content": "MonieTally (“we”, “our”, “the app”) is a personal finance application built around data protection by default. This Privacy Policy explains how we handle information in connection with the MonieTally app and this website (monietally.com).\n\nEffective date: May 10, 2026.\n\nOur core principle: your bank connection is read-only via a regulated open-banking provider. Your data is hosted in the EU under GDPR, encrypted in transit and at rest, and never sold. We never receive or store your bank login."
+      },
+      {
+        "title": "2. Information we collect",
+        "content": "Website only: if you submit your email address via our waitlist form, we store that email address to notify you when MonieTally launches. You can optionally tell us which bank or banks you use and your country, so we can prioritise which banks to support first. This is the bank’s name only, never your login, balance, or account details. Your email and any details you provide are stored securely in our database, hosted in the EU. We do not share them with third parties.\n\nThe app: MonieTally lets you add transactions by hand, and you may connect your bank via a regulated open-banking provider (such as GoCardless Bank Account Data or finAPI; provider to be finalised) to sync transactions automatically. The provider retrieves your transaction data using read-only access; we never receive or store your bank login. Your financial data (transactions, balances, budgets, goals, and analytics) is hosted on our servers in the EU, encrypted in transit and at rest, and never sold."
+      },
+      {
+        "title": "3. How we use information",
+        "content": "Waitlist emails are used solely to send you a launch notification and critical product updates. We will not send marketing emails, share your address with third parties, or contact you for any other reason without your explicit consent.\n\nYour app data is stored on our EU servers to sync it across your authenticated devices and show you your spending. We do not sell, rent, or monetise your data, and we do not build advertising profiles from it."
+      },
+      {
+        "title": "4. Data protection",
+        "content": "MonieTally protects your financial data with industry-standard safeguards:\n\n1. Your bank connection is read-only via a regulated open-banking provider. We never receive or store your bank login.\n2. Your data is hosted on servers in the EU, under GDPR.\n3. Data is encrypted in transit (TLS) and at rest.\n4. Access is limited to your authenticated devices and the systems needed to deliver the service.\n5. We do not sell your data, run ads, or build advertising profiles from it."
+      },
+      {
+        "title": "5. Bank sync and open-banking providers",
+        "content": "If you choose to enable bank sync, MonieTally connects to your bank via a regulated open-banking provider (such as GoCardless Bank Account Data or finAPI; provider to be finalised). The provider retrieves your transaction data using read-only access. MonieTally never receives or stores your bank login credentials. Bank sync is optional. The app is fully functional with manual entry alone.\n\nTransaction data fetched by the provider is then stored on our EU servers, encrypted in transit and at rest. The connection is used solely to fetch transaction data. We do not use it to initiate payments, transfers, or any other banking action.\n\nYour use of these bank sync services is also subject to their respective privacy policies and terms of service."
+      },
+      {
+        "title": "6. Data storage and hosting",
+        "content": "Financial data: hosted on servers in the EU, encrypted in transit and at rest. Subject to GDPR.\n\nWaitlist emails: stored in our database, also hosted in the EU.\n\nOn-device data: a copy may be cached on your device so the app works offline, managed by the app’s local database engine."
+      },
+      {
+        "title": "7. Cookies and tracking",
+        "content": "This website does not use cookies, analytics, ad tracking, or session recording. We do not run any third-party trackers on monietally.com."
+      },
+      {
+        "title": "8. Children’s privacy",
+        "content": "MonieTally is not directed at children under 13. We do not knowingly collect information from children. If you believe a child has submitted their email to our waitlist, please contact us and we will delete it promptly."
+      },
+      {
+        "title": "9. Data deletion",
+        "content": "You can delete your account and all associated data at any time from the app settings. Once deleted, your data is permanently removed from our servers within 30 days. We retain no backups of your financial data beyond this window.\n\nTo remove your email from the waitlist, reply to any email from us or contact hello@monietally.com."
+      },
+      {
+        "title": "10. Changes to this policy",
+        "content": "If we make material changes to this policy, we will update the effective date at the top of this page. For significant changes, we will notify waitlist subscribers by email."
+      },
+      {
+        "title": "11. Contact",
+        "content": "Questions about this policy? Email us at hello@monietally.com."
+      }
+    ]
+  },
+  "termsPage": {
+    "title": "Terms of Service",
+    "effectiveLine": "Effective date: April 30, 2026 · Version 1.0",
+    "contents": "Contents",
+    "backToTop": "Back to top",
+    "sections": [
+      {
+        "title": "1. Acceptance of terms",
+        "content": "By downloading, installing, or using the MonieTally app or visiting monietally.com, you agree to be bound by these Terms of Service. If you do not agree, do not use MonieTally.\n\nEffective date: April 30, 2026."
+      },
+      {
+        "title": "2. Description of service",
+        "content": "MonieTally is a personal finance application that helps users track spending, visualise financial data, and manage budgets. Users can enter transactions manually or connect to financial institutions via a regulated open-banking provider (such as GoCardless Bank Account Data or finAPI; provider to be finalised) to sync transaction data automatically using read-only access.\n\nFinancial data is hosted on servers in the EU, encrypted in transit and at rest, and synced across the user’s devices. MonieTally never receives or stores the user’s bank login. MonieTally does not provide banking services, investment advice, or any regulated financial service."
+      },
+      {
+        "title": "3. User responsibilities",
+        "content": "You agree to:\n• Use MonieTally only for lawful personal finance management purposes.\n• Not attempt to reverse-engineer, decompile, or tamper with the app.\n• Not use MonieTally to commit fraud or any illegal financial activity.\n• Keep your device and app access secure. MonieTally is not responsible for unauthorised access resulting from your failure to secure your device.\n• Provide accurate information when joining the waitlist."
+      },
+      {
+        "title": "4. Intellectual property",
+        "content": "All rights, title, and interest in MonieTally (including the app, website, design, code, and branding) are owned by MonieTally. Nothing in these terms transfers any intellectual property rights to you.\n\nYou are granted a limited, non-exclusive, non-transferable licence to use the app for personal, non-commercial purposes."
+      },
+      {
+        "title": "5. Disclaimer of warranties",
+        "content": "MonieTally is provided “as is” and “as available” without warranty of any kind, express or implied.\n\nWe do not warrant that:\n• The app will be error-free or uninterrupted.\n• Transaction data retrieved via bank aggregators will be complete, accurate, or current.\n• The app will meet your specific requirements.\n\nUse MonieTally at your own risk."
+      },
+      {
+        "title": "6. Limitation of liability",
+        "content": "To the fullest extent permitted by applicable law, MonieTally and its developers shall not be liable for any indirect, incidental, special, consequential, or punitive damages, including but not limited to loss of data, loss of profits, or financial decisions made based on app data.\n\nOur total liability for any claim related to MonieTally shall not exceed the amount you paid for the app, if any."
+      },
+      {
+        "title": "7. Bank sync disclaimer",
+        "content": "MonieTally is not a bank, financial institution, or registered financial advisor. We do not hold, move, or custody any funds.\n\nIf you choose to enable bank sync, it is provided via regulated third-party bank-connection providers. Bank sync is optional. The app is fully functional with manual entry. MonieTally is not responsible for:\n• Errors, delays, or interruptions in data from these providers.\n• Changes to provider APIs that affect sync functionality.\n• Your relationship with your financial institution.\n\nAlways verify your financial data with your bank directly before making financial decisions."
+      },
+      {
+        "title": "8. Third-party services",
+        "content": "MonieTally integrates with regulated third-party bank-connection providers. Your use of these services is subject to their respective terms of service and privacy policies. MonieTally is not responsible for the practices of these third parties."
+      },
+      {
+        "title": "9. Termination",
+        "content": "You may stop using MonieTally at any time by deleting the app. Deleting the app removes all locally stored financial data from your device.\n\nWe reserve the right to terminate or suspend access to the waitlist or future services for users who violate these terms."
+      },
+      {
+        "title": "10. Governing law",
+        "content": "These terms are governed by and construed in accordance with applicable law. Any disputes shall be resolved in the courts of the jurisdiction where MonieTally is registered."
+      },
+      {
+        "title": "11. Changes to terms",
+        "content": "We may update these terms from time to time. We will update the effective date at the top of this page and, for material changes, notify waitlist subscribers by email. Continued use of MonieTally after changes take effect constitutes your acceptance of the new terms."
+      },
+      {
+        "title": "12. Contact",
+        "content": "Questions about these terms? Email us at hello@monietally.com."
+      }
+    ]
+  },
+  "deleteAccountPage": {
+    "title": "Delete your account",
+    "effectiveLine": "Permanent. Wipes synced data within 60 seconds.",
+    "contents": "Contents",
+    "backToTop": "Back to top",
+    "sections": [
+      {
+        "title": "1. Delete from inside the app",
+        "content": "The fastest way to delete your account is from inside MonieTally:\n\n1. Open the MonieTally app.\n2. Tap the Profile tab.\n3. Tap your name (the identity row at the top).\n4. Tap Delete account.\n5. Follow the two-step confirmation.\n\nYou will be asked to type DELETE to confirm. The action is permanent and cannot be undone."
+      },
+      {
+        "title": "2. What gets deleted",
+        "content": "Tapping Delete account permanently removes:\n\n- Your account on our servers (your auth identity).\n- Every encrypted transaction, category, budget, savings goal, and template synced from your devices.\n- Your encrypted preferences blob (currency, theme, etc.).\n\nRemoval from our servers happens within 60 seconds. The MonieTally app itself is not uninstalled, and any data that lives only on the device you are using stays there until you sign back in (or use Clear all data in Privacy & data).\n\nAfter deletion, MonieTally falls back to local-only mode on the device, using whatever data is still cached there. You can keep using it offline, sign up again later with the same or a different email, or uninstall the app entirely. Your choice."
+      },
+      {
+        "title": "3. What we briefly keep, and why",
+        "content": "For 30 days after deletion we retain:\n\n- A salted hash of your email address. This prevents someone from immediately re-registering the same address and inheriting a partially-deleted account during the cleanup window. We cannot reverse the hash to recover the original email.\n- Anonymised log entries that mention your account ID, used solely to debug the deletion itself if anything goes wrong.\n\nAfter 30 days, even those records are wiped. We never retain any financial data past the 60-second deletion. Every transaction, balance, and budget is gone immediately and irreversibly."
+      },
+      {
+        "title": "4. If you can’t access the app",
+        "content": "If you can’t reach the in-app flow (lost your phone, forgot your password, signed in with an OAuth provider you no longer use, etc.), email support@monietally.com from the address linked to your account.\n\nWe will verify your identity (typically by sending a verification link to the address on file) and process the deletion within 7 days. There is no separate web form because the email-based path is simpler and gives you a written confirmation when the deletion completes."
+      },
+      {
+        "title": "5. Open-banking providers and bank sync",
+        "content": "If you connected MonieTally to your bank via a regulated open-banking provider (such as GoCardless Bank Account Data or finAPI; provider to be finalised), deleting your MonieTally account revokes our access with that provider. The provider may retain logs of past sync activity per their own policies. To purge any data the provider separately holds about you, contact them directly.\n\nOnce your account is deleted, your financial data is removed from our EU servers, and access from your other devices ends because the auth check fails before any data loads."
+      },
+      {
+        "title": "6. Questions",
+        "content": "If something on this page is unclear or you ran into an issue mid-deletion, email support@monietally.com and we’ll help. Deletion is meant to be a clean, no-friction exit; if it isn’t, that’s a bug on our side."
+      }
+    ]
+  },
+  "metadata": {
+    "ogAlt": "MonieTally. The finance app that does not track you.",
+    "home": {
+      "title": "MonieTally | Your money, finally clear.",
+      "description": "MonieTally helps you see your money clearly, wherever you bank. Starting in Germany, built for internationals: connect your bank and understand your spending clearly. Africa next. Hosted in the EU, never sold."
+    },
+    "about": {
+      "title": "About | MonieTally",
+      "description": "Why we built a finance app for people the big finance apps overlook. Clear, in your language, wherever you bank."
+    },
+    "privacy": {
+      "title": "Privacy Policy | MonieTally",
+      "description": "How MonieTally handles your data. Your bank connection is read-only, your data is hosted in the EU under GDPR, encrypted in transit and at rest, and never sold."
+    },
+    "terms": {
+      "title": "Terms of Service | MonieTally",
+      "description": "MonieTally’s terms of service."
+    },
+    "deleteAccount": {
+      "title": "Delete your account | MonieTally",
+      "description": "How to delete your MonieTally account and what we remove. Account deletion is permanent; encrypted data is wiped from our servers within 60 seconds."
+    }
+  },
+  "mockups": {
+    "nav": {
+      "home": "Home",
+      "activity": "Activity",
+      "budgets": "Budgets",
+      "insights": "Insights",
+      "profile": "Profile"
+    },
+    "categories": {
+      "groceries": "Groceries",
+      "dining": "Dining",
+      "bills": "Bills",
+      "shopping": "Shopping",
+      "transport": "Transport",
+      "subscriptions": "Subscriptions",
+      "coffee": "Coffee",
+      "other": "Other"
+    },
+    "home": {
+      "greeting": "Hi, {name}.",
+      "leftThisMonth": "Left this month",
+      "vsPrev": "{amount} vs {month}",
+      "income": "Income",
+      "spent": "Spent",
+      "recent": "Recent",
+      "viewAll": "View all →"
+    },
+    "activity": {
+      "title": "Activity",
+      "searchPlaceholder": "Search transactions",
+      "names": {
+        "groceries": "Groceries",
+        "coffeeShop": "Coffee shop",
+        "rent": "Rent",
+        "salary": "Salary",
+        "spotify": "Spotify"
+      },
+      "cats": {
+        "food": "Food",
+        "bills": "Bills",
+        "income": "Income",
+        "subscriptions": "Subscriptions"
+      }
+    },
+    "insights": {
+      "title": "Insights",
+      "whereItWent": "Where it went",
+      "spent": "Spent",
+      "viewAllCategories": "View all {count} categories",
+      "trend": "Trend",
+      "view": "View →",
+      "thisMonth": "{amount} this month",
+      "vsPrev": "↓ {pct} vs {month}"
+    },
+    "budgets": {
+      "title": "Budgets",
+      "acrossYourBudgets": "Across your budgets",
+      "of": "of {amount}",
+      "summary": "{amount} left across {count, plural, one {# budget} other {# budgets}} · {pct}",
+      "categories": "Categories",
+      "over": "{amount} over · {pct}",
+      "closeToLimit": "{pct} · close to limit",
+      "withoutBudgets": "{count, plural, one {# category without a budget} other {# categories without budgets}}",
+      "setOne": "Set one"
+    }
+  }
+}

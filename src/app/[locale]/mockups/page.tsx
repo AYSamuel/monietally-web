@@ -7,10 +7,12 @@
  * so both variants can be eyeballed against monietally/design-mockups/*.html
  * without spinning up the showcase or wiring it into the site.
  *
- * Not linked from the live site. Visit /mockups directly. Safe to delete
- * once PR 3 lands and the ScrollShowcase covers the same surface area.
+ * Not linked from the live site. Visit /mockups directly. Lives under the
+ * (standalone) route group, outside [locale], and is excluded from the
+ * middleware matcher. Mockups render in the default locale here.
  */
 
+import { setRequestLocale } from "next-intl/server";
 import { PhoneFrame } from "@/components/landing/PhoneFrame";
 import { Activity } from "@/components/landing/mockups/Activity";
 import { AddTransaction } from "@/components/landing/mockups/AddTransaction";
@@ -34,7 +36,12 @@ const MOCKUPS: ReadonlyArray<{
   { label: "Onboarding · slide 2", source: "02-onboarding.html",           Component: Onboarding2 },
 ];
 
-export default function MockupsPreview() {
+export default function MockupsPreview({
+  params: { locale },
+}: {
+  params: { locale: string };
+}) {
+  setRequestLocale(locale);
   return (
     <div
       style={{

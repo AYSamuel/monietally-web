@@ -2,27 +2,20 @@
  * HowItWorks — a quick three-step orientation so a first-time visitor
  * grasps the mechanic before the deeper feature sections.
  * Theme-responsive, token-based, no animation needed.
+ * Copy lives in messages (howItWorks.*); only the step order lives here.
  */
 
+import { useTranslations } from "next-intl";
+
 const STEPS = [
-  {
-    n: "1",
-    title: "Connect your bank",
-    body: "Link your bank once through a secure, read-only connection. We never see or store your bank login.",
-  },
-  {
-    n: "2",
-    title: "Transactions arrive",
-    body: "Every payment shows up on its own, sorted and easy to read, automatically.",
-  },
-  {
-    n: "3",
-    title: "Understand and plan",
-    body: "See where your money goes, set budgets, and save toward what matters.",
-  },
-];
+  { n: "1", key: "connect" },
+  { n: "2", key: "arrive" },
+  { n: "3", key: "plan" },
+] as const;
 
 export default function HowItWorks() {
+  const t = useTranslations("howItWorks");
+
   return (
     <section
       id="how-it-works"
@@ -31,12 +24,12 @@ export default function HowItWorks() {
     >
       <div className="section-container">
         <div className="text-center max-w-2xl mx-auto mb-12 md:mb-16">
-          <p className="section-label mb-4">How it works</p>
+          <p className="section-label mb-4">{t("eyebrow")}</p>
           <h2
             className="text-display text-3xl md:text-4xl tracking-tight"
             style={{ color: "var(--text-primary)" }}
           >
-            Up and running in minutes.
+            {t("headline")}
           </h2>
         </div>
         <div className="grid gap-10 md:grid-cols-3 md:gap-12">
@@ -52,13 +45,13 @@ export default function HowItWorks() {
                 className="text-xl font-semibold mb-2"
                 style={{ color: "var(--text-primary)" }}
               >
-                {step.title}
+                {t(`steps.${step.key}.title`)}
               </h3>
               <p
                 className="text-base leading-relaxed"
                 style={{ color: "var(--text-secondary)" }}
               >
-                {step.body}
+                {t(`steps.${step.key}.body`)}
               </p>
             </div>
           ))}

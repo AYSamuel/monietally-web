@@ -71,10 +71,13 @@ export type SampleGoal = {
 };
 
 // ── Anchors ──────────────────────────────────────────────────────────────
-export const MONTH_LABEL = "May 2026";
-export const SHORT_MONTH = "May";
 export const CURRENCY = "EUR";
-export const CURRENCY_SYMBOL = "€";
+
+/** The sample month every phone renders (May 2026). Built from explicit parts
+ * so Intl date formatting is timezone-stable (no UTC midnight drift). */
+export const MONTH_DATE = new Date(2026, 4, 1);
+/** Previous month, used by the "vs <month>" deltas on Home/Insights. */
+export const PREV_MONTH_DATE = new Date(2026, 3, 1);
 
 export const TOTAL_INCOME = 4694.5;
 export const TOTAL_SPENT = 1847.0;
@@ -136,23 +139,70 @@ export const INSIGHT_CALLOUTS = [
   { id: "i-recurring", headline: "5 recurring charges this month", body: "€78 across subscriptions." },
 ];
 
-// ── Formatting helpers (kept tiny and dependency-free) ──────────────────
+// ── Formatting helpers (locale-aware via Intl) ──────────────────────────
+// `locale` defaults to "en" so the dev-only /mockups preview keeps working
+// without threading a locale; the live mockups pass the active locale.
 
-/** Format a number as a currency string. Negative spend reads as "-$48.21". */
-export function formatAmount(value: number, opts?: { showCents?: boolean }): string {
+/** Currency string in the active locale: en "€48.21", de "48,21 €".
+ * signDisplay defaults to Intl's "auto" (sign only for negatives); pass
+ * "exceptZero" for income rows that want a leading "+". */
+export function formatAmount(
+  value: number,
+  locale = "en",
+  opts?: {
+    showCents?: boolean;
+    signDisplay?: Intl.NumberFormatOptions["signDisplay"];
+  },
+): string {
   const showCents = opts?.showCents ?? true;
-  const abs = Math.abs(value);
-  const formatted = showCents
-    ? abs.toFixed(2)
-    : Math.round(abs).toLocaleString("en-US");
-  const withCommas = showCents
-    ? Number(formatted).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })
-    : formatted;
-  const sign = value < 0 ? "-" : "";
-  return `${sign}${CURRENCY_SYMBOL}${withCommas}`;
+  return new Intl.NumberFormat(locale, {
+    style: "currency",
+    currency: CURRENCY,
+    minimumFractionDigits: showCents ? 2 : 0,
+    maximumFractionDigits: showCents ? 2 : 0,
+    signDisplay: opts?.signDisplay ?? "auto",
+  }).format(value);
 }
 
-/** Format like "$2,847" (no cents) for display headlines. */
-export function formatRound(value: number): string {
-  return formatAmount(value, { showCents: false });
+/** No-cents currency for headlines: en "€2,847", de "2.847 €". */
+export function formatRound(value: number, locale = "en"): string {
+  return formatAmount(value, locale, { showCents: false });
+}
+
+// ── Date helpers (locale-aware via Intl) ────────────────────────────────
+
+/** Parse an ISO "YYYY-MM-DD" into a timezone-stable local Date. */
+function parseISODate(iso: string): Date {
+  const [y, m, d] = iso.split("-").map(Number);
+  return new Date(y, m - 1, d);
+}
+
+/** Month + year: en "May 2026", de "Mai 2026". */
+export function formatMonthYear(date: Date, locale = "en"): string {
+  return new Intl.DateTimeFormat(locale, {
+    month: "long",
+    year: "numeric",
+  }).format(date);
+}
+
+/** Month name only: en "April", de "April". */
+export function formatMonthLong(date: Date, locale = "en"): string {
+  return new Intl.DateTimeFormat(locale, { month: "long" }).format(date);
+}
+
+/** From an ISO date: en "May 8", de "8. Mai". */
+export function formatMonthDay(iso: string, locale = "en"): string {
+  return new Intl.DateTimeFormat(locale, {
+    month: "short",
+    day: "numeric",
+  }).format(parseISODate(iso));
+}
+
+/** From an ISO date: en "Thursday, May 14", de "Donnerstag, 14. Mai". */
+export function formatWeekdayDate(iso: string, locale = "en"): string {
+  return new Intl.DateTimeFormat(locale, {
+    weekday: "long",
+    month: "long",
+    day: "numeric",
+  }).format(parseISODate(iso));
 }

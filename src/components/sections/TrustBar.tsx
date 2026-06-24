@@ -1,13 +1,11 @@
-const BANKS = [
-  "Sparkasse",
-  "N26",
-  "DKB",
-  "Commerzbank",
-  "ING",
-  "Volksbank",
-];
+import { useTranslations } from "next-intl";
+
+// Bank names are proper nouns: they stay as-is in every locale (SPEC-i18n §10).
+const BANKS = ["Sparkasse", "N26", "DKB", "Commerzbank", "ING", "Volksbank"];
 
 export default function TrustBar() {
+  const t = useTranslations("trustBar");
+
   return (
     <section
       className="py-10"
@@ -22,7 +20,7 @@ export default function TrustBar() {
           className="text-xs font-medium uppercase mb-6"
           style={{ letterSpacing: "0.18em", color: "var(--text-tertiary)" }}
         >
-          Built to connect the banks you already use
+          {t("label")}
         </p>
         <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-3">
           {BANKS.map((bank) => (
@@ -35,11 +33,8 @@ export default function TrustBar() {
             </span>
           ))}
         </div>
-        <p
-          className="text-xs mt-6"
-          style={{ color: "var(--text-muted)" }}
-        >
-          Bank connections go live as we launch. More banks and countries to follow.
+        <p className="text-xs mt-6" style={{ color: "var(--text-muted)" }}>
+          {t("footnote")}
         </p>
       </div>
     </section>

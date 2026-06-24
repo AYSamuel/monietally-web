@@ -12,9 +12,11 @@
  */
 
 import { motion, useReducedMotion } from "framer-motion";
+import { useTranslations } from "next-intl";
 import WaitlistForm from "../WaitlistForm";
 
 export default function WaitlistCTA() {
+  const t = useTranslations("waitlistCta");
   const reducedMotion = useReducedMotion();
 
   return (
@@ -64,7 +66,7 @@ export default function WaitlistCTA() {
             className="text-xs font-medium uppercase mb-7"
             style={{ letterSpacing: "0.28em", color: "var(--gold)" }}
           >
-            Get on the list
+            {t("eyebrow")}
           </p>
 
           {/* Headline framed with thin gold rules */}
@@ -92,9 +94,7 @@ export default function WaitlistCTA() {
                 fontVariationSettings: '"opsz" 96',
               }}
             >
-              Understand your money,
-              <br />
-              wherever you bank.
+              {t.rich("headline", { br: () => <br /> })}
             </h2>
 
             <p
@@ -104,8 +104,7 @@ export default function WaitlistCTA() {
                 maxWidth: 540,
               }}
             >
-              Be first when we launch. No spam. We store your email to notify
-              you, nothing more.
+              {t("subline")}
             </p>
           </div>
         </motion.div>
@@ -139,7 +138,7 @@ export default function WaitlistCTA() {
                 background: "var(--gold)",
               }}
             />
-            Read-only access to your banks, no password stored
+            {t("reassurance1")}
           </span>
           <span
             aria-hidden="true"
@@ -160,7 +159,7 @@ export default function WaitlistCTA() {
                 background: "var(--gold)",
               }}
             />
-            Your data lives in the EU. Never sold.
+            {t("reassurance2")}
           </span>
         </motion.div>
       </div>

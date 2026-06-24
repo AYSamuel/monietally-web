@@ -23,7 +23,7 @@ Path alias `@/*` maps to `./src/*`.
 
 ### Routing
 
-App Router pages live in `src/app/`. Routes: `/` (landing), `/about`, `/privacy`, `/terms`, `/delete-account`, `/auth/callback` (email-link fallback, noindex), and `/mockups` (dev-only preview). Navigation anchors (`/#how-it-works`, `/#faq`, `/#waitlist`) use smooth scroll (Lenis via the `SmoothScroll` wrapper, plus `scroll-behavior: smooth` in globals.css).
+All App Router pages live under `app/[locale]/` (locales `en`/`de`, so e.g. `/en`, `/de/about`): the landing (`/[locale]`), `about`, `privacy`, `terms`, `delete-account`, plus `auth/callback` (email-link fallback, noindex, body stays English) and `mockups` (dev-only preview). See the **i18n (EN/DE)** section below for the full routing/middleware/layout shape and why everything is under `[locale]`. Navigation anchors (`/#how-it-works`, `/#faq`, `/#waitlist`) use smooth scroll (Lenis via the `SmoothScroll` wrapper, plus `scroll-behavior: smooth` in globals.css) and the locale-aware `Link` from `@/i18n/navigation`.
 
 ### Theme system
 
@@ -108,10 +108,23 @@ Email validation runs in three places:
 
 ## Pending work
 
-The landing page and legal pages are built. Current known work:
+The landing page and legal pages are built, and EN/DE i18n is implemented. Current known work:
 
-1. **i18n (EN/DE)**, planned and specced in `SPEC-i18n.md`: add `next-intl`, move routes under `app/[locale]/`, externalize all copy into `messages/{en,de}.json`, add a locale switcher. Not yet started.
-2. **German legal copy**, the `/privacy`, `/terms`, and `/delete-account` bodies stay English until a reviewed German translation lands (per the i18n spec).
+1. **German native review**, all German copy in `messages/de.json`, including the now fully-translated legal pages, was drafted during implementation (informal *du* tone) and still needs a native/financial (and, for the legal pages, legal) review before launch (per `SPEC-i18n.md` §13 phase 5).
+2. **Legal pages are now fully translated** (`/privacy`, `/terms`, `/delete-account` bodies live in `messages/{en,de}.json` under `privacyPage`/`termsPage`/`deleteAccountPage`; the old English-only `legal.notice` is gone). This drafted German legal copy is the most review-sensitive part of the catalog. Governing-law wording stays jurisdiction-neutral (no registration specifics); "DELETE" confirmation keyword and provider names (GoCardless, finAPI) are kept literal.
 3. Replace the placeholder social links (`href="#"` for Instagram/LinkedIn in `Footer.tsx`) before launch.
+4. **`/auth/callback` German body (deferred)**, the page now lives under `[locale]` (so `/en/auth/callback`, `/de/auth/callback`) but its instructional body stays English for now (SPEC-i18n Q3); the bare emailed `/auth/callback` is middleware-redirected to the detected/default locale. Translate the body once the mobile app's email links can carry a locale.
 
 `WEBSITE_PLAN.md` is an early planning document and is now largely historical; trust the code over it where they disagree.
+
+## i18n (EN/DE)
+
+Implemented with **next-intl v4** (`SPEC-i18n.md` is the source spec). Key points:
+
+- **Routing**: ALL routes live under `app/[locale]/` (`en`, `de`; default `en`, `localePrefix: 'always'`, so `/en/...` and `/de/...`), including `auth/callback` and `mockups`. `src/middleware.ts` resolves bare `/` (cookie `NEXT_LOCALE` -> `Accept-Language` -> `en`) and writes the cookie on switch; its matcher excludes only `/api`, `/_next`, `/_vercel`, and dotted asset paths, so a bare `/auth/callback` (the mobile app's email link) is redirected to `/<locale>/auth/callback`.
+- **Layouts**: canonical next-intl shape, `app/[locale]/layout.tsx` is the single root layout, owns `<html lang={locale}>`/`<body>` and the providers, validates the param (`hasLocale` -> `notFound`), and calls `setRequestLocale`. There is intentionally **no** `app/layout.tsx`: a non-localized root that reads `getLocale()` once does not re-render on a client-side locale switch, so `<html lang>` and the intl context go stale and the switcher doubles the prefix (`/de/de`). Keeping the root under `[locale]` makes it re-render per locale, which is why `auth/callback` and `mockups` were pulled under `[locale]` too (they need `<html>`/providers and a valid lang). 404s use `app/[locale]/not-found.tsx`.
+- **Config**: `src/i18n/{routing,navigation,request}.ts` (defineRouting / createNavigation / getRequestConfig). Internal links use the `Link` from `@/i18n/navigation` so they stay in-locale. `next.config.js` wraps the config with `createNextIntlPlugin`.
+- **Messages**: namespaced JSON in `messages/{en,de}.json` (one namespace per surface). Split/gradient headlines use next-intl rich text (`<gradient>`, `<br>` tags) so German word order can place the accent. `lib/constants.ts` keeps only `name`/`url`/`email`; tagline/description moved into messages. `lib/emailValidation.ts` returns codes only; `WaitlistForm` maps them via `t('waitlist.errors.<reason>')`.
+- **Formatting**: `lib/sampleData.ts` exposes locale-aware `formatAmount`/`formatRound` (`Intl.NumberFormat` EUR) and date helpers (`formatMonthYear`/`formatWeekdayDate`/`formatMonthDay` via `Intl.DateTimeFormat`). The four landing mockups (`HomePopulated`, `Activity`, `Insights`, `Budgets`) read the active locale via `useLocale()` and chrome via `useTranslations('mockups')`; sample brand/merchant names stay as-is. The dev-only mockups (`Savings`, `AddTransaction`, `Onboarding2`) are not localized.
+- **SEO**: per-page `generateMetadata` sets localized title/description plus `alternates` (canonical + `hreflang` en/de/x-default via `lib/seo.ts`). `app/sitemap.ts` and `app/robots.ts` cover both locales; `app/[locale]/opengraph-image.tsx` renders locale-specific card text.
+- **Switcher**: `components/LocaleSwitcher.tsx` (compact `EN | DE`) sits in the desktop nav and inside the mobile dropdown menu (kept out of the compact mobile top bar to avoid crowding the hamburger).

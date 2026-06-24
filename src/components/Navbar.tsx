@@ -1,10 +1,13 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Link from "next/link";
+import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
 import ThemeToggle from "./ThemeToggle";
+import LocaleSwitcher from "./LocaleSwitcher";
 
 export default function Navbar() {
+  const t = useTranslations("nav");
   const [mobileOpen, setMobileOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
@@ -44,46 +47,49 @@ export default function Navbar() {
               className="text-sm transition-colors duration-200"
               style={{ color: "var(--text-secondary)" }}
             >
-              Home
+              {t("home")}
             </Link>
             <Link
               href="/#how-it-works"
               className="text-sm transition-colors duration-200"
               style={{ color: "var(--text-secondary)" }}
             >
-              How it works
+              {t("howItWorks")}
             </Link>
             <Link
               href="/about"
               className="text-sm transition-colors duration-200"
               style={{ color: "var(--text-secondary)" }}
             >
-              About
+              {t("about")}
             </Link>
             <Link
               href="/#faq"
               className="text-sm transition-colors duration-200"
               style={{ color: "var(--text-secondary)" }}
             >
-              FAQ
+              {t("faq")}
             </Link>
             <Link
               href="/#waitlist"
               className="btn-primary text-sm"
               style={{ padding: "8px 18px" }}
             >
-              Join waitlist
+              {t("joinWaitlist")}
             </Link>
+            <LocaleSwitcher />
             <ThemeToggle />
           </div>
 
-          {/* Mobile hamburger */}
+          {/* Mobile hamburger (locale switcher lives inside the dropdown to
+              keep the compact top bar from overflowing on small phones) */}
           <div className="flex items-center gap-3 md:hidden">
             <ThemeToggle />
             <button
               onClick={() => setMobileOpen(!mobileOpen)}
               className="w-10 h-10 flex items-center justify-center"
-              aria-label="Toggle menu"
+              aria-label={t("toggleMenu")}
+              aria-expanded={mobileOpen}
             >
               <svg
                 aria-hidden="true"
@@ -131,7 +137,7 @@ export default function Navbar() {
               className="block py-2.5 text-sm"
               style={{ color: "var(--text-secondary)" }}
             >
-              Home
+              {t("home")}
             </Link>
             <Link
               href="/#how-it-works"
@@ -139,7 +145,7 @@ export default function Navbar() {
               className="block py-2.5 text-sm"
               style={{ color: "var(--text-secondary)" }}
             >
-              How it works
+              {t("howItWorks")}
             </Link>
             <Link
               href="/about"
@@ -147,7 +153,7 @@ export default function Navbar() {
               className="block py-2.5 text-sm"
               style={{ color: "var(--text-secondary)" }}
             >
-              About
+              {t("about")}
             </Link>
             <Link
               href="/#faq"
@@ -155,7 +161,7 @@ export default function Navbar() {
               className="block py-2.5 text-sm"
               style={{ color: "var(--text-secondary)" }}
             >
-              FAQ
+              {t("faq")}
             </Link>
             <Link
               href="/#waitlist"
@@ -163,8 +169,14 @@ export default function Navbar() {
               className="block py-2.5 text-sm font-medium"
               style={{ color: "var(--gold)" }}
             >
-              Join the waitlist
+              {t("joinWaitlistMobile")}
             </Link>
+            <div
+              className="pt-3 mt-2"
+              style={{ borderTop: "1px solid var(--border-subtle)" }}
+            >
+              <LocaleSwitcher />
+            </div>
           </div>
         </div>
       )}

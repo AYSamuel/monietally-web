@@ -5,7 +5,8 @@
  * Theming: follows the ambient theme via the --m-fg-XX, --phone-screen,
  * --phone-screen-fg, --m-expense, --gold tokens defined in globals.css.
  *
- * Used by: ScrollShowcase panel 4 (SPEC.md §7.2).
+ * i18n: chrome + category labels come from the "mockups" namespace; amounts
+ * and the period chip format in the active locale (useLocale).
  *
  * State semantics:
  *   "normal" → screen-fg fill, neutral pct color
@@ -13,12 +14,8 @@
  *   "over"   → expense-tinted fill + pct color (over budget)
  */
 
-import {
-  MONTH_LABEL,
-  BUDGETS,
-  formatRound,
-  formatAmount,
-} from "@/lib/sampleData";
+import { useLocale, useTranslations } from "next-intl";
+import { MONTH_DATE, BUDGETS, formatRound, formatMonthYear } from "@/lib/sampleData";
 
 const FG_78 = "var(--m-fg-78)";
 const FG_85 = "var(--m-fg-85)";
@@ -39,7 +36,40 @@ const FILL_BG: Record<CatState, string> = {
   over: "var(--m-expense)",
 };
 
+// Icons by budget index (matches the BUDGETS order in sampleData).
+const BUDGET_ICONS: React.ReactNode[] = [
+  (
+    <>
+      <circle cx="9" cy="20" r="1.4" />
+      <circle cx="18" cy="20" r="1.4" />
+      <path d="M3 4h2l3 12h11l2-8H6" />
+    </>
+  ),
+  <path key="dining" d="M17 8h1a3 3 0 010 6h-1M3 8h14v9a4 4 0 01-4 4H7a4 4 0 01-4-4V8z" />,
+  (
+    <>
+      <path d="M5 17h14M7 17l-3-9h16l-3 9" />
+      <circle cx="12" cy="6" r="2" />
+    </>
+  ),
+  (
+    <>
+      <path d="M3 10v10h18V10" />
+      <path d="M2 7l10-4 10 4" />
+      <path d="M9 22V12h6v10" />
+    </>
+  ),
+];
+
 export function Budgets() {
+  const locale = useLocale();
+  const t = useTranslations("mockups");
+
+  const totalSpent = BUDGETS.reduce((s, b) => s + b.spent, 0);
+  const totalCap = BUDGETS.reduce((s, b) => s + b.cap, 0);
+  const totalPct = Math.round((totalSpent / totalCap) * 100);
+  const left = totalCap - totalSpent;
+
   return (
     <>
       {/* Topbar */}
@@ -48,7 +78,7 @@ export function Budgets() {
         style={{ top: 64, left: 24, right: 24 }}
       >
         <span style={{ fontSize: 18, fontWeight: 500, letterSpacing: -0.2 }}>
-          Budgets
+          {t("budgets.title")}
         </span>
         <span
           className="inline-flex items-center"
@@ -63,7 +93,7 @@ export function Budgets() {
             border: `1px solid ${FG_10}`,
           }}
         >
-          {MONTH_LABEL}
+          {formatMonthYear(MONTH_DATE, locale)}
           <span style={{ fontSize: 9, opacity: 0.7 }}>▾</span>
         </span>
       </div>
@@ -79,7 +109,7 @@ export function Budgets() {
             color: FG_50,
           }}
         >
-          Across your budgets
+          {t("budgets.acrossYourBudgets")}
         </div>
         <div
           style={{
@@ -91,7 +121,7 @@ export function Budgets() {
             color: "var(--phone-screen-fg)",
           }}
         >
-          {formatRound(BUDGETS.reduce((s, b) => s + b.spent, 0))}
+          {formatRound(totalSpent, locale)}
           <span
             style={{
               fontSize: 18,
@@ -100,7 +130,8 @@ export function Budgets() {
               marginLeft: 4,
             }}
           >
-            of {formatRound(BUDGETS.reduce((s, b) => s + b.cap, 0))}
+            {" "}
+            {t("budgets.of", { amount: formatRound(totalCap, locale) })}
           </span>
         </div>
         {/* Top-level progress bar — 8px (per source's inline override). */}
@@ -117,7 +148,7 @@ export function Budgets() {
             style={{
               height: "100%",
               borderRadius: 2,
-              width: `${Math.round((BUDGETS.reduce((s, b) => s + b.spent, 0) / BUDGETS.reduce((s, b) => s + b.cap, 0)) * 100)}%`,
+              width: `${totalPct}%`,
               background: "var(--phone-screen-fg)",
             }}
           />
@@ -130,7 +161,11 @@ export function Budgets() {
             color: FG_55,
           }}
         >
-          {formatRound(BUDGETS.reduce((s, b) => s + b.cap, 0) - BUDGETS.reduce((s, b) => s + b.spent, 0))} left across {BUDGETS.length} budgets · {Math.round((BUDGETS.reduce((s, b) => s + b.spent, 0) / BUDGETS.reduce((s, b) => s + b.cap, 0)) * 100)}%
+          {t("budgets.summary", {
+            amount: formatRound(left, locale),
+            count: BUDGETS.length,
+            pct: `${totalPct}%`,
+          })}
         </div>
       </div>
 
@@ -148,67 +183,36 @@ export function Budgets() {
           color: FG_50,
         }}
       >
-        Categories
+        {t("budgets.categories")}
       </div>
 
       {/* Category list — driven by sampleData BUDGETS */}
       <div className="absolute" style={{ top: 328, left: 24, right: 24 }}>
-        <CatRow
-          first
-          name={BUDGETS[0].label}
-          right={formatRound(BUDGETS[0].spent)}
-          ofText={` of ${formatRound(BUDGETS[0].cap)}`}
-          fillPct={Math.round((BUDGETS[0].spent / BUDGETS[0].cap) * 100)}
-          state={BUDGETS[0].spent / BUDGETS[0].cap >= 1 ? "over" : BUDGETS[0].spent / BUDGETS[0].cap >= 0.8 ? "warn" : "normal"}
-          pctText={BUDGETS[0].spent / BUDGETS[0].cap >= 1 ? `${formatRound(BUDGETS[0].spent - BUDGETS[0].cap)} over · ${Math.round((BUDGETS[0].spent / BUDGETS[0].cap) * 100)}%` : BUDGETS[0].spent / BUDGETS[0].cap >= 0.8 ? `${Math.round((BUDGETS[0].spent / BUDGETS[0].cap) * 100)}% · close to limit` : `${Math.round((BUDGETS[0].spent / BUDGETS[0].cap) * 100)}%`}
-          icon={
-            <>
-              <circle cx="9" cy="20" r="1.4" />
-              <circle cx="18" cy="20" r="1.4" />
-              <path d="M3 4h2l3 12h11l2-8H6" />
-            </>
-          }
-        />
-        <CatRow
-          name={BUDGETS[1].label}
-          right={formatRound(BUDGETS[1].spent)}
-          ofText={` of ${formatRound(BUDGETS[1].cap)}`}
-          fillPct={Math.round((BUDGETS[1].spent / BUDGETS[1].cap) * 100)}
-          state={BUDGETS[1].spent / BUDGETS[1].cap >= 1 ? "over" : BUDGETS[1].spent / BUDGETS[1].cap >= 0.8 ? "warn" : "normal"}
-          pctText={BUDGETS[1].spent / BUDGETS[1].cap >= 1 ? `${formatRound(BUDGETS[1].spent - BUDGETS[1].cap)} over · ${Math.round((BUDGETS[1].spent / BUDGETS[1].cap) * 100)}%` : BUDGETS[1].spent / BUDGETS[1].cap >= 0.8 ? `${Math.round((BUDGETS[1].spent / BUDGETS[1].cap) * 100)}% · close to limit` : `${Math.round((BUDGETS[1].spent / BUDGETS[1].cap) * 100)}%`}
-          icon={
-            <path d="M17 8h1a3 3 0 010 6h-1M3 8h14v9a4 4 0 01-4 4H7a4 4 0 01-4-4V8z" />
-          }
-        />
-        <CatRow
-          name={BUDGETS[2].label}
-          right={formatRound(BUDGETS[2].spent)}
-          ofText={` of ${formatRound(BUDGETS[2].cap)}`}
-          fillPct={Math.round((BUDGETS[2].spent / BUDGETS[2].cap) * 100)}
-          state={BUDGETS[2].spent / BUDGETS[2].cap >= 1 ? "over" : BUDGETS[2].spent / BUDGETS[2].cap >= 0.8 ? "warn" : "normal"}
-          pctText={BUDGETS[2].spent / BUDGETS[2].cap >= 1 ? `${formatRound(BUDGETS[2].spent - BUDGETS[2].cap)} over · ${Math.round((BUDGETS[2].spent / BUDGETS[2].cap) * 100)}%` : BUDGETS[2].spent / BUDGETS[2].cap >= 0.8 ? `${Math.round((BUDGETS[2].spent / BUDGETS[2].cap) * 100)}% · close to limit` : `${Math.round((BUDGETS[2].spent / BUDGETS[2].cap) * 100)}%`}
-          icon={
-            <>
-              <path d="M5 17h14M7 17l-3-9h16l-3 9" />
-              <circle cx="12" cy="6" r="2" />
-            </>
-          }
-        />
-        <CatRow
-          name={BUDGETS[3].label}
-          right={formatRound(BUDGETS[3].spent)}
-          ofText={` of ${formatRound(BUDGETS[3].cap)}`}
-          fillPct={Math.round((BUDGETS[3].spent / BUDGETS[3].cap) * 100)}
-          state={BUDGETS[3].spent / BUDGETS[3].cap >= 1 ? "over" : BUDGETS[3].spent / BUDGETS[3].cap >= 0.8 ? "warn" : "normal"}
-          pctText={BUDGETS[3].spent / BUDGETS[3].cap >= 1 ? `${formatRound(BUDGETS[3].spent - BUDGETS[3].cap)} over · ${Math.round((BUDGETS[3].spent / BUDGETS[3].cap) * 100)}%` : BUDGETS[3].spent / BUDGETS[3].cap >= 0.8 ? `${Math.round((BUDGETS[3].spent / BUDGETS[3].cap) * 100)}% · close to limit` : `${Math.round((BUDGETS[3].spent / BUDGETS[3].cap) * 100)}%`}
-          icon={
-            <>
-              <path d="M3 10v10h18V10" />
-              <path d="M2 7l10-4 10 4" />
-              <path d="M9 22V12h6v10" />
-            </>
-          }
-        />
+        {BUDGETS.map((b, i) => {
+          const ratio = b.spent / b.cap;
+          const state: CatState = ratio >= 1 ? "over" : ratio >= 0.8 ? "warn" : "normal";
+          const pctNum = Math.round(ratio * 100);
+          const pctStr = `${pctNum}%`;
+          const pctText =
+            state === "over"
+              ? t("budgets.over", { amount: formatRound(b.spent - b.cap, locale), pct: pctStr })
+              : state === "warn"
+                ? t("budgets.closeToLimit", { pct: pctStr })
+                : pctStr;
+          return (
+            <CatRow
+              key={b.id}
+              first={i === 0}
+              name={t(`categories.${b.id.replace(/^b-/, "")}`)}
+              right={formatRound(b.spent, locale)}
+              ofText={` ${t("budgets.of", { amount: formatRound(b.cap, locale) })}`}
+              fillPct={pctNum}
+              state={state}
+              pctText={pctText}
+              icon={BUDGET_ICONS[i]}
+            />
+          );
+        })}
 
         {/* Unbudgeted footer */}
         <div
@@ -216,10 +220,10 @@ export function Budgets() {
           style={{ marginTop: 14, padding: "10px 0" }}
         >
           <div style={{ flex: 1, fontSize: 13, color: FG_55 }}>
-            4 categories without budgets
+            {t("budgets.withoutBudgets", { count: 4 })}
           </div>
           <div style={{ fontSize: 13, fontWeight: 500, color: FG_78 }}>
-            Set one
+            {t("budgets.setOne")}
           </div>
           <svg
             width="14"
@@ -275,11 +279,11 @@ export function Budgets() {
           background: "var(--phone-screen)",
         }}
       >
-        <NavItem label="Home"     icon={<path d="M3 12l9-9 9 9M5 10v10h14V10" />} />
-        <NavItem label="Activity" icon={<path d="M4 7h16M4 12h16M4 17h10" />} />
-        <NavItem active label="Budgets" icon={<><circle cx="12" cy="12" r="9" /><path d="M12 3v9l6 3" /></>} />
-        <NavItem label="Insights" icon={<path d="M3 17l6-6 4 4 8-8" />} />
-        <NavItem label="Profile"  icon={<><circle cx="12" cy="8" r="4" /><path d="M4 21c0-4 4-7 8-7s8 3 8 7" /></>} />
+        <NavItem label={t("nav.home")}     icon={<path d="M3 12l9-9 9 9M5 10v10h14V10" />} />
+        <NavItem label={t("nav.activity")} icon={<path d="M4 7h16M4 12h16M4 17h10" />} />
+        <NavItem active label={t("nav.budgets")} icon={<><circle cx="12" cy="12" r="9" /><path d="M12 3v9l6 3" /></>} />
+        <NavItem label={t("nav.insights")} icon={<path d="M3 17l6-6 4 4 8-8" />} />
+        <NavItem label={t("nav.profile")}  icon={<><circle cx="12" cy="8" r="4" /><path d="M4 21c0-4 4-7 8-7s8 3 8 7" /></>} />
       </div>
     </>
   );

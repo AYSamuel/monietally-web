@@ -12,17 +12,23 @@
  * globals.css. Wrap in <PhoneFrame forceDark> or <PhoneFrame forceLight>
  * to lock the variant.
  *
- * Used by: ScrollShowcase panel 1 (SPEC.md §7.2), HowItWorks step 3
- * (SPEC.md §12).
+ * i18n: chrome labels come from the "mockups" namespace; amounts and dates
+ * format in the active locale (useLocale). Sample merchant names stay as-is.
  */
 
+import { useLocale, useTranslations } from "next-intl";
 import {
-  MONTH_LABEL,
+  MONTH_DATE,
+  PREV_MONTH_DATE,
   NET_LEFT,
   TOTAL_INCOME,
   TOTAL_SPENT,
   RECENT_TRANSACTIONS,
   formatAmount,
+  formatRound,
+  formatMonthYear,
+  formatMonthLong,
+  formatMonthDay,
 } from "@/lib/sampleData";
 
 const FG_50 = "var(--m-fg-50)";
@@ -36,6 +42,9 @@ const FG_45 = "var(--m-fg-45)";
 const FG_40 = "var(--m-fg-40)";
 
 export function HomePopulated() {
+  const locale = useLocale();
+  const t = useTranslations("mockups");
+
   return (
     <>
       {/* Topbar — greeting + period chip. No wordmark on home (intentional). */}
@@ -44,7 +53,7 @@ export function HomePopulated() {
         style={{ top: 64, left: 24, right: 24 }}
       >
         <span style={{ fontSize: 14, fontWeight: 400, color: FG_70 }}>
-          Hi, Vick.
+          {t("home.greeting", { name: "Vick" })}
         </span>
         <span
           className="inline-flex items-center"
@@ -60,7 +69,7 @@ export function HomePopulated() {
             border: `1px solid ${FG_10}`,
           }}
         >
-          {MONTH_LABEL}
+          {formatMonthYear(MONTH_DATE, locale)}
           <span style={{ fontSize: 9, opacity: 0.7 }}>▾</span>
         </span>
       </div>
@@ -76,7 +85,7 @@ export function HomePopulated() {
             color: FG_50,
           }}
         >
-          Left this month
+          {t("home.leftThisMonth")}
         </div>
         <div
           style={{
@@ -88,7 +97,7 @@ export function HomePopulated() {
             color: "var(--phone-screen-fg)",
           }}
         >
-          +{formatAmount(NET_LEFT)}
+          {formatAmount(NET_LEFT, locale, { signDisplay: "exceptZero" })}
         </div>
         <div
           style={{
@@ -110,7 +119,10 @@ export function HomePopulated() {
           >
             ▲
           </span>
-          €340 vs April
+          {t("home.vsPrev", {
+            amount: formatRound(340, locale),
+            month: formatMonthLong(PREV_MONTH_DATE, locale),
+          })}
         </div>
       </div>
 
@@ -135,7 +147,7 @@ export function HomePopulated() {
               color: FG_50,
             }}
           >
-            Income
+            {t("home.income")}
           </div>
           <div
             style={{
@@ -147,7 +159,7 @@ export function HomePopulated() {
               color: "var(--m-income)",
             }}
           >
-            {formatAmount(TOTAL_INCOME)}
+            {formatAmount(TOTAL_INCOME, locale)}
           </div>
         </div>
         <div style={{ flex: 1 }}>
@@ -160,7 +172,7 @@ export function HomePopulated() {
               color: FG_50,
             }}
           >
-            Spent
+            {t("home.spent")}
           </div>
           <div
             style={{
@@ -172,7 +184,7 @@ export function HomePopulated() {
               color: "var(--phone-screen-fg)",
             }}
           >
-            {formatAmount(TOTAL_SPENT)}
+            {formatAmount(TOTAL_SPENT, locale)}
           </div>
         </div>
       </div>
@@ -197,10 +209,10 @@ export function HomePopulated() {
             color: FG_50,
           }}
         >
-          Recent
+          {t("home.recent")}
         </span>
         <span style={{ fontSize: 12, fontWeight: 500, color: FG_70 }}>
-          View all →
+          {t("home.viewAll")}
         </span>
       </div>
 
@@ -210,15 +222,15 @@ export function HomePopulated() {
         first
         income={RECENT_TRANSACTIONS[2].amount > 0}
         name={RECENT_TRANSACTIONS[2].merchant}
-        date="May 8"
-        amount={formatAmount(RECENT_TRANSACTIONS[2].amount)}
+        date={formatMonthDay(RECENT_TRANSACTIONS[2].date, locale)}
+        amount={formatAmount(RECENT_TRANSACTIONS[2].amount, locale)}
         icon={<path d="M12 4v16M5 13l7 7 7-7" />}
       />
       <Txn
         top={432}
         name={RECENT_TRANSACTIONS[0].merchant}
-        date="May 9"
-        amount={formatAmount(RECENT_TRANSACTIONS[0].amount)}
+        date={formatMonthDay(RECENT_TRANSACTIONS[0].date, locale)}
+        amount={formatAmount(RECENT_TRANSACTIONS[0].amount, locale)}
         icon={
           <path d="M17 8h1a3 3 0 010 6h-1M3 8h14v9a4 4 0 01-4 4H7a4 4 0 01-4-4V8z" />
         }
@@ -226,8 +238,8 @@ export function HomePopulated() {
       <Txn
         top={480}
         name={RECENT_TRANSACTIONS[1].merchant}
-        date="May 9"
-        amount={formatAmount(RECENT_TRANSACTIONS[1].amount)}
+        date={formatMonthDay(RECENT_TRANSACTIONS[1].date, locale)}
+        amount={formatAmount(RECENT_TRANSACTIONS[1].amount, locale)}
         icon={
           <>
             <circle cx="9" cy="20" r="1.4" />
@@ -239,8 +251,8 @@ export function HomePopulated() {
       <Txn
         top={528}
         name={RECENT_TRANSACTIONS[6].merchant}
-        date="May 5"
-        amount={formatAmount(RECENT_TRANSACTIONS[6].amount)}
+        date={formatMonthDay(RECENT_TRANSACTIONS[6].date, locale)}
+        amount={formatAmount(RECENT_TRANSACTIONS[6].amount, locale)}
         icon={
           <>
             <path d="M9 18V5l12-2v13" />
@@ -293,17 +305,10 @@ export function HomePopulated() {
           background: "var(--phone-screen)",
         }}
       >
+        <NavItem active label={t("nav.home")} icon={<path d="M3 12l9-9 9 9M5 10v10h14V10" />} />
+        <NavItem label={t("nav.activity")} icon={<path d="M4 7h16M4 12h16M4 17h10" />} />
         <NavItem
-          active
-          label="Home"
-          icon={<path d="M3 12l9-9 9 9M5 10v10h14V10" />}
-        />
-        <NavItem
-          label="Activity"
-          icon={<path d="M4 7h16M4 12h16M4 17h10" />}
-        />
-        <NavItem
-          label="Budgets"
+          label={t("nav.budgets")}
           icon={
             <>
               <circle cx="12" cy="12" r="9" />
@@ -311,12 +316,9 @@ export function HomePopulated() {
             </>
           }
         />
+        <NavItem label={t("nav.insights")} icon={<path d="M3 17l6-6 4 4 8-8" />} />
         <NavItem
-          label="Insights"
-          icon={<path d="M3 17l6-6 4 4 8-8" />}
-        />
-        <NavItem
-          label="Profile"
+          label={t("nav.profile")}
           icon={
             <>
               <circle cx="12" cy="8" r="4" />

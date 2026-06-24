@@ -394,8 +394,6 @@ export function validateEmail(raw: string): EmailValidationResult {
   return { valid: true, normalised };
 }
 
-export const EMAIL_ERROR_MESSAGES: Record<EmailValidationReason, string> = {
-  format: 'Please enter a valid email address.',
-  disposable: 'Disposable email addresses aren\'t accepted. Please use your real email.',
-  suspicious: 'Please enter a valid email address.',
-};
+// User-facing strings deliberately do NOT live here anymore. validateEmail()
+// returns a typed `reason` code; WaitlistForm maps it to a localized message
+// via t(`waitlist.errors.${reason}`). See SPEC-i18n §6.
