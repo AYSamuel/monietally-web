@@ -15,15 +15,15 @@ No test suite is configured. After UI changes, start the dev server and verify v
 
 ## Architecture
 
-**Next.js 14 App Router, TypeScript, Tailwind CSS 3, deployed serverless on Vercel.**
+**Next.js 14 App Router, TypeScript, Tailwind CSS 3, server-rendered on Vercel.**
 
-The site builds to a fully static `out/` directory (no Node.js runtime). `next.config.js` sets `output: 'export'` and `images: { unoptimized: true }`, the Next.js `<Image>` optimiser is not available.
+The site is server-rendered (SSR / serverless functions on Vercel), NOT a static export. `next.config.js` is currently empty (`{}`): there is no `output: 'export'` and no `images: { unoptimized: true }`, so the Next.js `<Image>` optimiser is available. The waitlist depends on a Server Action (`src/app/actions/waitlist.ts`) and Supabase, both of which require the server runtime, so static export is not an option. `npm run build` produces a serverless build, not an `out/` directory.
 
 Path alias `@/*` maps to `./src/*`.
 
 ### Routing
 
-App Router pages live in `src/app/`. Routes: `/` (landing), `/about`, `/privacy`, `/terms`. Navigation anchors (`/#features`, `/#privacy`, `/#waitlist`) use native smooth scroll (`scroll-behavior: smooth` in globals.css).
+App Router pages live in `src/app/`. Routes: `/` (landing), `/about`, `/privacy`, `/terms`, `/delete-account`, `/auth/callback` (email-link fallback, noindex), and `/mockups` (dev-only preview). Navigation anchors (`/#how-it-works`, `/#faq`, `/#waitlist`) use smooth scroll (Lenis via the `SmoothScroll` wrapper, plus `scroll-behavior: smooth` in globals.css).
 
 ### Theme system
 
@@ -38,21 +38,29 @@ Dark/light mode uses **two layers**:
 src/components/
   Navbar.tsx          # "use client", sticky, mobile hamburger, theme toggle
   Footer.tsx
-  ThemeToggle.tsx     # "use client", SSR-safe (uses useEffect before rendering icon)
-  WaitlistForm.tsx    # "use client", Formspree POST, idle/loading/success/error states
-  PhoneMockup.tsx     # Pure render, 3 variants: dashboard | chart | transactions (wireframe placeholders)
+  ThemeToggle.tsx     # "use client", SSR-safe (useEffect before rendering icon)
+  WaitlistForm.tsx    # "use client", posts via the submitWaitlist Server Action;
+                      #   idle/loading/success/duplicate/no_mx/error states
+  PhoneMockup.tsx     # phone render helpers
+  PhoneCarousel.tsx   # "use client"
+  SmoothScroll.tsx    # "use client", Lenis smooth-scroll wrapper (in root layout)
+  landing/
+    PhoneFrame.tsx          # fixed 336x712 device frame
+    ScrollExperience.tsx    # "use client", exports Hero + Features
+                            #   (alternating phone/text reveal panels)
+    mockups/                # in-phone screens: HomePopulated, Activity, Insights,
+                            #   Budgets, Savings, AddTransaction, Onboarding2
   sections/
-    Hero.tsx
-    TrustBar.tsx
-    Features.tsx
     HowItWorks.tsx
-    PrivacySection.tsx
-    RegionMap.tsx
-    Testimonials.tsx
-    WaitlistCTA.tsx
+    MissionBand.tsx
+    TrustBar.tsx
+    WaitlistCTA.tsx   # "use client"
+    FAQ.tsx           # "use client", accordion
 ```
 
-All interactive components carry `"use client"`. Server components have no directive.
+Note: the older `Hero`/`Features` split lives inside `landing/ScrollExperience.tsx` (it
+exports both), not as separate `sections/` files. Interactive components carry `"use client"`;
+server components have no directive.
 
 ### Design tokens
 
@@ -94,16 +102,16 @@ Email validation runs in three places:
 
 ### External integrations
 
-- **Formspree**, waitlist form POSTs to `https://formspree.io/f/YOUR_FORM_ID`. Replace the placeholder in `WaitlistForm.tsx` with the real form ID before launch.
+- **Supabase**, the waitlist Server Action (`src/app/actions/waitlist.ts`) inserts into the `waitlist` table via the client in `src/lib/supabase.ts`. Validation runs in three layers (see above). There is no Formspree; references to it in older docs are obsolete.
 - **Vercel**, `vercel.json` configures security headers (X-Frame-Options, X-XSS-Protection, etc.).
-- **Google Fonts (Inter)**, imported in `globals.css` via CSS `@import`.
+- **Fonts (`next/font/google`)**, Inter (body) and Fraunces (display) are loaded in `src/app/layout.tsx` and exposed as `--font-body` / `--font-display`. Not a CSS `@import`.
 
 ## Pending work
 
-Tracked in `WEBSITE_PLAN.md` (592 lines). Key gaps before launch:
-1. `src/app/layout.tsx` and `src/app/page.tsx`, root layout (ThemeProvider, metadata) and landing page assembly
-2. Five unbuilt sections: `HowItWorks`, `PrivacySection`, `RegionMap`, `Testimonials`, `WaitlistCTA`
-3. `src/hooks/useScrollReveal.ts` (Intersection Observer) and `useReducedMotion.ts`
-4. `src/lib/constants.ts`, site-wide strings and metadata
-5. Legal pages: `/about`, `/privacy`, `/terms`
-6. Replace Formspree placeholder with real form ID
+The landing page and legal pages are built. Current known work:
+
+1. **i18n (EN/DE)**, planned and specced in `SPEC-i18n.md`: add `next-intl`, move routes under `app/[locale]/`, externalize all copy into `messages/{en,de}.json`, add a locale switcher. Not yet started.
+2. **German legal copy**, the `/privacy`, `/terms`, and `/delete-account` bodies stay English until a reviewed German translation lands (per the i18n spec).
+3. Replace the placeholder social links (`href="#"` for Instagram/LinkedIn in `Footer.tsx`) before launch.
+
+`WEBSITE_PLAN.md` is an early planning document and is now largely historical; trust the code over it where they disagree.
