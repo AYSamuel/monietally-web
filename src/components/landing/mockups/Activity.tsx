@@ -7,10 +7,12 @@
  * globals.css. Wrap in <PhoneFrame forceDark> or <PhoneFrame forceLight>
  * to lock the variant.
  *
- * Used by: ScrollShowcase panel 2 (SPEC.md §7.2).
+ * i18n: chrome labels come from the "mockups" namespace; amounts and the
+ * day-header dates format in the active locale (useLocale).
  */
 
-import { MONTH_LABEL } from "@/lib/sampleData";
+import { useLocale, useTranslations } from "next-intl";
+import { MONTH_DATE, formatAmount, formatMonthYear, formatWeekdayDate } from "@/lib/sampleData";
 
 const FG_72 = "var(--m-fg-72)";
 const FG_70 = "var(--m-fg-70)";
@@ -25,6 +27,9 @@ const FG_08 = "var(--m-fg-08)";
 const FG_04 = "var(--m-fg-04)";
 
 export function Activity() {
+  const locale = useLocale();
+  const t = useTranslations("mockups");
+
   return (
     <>
       {/* Topbar — title + period chip + filter button with gold dot */}
@@ -33,7 +38,7 @@ export function Activity() {
         style={{ top: 64, left: 24, right: 24 }}
       >
         <div style={{ fontSize: 18, fontWeight: 500, letterSpacing: -0.2 }}>
-          Activity
+          {t("activity.title")}
         </div>
         <div className="flex items-center" style={{ gap: 10 }}>
           <span
@@ -50,7 +55,7 @@ export function Activity() {
               border: `1px solid ${FG_10}`,
             }}
           >
-            {MONTH_LABEL} ▾
+            {formatMonthYear(MONTH_DATE, locale)} ▾
           </span>
           {/* Filter button with gold dot indicator */}
           <div
@@ -125,7 +130,7 @@ export function Activity() {
           <path d="M21 21l-4.3-4.3" />
         </svg>
         <span style={{ fontSize: 13, color: FG_45 }}>
-          Search transactions
+          {t("activity.searchPlaceholder")}
         </span>
       </div>
 
@@ -134,12 +139,12 @@ export function Activity() {
         className="absolute"
         style={{ top: 168, bottom: 80, left: 24, right: 24, overflow: "hidden" }}
       >
-        <DayHead label="Thursday, May 14" />
+        <DayHead label={formatWeekdayDate("2026-05-14", locale)} />
         <Txn
           first
-          name="Groceries"
-          cat="Food"
-          amount="−€67.20"
+          name={t("activity.names.groceries")}
+          cat={t("activity.cats.food")}
+          amount={formatAmount(-67.2, locale)}
           icon={
             <>
               <circle cx="9" cy="20" r="1.4" />
@@ -149,20 +154,20 @@ export function Activity() {
           }
         />
         <Txn
-          name="Coffee shop"
-          cat="Food"
-          amount="−€4.50"
+          name={t("activity.names.coffeeShop")}
+          cat={t("activity.cats.food")}
+          amount={formatAmount(-4.5, locale)}
           icon={
             <path d="M17 8h1a3 3 0 010 6h-1M3 8h14v9a4 4 0 01-4 4H7a4 4 0 01-4-4V8z" />
           }
         />
 
-        <DayHead label="Wednesday, May 13" />
+        <DayHead label={formatWeekdayDate("2026-05-13", locale)} />
         <Txn
           first
-          name="Rent"
-          cat="Bills"
-          amount="−€1,200.00"
+          name={t("activity.names.rent")}
+          cat={t("activity.cats.bills")}
+          amount={formatAmount(-1200, locale)}
           icon={
             <>
               <path d="M3 10v10h18V10" />
@@ -172,19 +177,19 @@ export function Activity() {
           }
         />
 
-        <DayHead label="Sunday, May 1" />
+        <DayHead label={formatWeekdayDate("2026-05-01", locale)} />
         <Txn
           first
           income
-          name="Salary"
-          cat="Income"
-          amount="+€3,200.00"
+          name={t("activity.names.salary")}
+          cat={t("activity.cats.income")}
+          amount={formatAmount(3200, locale, { signDisplay: "exceptZero" })}
           icon={<path d="M12 4v16M5 13l7 7 7-7" />}
         />
         <Txn
-          name="Spotify"
-          cat="Subscriptions"
-          amount="−€9.99"
+          name={t("activity.names.spotify")}
+          cat={t("activity.cats.subscriptions")}
+          amount={formatAmount(-9.99, locale)}
           icon={
             <>
               <path d="M9 18V5l12-2v13" />
@@ -236,14 +241,14 @@ export function Activity() {
           background: "var(--phone-screen)",
         }}
       >
-        <NavItem label="Home" icon={<path d="M3 12l9-9 9 9M5 10v10h14V10" />} />
+        <NavItem label={t("nav.home")} icon={<path d="M3 12l9-9 9 9M5 10v10h14V10" />} />
         <NavItem
           active
-          label="Activity"
+          label={t("nav.activity")}
           icon={<path d="M4 7h16M4 12h16M4 17h10" />}
         />
         <NavItem
-          label="Budgets"
+          label={t("nav.budgets")}
           icon={
             <>
               <circle cx="12" cy="12" r="9" />
@@ -251,9 +256,9 @@ export function Activity() {
             </>
           }
         />
-        <NavItem label="Insights" icon={<path d="M3 17l6-6 4 4 8-8" />} />
+        <NavItem label={t("nav.insights")} icon={<path d="M3 17l6-6 4 4 8-8" />} />
         <NavItem
-          label="Profile"
+          label={t("nav.profile")}
           icon={
             <>
               <circle cx="12" cy="8" r="4" />

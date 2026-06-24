@@ -2,8 +2,10 @@
 
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 
 export default function ThemeToggle() {
+  const t = useTranslations("themeToggle");
   const { resolvedTheme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
@@ -14,7 +16,7 @@ export default function ThemeToggle() {
       <button
         className="w-11 h-11 rounded-lg flex items-center justify-center"
         style={{ border: "1px solid var(--border-subtle)" }}
-        aria-label="Toggle theme"
+        aria-label={t("toggle")}
       >
         <div className="w-4 h-4 rounded-full bg-gray-300" />
       </button>
@@ -28,7 +30,7 @@ export default function ThemeToggle() {
       onClick={() => setTheme(isDark ? "light" : "dark")}
       className="w-11 h-11 rounded-lg flex items-center justify-center transition-colors duration-200 hover:bg-[var(--surface-elevated)]"
       style={{ border: "1px solid var(--border-subtle)" }}
-      aria-label={`Switch to ${isDark ? "light" : "dark"} mode`}
+      aria-label={isDark ? t("switchToLight") : t("switchToDark")}
     >
       {isDark ? (
         <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color: "var(--accent-orange)" }}>

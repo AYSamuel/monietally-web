@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
-import Navbar from "../../../components/Navbar";
-import Footer from "../../../components/Footer";
+import { setRequestLocale } from "next-intl/server";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 
 export const metadata: Metadata = {
   title: "Open MonieTally on your phone | MonieTally",
@@ -12,6 +13,12 @@ export const metadata: Metadata = {
 // Content-agnostic fallback page reached when a Supabase auth email
 // (verification or password-reset) is opened on a device other than
 // the phone with the MonieTally app installed.
+//
+// Body copy stays English (SPEC-i18n Q3): it is opened from links in emails
+// sent by the mobile app, which don't currently carry a locale. The page lives
+// under [locale] so it gets <html>/providers and a valid lang; the middleware
+// prefixes the bare /auth/callback email link to the detected/default locale.
+// Revisit with the app team once email links can carry a locale.
 //
 // Why one page instead of /auth/callback + /auth/reset:
 //   The instructional message is identical for both flows ("open
@@ -28,7 +35,12 @@ export const metadata: Metadata = {
 //     docs/auth-and-sync/99-deferred-until-production.md.
 //
 // Tag: SPEC-phase-a1 §2.1.
-export default function AuthCallbackPage() {
+export default function AuthCallbackPage({
+  params: { locale },
+}: {
+  params: { locale: string };
+}) {
+  setRequestLocale(locale);
   return (
     <>
       <Navbar />

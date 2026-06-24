@@ -2,55 +2,13 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useTranslations } from "next-intl";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 
 interface FAQItem {
-  question: string;
-  answer: string;
+  q: string;
+  a: string;
 }
-
-const FAQS: ReadonlyArray<FAQItem> = [
-  {
-    question: "Is MonieTally free?",
-    answer:
-      "The core app is free. Track transactions, set budgets, save toward goals, and see your spending patterns without paying a thing. We may introduce optional premium features later, but the fundamentals will always be free.",
-  },
-  {
-    question: "Do I have to enter every transaction by hand?",
-    answer:
-      "No. Connect your bank once and your transactions arrive automatically, sorted and easy to read, with read-only access and no password stored. Prefer to add cash or a one-off by hand? You still can.",
-  },
-  {
-    question: "How do you handle my data?",
-    answer:
-      "Your bank connection is read-only through a regulated open-banking provider, so we never see or store your bank login. Your data is hosted in the EU under GDPR, encrypted in transit and at rest. We don't sell data, run ads, or build profiles.",
-  },
-  {
-    question: "What data do you collect?",
-    answer:
-      "Your email when you join the waitlist. In the app, the financial data needed to show you your spending, hosted in the EU and never sold. No ads, no profiles.",
-  },
-  {
-    question: "Is MonieTally only for Germany?",
-    answer:
-      "No. We're launching in Germany first, with nearby countries like Austria close behind, and Africa as our next major market. Join the waitlist and tell us where you bank, it helps us prioritise.",
-  },
-  {
-    question: "Which banks will work?",
-    answer:
-      "At launch, Monietally will connect to major banks via secure open banking (e.g. Sparkasse, Volksbank, N26, DKB, Commerzbank, ING), starting in Germany and adding more banks and countries over time. Bank connections aren't live yet. Tell us your bank on the waitlist and we'll prioritise it.",
-  },
-  {
-    question: "Can I export my data?",
-    answer:
-      "Yes, everything, anytime. One tap gives you a full CSV export of your transactions, budgets, and savings goals. No lock-in, no hostage data. If you ever leave, you walk out with every byte you put in.",
-  },
-  {
-    question: "When does it launch?",
-    answer:
-      "We're in private beta right now and rolling out invites from the waitlist. Join and you'll get an email the moment it's your turn. No spam in between, just the one notification that matters.",
-  },
-];
 
 function FAQAccordionItem({
   item,
@@ -82,7 +40,7 @@ function FAQAccordionItem({
           className="text-base md:text-lg font-medium"
           style={{ color: "var(--text-primary)" }}
         >
-          {item.question}
+          {item.q}
         </span>
         <span
           className="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center transition-transform duration-300"
@@ -129,7 +87,7 @@ function FAQAccordionItem({
                 maxWidth: "62ch",
               }}
             >
-              {item.answer}
+              {item.a}
             </p>
           </motion.div>
         )}
@@ -139,6 +97,8 @@ function FAQAccordionItem({
 }
 
 export default function FAQ() {
+  const t = useTranslations("faq");
+  const items = t.raw("items") as ReadonlyArray<FAQItem>;
   const reducedMotion = useReducedMotion();
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
@@ -167,7 +127,7 @@ export default function FAQ() {
               className="text-xs font-medium uppercase mb-5"
               style={{ letterSpacing: "0.24em", color: "var(--eyebrow)" }}
             >
-              Questions
+              {t("eyebrow")}
             </p>
             <h2
               className="text-display"
@@ -177,9 +137,7 @@ export default function FAQ() {
                 lineHeight: 1.1,
               }}
             >
-              You asked.
-              <br />
-              Here&apos;s the short version.
+              {t.rich("headline", { br: () => <br /> })}
             </h2>
           </motion.div>
 
@@ -191,18 +149,14 @@ export default function FAQ() {
             viewport={{ once: true, margin: "-10% 0px" }}
             transition={{ duration: 0.6, delay: 0.08, ease }}
           >
-            <div
-              style={{ borderTop: "1px solid var(--border)" }}
-            >
-              {FAQS.map((item, i) => (
+            <div style={{ borderTop: "1px solid var(--border)" }}>
+              {items.map((item, i) => (
                 <FAQAccordionItem
-                  key={item.question}
+                  key={i}
                   item={item}
                   index={i}
                   isOpen={openIndex === i}
-                  onToggle={() =>
-                    setOpenIndex(openIndex === i ? null : i)
-                  }
+                  onToggle={() => setOpenIndex(openIndex === i ? null : i)}
                   reducedMotion={reducedMotion}
                 />
               ))}

@@ -1,8 +1,9 @@
 export const SITE = {
   name: "MonieTally",
-  tagline: "Your money, finally clear. Wherever you bank.",
-  description:
-    "MonieTally helps you see your money clearly, wherever you bank. Starting in Germany, built for internationals: connect your bank and understand your spending clearly. Africa next. Hosted in the EU, never sold.",
   url: "https://monietally.com",
   email: "hello@monietally.com",
 };
+
+// Note: `tagline` and `description` moved into the message catalog
+// (messages/{en,de}.json -> site.tagline / site.description and metadata.*)
+// because they are user-facing copy that must localize. See SPEC-i18n §6.

@@ -1,6 +1,9 @@
-import Link from "next/link";
+import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
+import { SITE } from "@/lib/constants";
 
 export default function Footer() {
+  const t = useTranslations("footer");
   const currentYear = new Date().getFullYear();
 
   return (
@@ -28,9 +31,7 @@ export default function Footer() {
               className="text-sm mt-4 max-w-md leading-relaxed"
               style={{ color: "var(--text-secondary)" }}
             >
-              The money app for people the big finance apps overlook. Starting
-              in Germany, built for internationals, with Africa next. Your data
-              kept in the EU.
+              {t("tagline")}
             </p>
 
             <div
@@ -46,14 +47,14 @@ export default function Footer() {
                   background: "var(--gold)",
                 }}
               />
-              Your data lives in the EU. Never sold.
+              {t("euNote")}
             </div>
 
             {/* Social links */}
             <div className="mt-6 flex items-center gap-4">
               <a
                 href="#"
-                aria-label="MonieTally on Instagram"
+                aria-label={t("instagramAria")}
                 className="transition-opacity hover:opacity-100"
                 style={{ color: "var(--text-secondary)", opacity: 0.7 }}
               >
@@ -65,7 +66,7 @@ export default function Footer() {
               </a>
               <a
                 href="#"
-                aria-label="MonieTally on LinkedIn"
+                aria-label={t("linkedinAria")}
                 className="transition-opacity hover:opacity-100"
                 style={{ color: "var(--text-secondary)", opacity: 0.7 }}
               >
@@ -87,7 +88,7 @@ export default function Footer() {
                 color: "var(--eyebrow)",
               }}
             >
-              Product
+              {t("product")}
             </h4>
             <ul className="space-y-3">
               <li>
@@ -96,7 +97,7 @@ export default function Footer() {
                   className="text-sm transition-opacity hover:opacity-100"
                   style={{ color: "var(--text-secondary)", opacity: 0.85 }}
                 >
-                  How it works
+                  {t("howItWorks")}
                 </Link>
               </li>
               <li>
@@ -105,7 +106,7 @@ export default function Footer() {
                   className="text-sm transition-opacity hover:opacity-100"
                   style={{ color: "var(--text-secondary)", opacity: 0.85 }}
                 >
-                  FAQ
+                  {t("faq")}
                 </Link>
               </li>
             </ul>
@@ -120,7 +121,7 @@ export default function Footer() {
                 color: "var(--eyebrow)",
               }}
             >
-              Company
+              {t("company")}
             </h4>
             <ul className="space-y-3">
               <li>
@@ -129,7 +130,7 @@ export default function Footer() {
                   className="text-sm transition-opacity hover:opacity-100"
                   style={{ color: "var(--text-secondary)", opacity: 0.85 }}
                 >
-                  About
+                  {t("about")}
                 </Link>
               </li>
               <li>
@@ -138,7 +139,7 @@ export default function Footer() {
                   className="text-sm transition-opacity hover:opacity-100"
                   style={{ color: "var(--text-secondary)", opacity: 0.85 }}
                 >
-                  Privacy policy
+                  {t("privacy")}
                 </Link>
               </li>
               <li>
@@ -147,16 +148,16 @@ export default function Footer() {
                   className="text-sm transition-opacity hover:opacity-100"
                   style={{ color: "var(--text-secondary)", opacity: 0.85 }}
                 >
-                  Terms of service
+                  {t("terms")}
                 </Link>
               </li>
               <li>
                 <a
-                  href="mailto:hello@monietally.com"
+                  href={`mailto:${SITE.email}`}
                   className="text-sm transition-opacity hover:opacity-100"
                   style={{ color: "var(--text-secondary)", opacity: 0.85 }}
                 >
-                  hello@monietally.com
+                  {SITE.email}
                 </a>
               </li>
             </ul>
@@ -169,10 +170,10 @@ export default function Footer() {
           style={{ borderTop: "1px solid var(--border)" }}
         >
           <p className="text-xs" style={{ color: "var(--text-muted)" }}>
-            &copy; {currentYear} MonieTally. All rights reserved.
+            {t("rights", { year: currentYear })}
           </p>
           <p className="text-xs" style={{ color: "var(--text-muted)" }}>
-            Designed for clarity. Built for people far from home.
+            {t("signoff")}
           </p>
         </div>
       </div>

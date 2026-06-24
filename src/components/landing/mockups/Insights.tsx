@@ -5,7 +5,8 @@
  * Theming: follows the ambient theme via the --m-fg-XX tokens and
  * --phone-screen-fg / --m-income tokens defined in globals.css.
  *
- * Used by: ScrollShowcase panel 3 (SPEC.md §7.2).
+ * i18n: chrome + category labels come from the "mockups" namespace; amounts
+ * and the period chip format in the active locale (useLocale).
  *
  * Chart palette is the locked Phase 5.5 set from the source mockup:
  *   slate #5A7BB8, clay #B5715A, plum #8E6F8B, sage #8FA88F, gold #C9A66B.
@@ -13,11 +14,15 @@
  * here rather than living in globals.css. They read on both themes.
  */
 
+import { useLocale, useTranslations } from "next-intl";
 import {
-  MONTH_LABEL,
+  MONTH_DATE,
+  PREV_MONTH_DATE,
   TOTAL_SPENT,
   CATEGORIES,
   formatRound,
+  formatMonthYear,
+  formatMonthLong,
 } from "@/lib/sampleData";
 
 const FG_90 = "var(--m-fg-90)";
@@ -40,6 +45,10 @@ const CHART = {
 };
 
 export function Insights() {
+  const locale = useLocale();
+  const t = useTranslations("mockups");
+  const pct = (spent: number) => `${Math.round((spent / TOTAL_SPENT) * 100)}%`;
+
   return (
     <>
       {/* Topbar */}
@@ -48,7 +57,7 @@ export function Insights() {
         style={{ top: 64, left: 24, right: 24 }}
       >
         <span style={{ fontSize: 18, fontWeight: 500, letterSpacing: -0.2 }}>
-          Insights
+          {t("insights.title")}
         </span>
         <span
           className="inline-flex items-center"
@@ -63,7 +72,7 @@ export function Insights() {
             border: `1px solid ${FG_10}`,
           }}
         >
-          {MONTH_LABEL}
+          {formatMonthYear(MONTH_DATE, locale)}
           <span style={{ fontSize: 9, opacity: 0.7 }}>▾</span>
         </span>
       </div>
@@ -82,7 +91,7 @@ export function Insights() {
             color: FG_50,
           }}
         >
-          Where it went
+          {t("insights.whereItWent")}
         </div>
 
         {/* Donut */}
@@ -125,7 +134,7 @@ export function Insights() {
                 color: FG_50,
               }}
             >
-              Spent
+              {t("insights.spent")}
             </div>
             <div
               style={{
@@ -134,7 +143,7 @@ export function Insights() {
                 letterSpacing: -0.6,
               }}
             >
-              {formatRound(TOTAL_SPENT)}
+              {formatRound(TOTAL_SPENT, locale)}
             </div>
           </div>
         </div>
@@ -144,9 +153,9 @@ export function Insights() {
           className="flex flex-col"
           style={{ marginTop: 18, gap: 8, textAlign: "left" }}
         >
-          <LegendRow color={CHART.slate} name={CATEGORIES[0].label} amount={formatRound(CATEGORIES[0].spent)} pct={`${Math.round((CATEGORIES[0].spent / TOTAL_SPENT) * 100)}%`} />
-          <LegendRow color={CHART.clay}  name={CATEGORIES[2].label} amount={formatRound(CATEGORIES[2].spent)} pct={`${Math.round((CATEGORIES[2].spent / TOTAL_SPENT) * 100)}%`} />
-          <LegendRow color={CHART.plum}  name={CATEGORIES[7].label} amount={formatRound(CATEGORIES[7].spent)} pct={`${Math.round((CATEGORIES[7].spent / TOTAL_SPENT) * 100)}%`} />
+          <LegendRow color={CHART.slate} name={t(`categories.${CATEGORIES[0].id}`)} amount={formatRound(CATEGORIES[0].spent, locale)} pct={pct(CATEGORIES[0].spent)} />
+          <LegendRow color={CHART.clay}  name={t(`categories.${CATEGORIES[2].id}`)} amount={formatRound(CATEGORIES[2].spent, locale)} pct={pct(CATEGORIES[2].spent)} />
+          <LegendRow color={CHART.plum}  name={t(`categories.${CATEGORIES[7].id}`)} amount={formatRound(CATEGORIES[7].spent, locale)} pct={pct(CATEGORIES[7].spent)} />
         </div>
 
         {/* View all categories link */}
@@ -161,7 +170,7 @@ export function Insights() {
             color: FG_78,
           }}
         >
-          View all 6 categories
+          {t("insights.viewAllCategories", { count: 6 })}
           <svg
             width="12"
             height="12"
@@ -193,8 +202,8 @@ export function Insights() {
             color: FG_50,
           }}
         >
-          Trend
-          <span style={{ float: "right" }}>View →</span>
+          {t("insights.trend")}
+          <span style={{ float: "right" }}>{t("insights.view")}</span>
         </div>
         <div
           className="flex items-center justify-between"
@@ -202,7 +211,7 @@ export function Insights() {
         >
           <div>
             <div style={{ fontSize: 18, fontWeight: 500, letterSpacing: -0.2 }}>
-              {formatRound(TOTAL_SPENT)} this month
+              {t("insights.thisMonth", { amount: formatRound(TOTAL_SPENT, locale) })}
             </div>
             <div
               style={{
@@ -212,7 +221,7 @@ export function Insights() {
                 color: "var(--m-income)",
               }}
             >
-              ↓ 8% vs April
+              {t("insights.vsPrev", { pct: "8%", month: formatMonthLong(PREV_MONTH_DATE, locale) })}
             </div>
           </div>
           {/* Sparkline */}
@@ -251,11 +260,11 @@ export function Insights() {
           background: "var(--phone-screen)",
         }}
       >
-        <NavItem label="Home"     icon={<path d="M3 12l9-9 9 9M5 10v10h14V10" />} />
-        <NavItem label="Activity" icon={<path d="M4 7h16M4 12h16M4 17h10" />} />
-        <NavItem label="Budgets"  icon={<><circle cx="12" cy="12" r="9" /><path d="M12 3v9l6 3" /></>} />
-        <NavItem active label="Insights" icon={<path d="M3 17l6-6 4 4 8-8" />} />
-        <NavItem label="Profile"  icon={<><circle cx="12" cy="8" r="4" /><path d="M4 21c0-4 4-7 8-7s8 3 8 7" /></>} />
+        <NavItem label={t("nav.home")}     icon={<path d="M3 12l9-9 9 9M5 10v10h14V10" />} />
+        <NavItem label={t("nav.activity")} icon={<path d="M4 7h16M4 12h16M4 17h10" />} />
+        <NavItem label={t("nav.budgets")}  icon={<><circle cx="12" cy="12" r="9" /><path d="M12 3v9l6 3" /></>} />
+        <NavItem active label={t("nav.insights")} icon={<path d="M3 17l6-6 4 4 8-8" />} />
+        <NavItem label={t("nav.profile")}  icon={<><circle cx="12" cy="8" r="4" /><path d="M4 21c0-4 4-7 8-7s8 3 8 7" /></>} />
       </div>
     </>
   );
