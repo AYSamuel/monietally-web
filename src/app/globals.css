@@ -25,9 +25,12 @@
 
     /* ── Text (ink on cream) ── */
     --text-primary: #0F1117;
-    --text-secondary: rgba(15, 17, 23, 0.62);
-    --text-tertiary: rgba(15, 17, 23, 0.42);
-    --text-muted: rgba(15, 17, 23, 0.28);
+    /* Alphas raised so secondary/tertiary/muted clear WCAG AA (4.5:1) on the
+       cream surfaces. The old 0.62/0.42/0.28 ramp left tertiary/muted at
+       ~2.8:1 and ~1.9:1. Hierarchy now leans more on size/weight than opacity. */
+    --text-secondary: rgba(15, 17, 23, 0.72);
+    --text-tertiary: rgba(15, 17, 23, 0.60);
+    --text-muted: rgba(15, 17, 23, 0.55);
 
     /* ── Borders ── */
     --border: #E8E3D6;
@@ -57,6 +60,10 @@
     --ink-soft: #1A1C24;
     --ink-line: #2A2A30;
     --gold: #C9A961;
+    /* Darker gold for eyebrow/label TEXT on cream (passes WCAG AA ~4.5:1).
+       The warm --gold (#C9A961) is only ~2.1:1 on cream: fine on ink, fails
+       on light. Eyebrows use --eyebrow so they stay legible in both themes. */
+    --eyebrow: #8A6D2F;
 
     /* ── Gradient tokens (emerald → mint → gold) ── */
     --gradient-brand: linear-gradient(135deg, #0A6E4D 0%, #11A675 35%, #5DDDA8 70%, #C9A961 100%);
@@ -70,6 +77,13 @@
                        #C9A961 180deg,
                        #0A6E4D 270deg,
                        #11A675 360deg);
+
+    /* Headline-accent text gradients — THEME-AWARE (see .dark for the bright
+       variants). On cream the light end must stay legible, so light mode uses
+       deeper emeralds (lightest ~4:1 on cream); the gold accent likewise drops
+       to antique gold. Consumed by .text-gradient / .text-gradient-gold. */
+    --gradient-text: linear-gradient(135deg, #073D2B 0%, #0A6E4D 45%, #0F8B68 100%);
+    --gradient-text-gold: linear-gradient(135deg, #6E5523 0%, #8A6D2F 55%, #9A7B2C 100%);
 
     /* ── Glow shadows (emerald + gold) ── */
     --glow-emerald: 0 0 60px rgba(17, 166, 117, 0.42);
@@ -151,8 +165,11 @@
     /* ── Text (cream on ink) ── */
     --text-primary: #F5F1E8;
     --text-secondary: rgba(245, 241, 232, 0.68);
-    --text-tertiary: rgba(245, 241, 232, 0.42);
-    --text-muted: rgba(245, 241, 232, 0.28);
+    /* Raised so tertiary/muted clear WCAG AA (4.5:1) on ink too. */
+    --text-tertiary: rgba(245, 241, 232, 0.55);
+    --text-muted: rgba(245, 241, 232, 0.48);
+    /* Editorial eyebrow accent — warm gold reads cleanly on ink. */
+    --eyebrow: #C9A961;
 
     /* ── Borders ── */
     --border: rgba(245, 241, 232, 0.10);
@@ -164,6 +181,11 @@
     --gradient-aurora: radial-gradient(at 20% 20%, rgba(17, 166, 117, 0.40) 0px, transparent 50%),
                        radial-gradient(at 80% 30%, rgba(93, 221, 168, 0.32) 0px, transparent 50%),
                        radial-gradient(at 50% 80%, rgba(201, 169, 97, 0.30) 0px, transparent 50%);
+
+    /* ── Text accents go bright on ink (the light end pops, not a legibility
+       risk against the dark surface) ── */
+    --gradient-text: linear-gradient(135deg, #0A6E4D 0%, #11A675 50%, #5DDDA8 100%);
+    --gradient-text-gold: linear-gradient(135deg, #C9A961 0%, #F4B860 100%);
 
     /* ── Glow stronger on dark ── */
     --glow-emerald: 0 0 80px rgba(17, 166, 117, 0.55);
@@ -316,23 +338,22 @@
     line-height: 1.04;
   }
 
-  /* Headline accent — emerald-only gradient (deep → primary → light).
-     Stays in the green family for calm money-coded contrast against
-     ink/cream surfaces. The full multi-color --gradient-brand (with
-     gold) remains available for decorative places like the aurora
-     bg and gradient-pill buttons. */
+  /* Headline accent gradient, THEME-AWARE via --gradient-text. Stays in the
+     money-coded green family in both themes; light mode uses deeper greens so
+     the light end keeps ~4:1 on cream, dark keeps the bright emerald-to-mint
+     pop. The multi-color --gradient-brand stays available for decorative use. */
   .text-gradient {
-    background: linear-gradient(135deg, #0A6E4D 0%, #11A675 50%, #5DDDA8 100%);
+    background: var(--gradient-text);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
     -webkit-text-fill-color: transparent;
   }
 
-  /* Optional: gold-only accent for editorial moments where you want
-     premium warmth instead of money green. */
+  /* Optional gold-only accent, THEME-AWARE via --gradient-text-gold: deeper
+     antique gold on cream for legibility, bright warm gold on ink. */
   .text-gradient-gold {
-    background: linear-gradient(135deg, #C9A961 0%, #F4B860 100%);
+    background: var(--gradient-text-gold);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
@@ -442,14 +463,14 @@
   .section-label {
     @apply text-xs font-medium uppercase;
     letter-spacing: 0.22em;
-    color: var(--gold);
+    color: var(--eyebrow);
   }
 
   /* Eyebrow label — alias for section-label */
   .eyebrow {
     @apply text-xs font-medium uppercase;
     letter-spacing: 0.22em;
-    color: var(--gold);
+    color: var(--eyebrow);
   }
 
   /* Section heading */

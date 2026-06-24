@@ -1,68 +1,38 @@
 "use client";
 
 /**
- * ScrollExperience — single continuous scroll-driven hero + showcase.
+ * ScrollExperience — hero + product showcase as alternating reveal sections.
  *
- * One phone exists. It starts in the Hero (right side, showing the Home
- * dashboard), then visibly slides left↔right between panels as the
- * user scrolls. The screen content crossfades between mockups. Text
- * for each panel fades in/out around the phone.
+ * Design:
+ *   - Each panel is its own full-height section.
+ *   - The phone sits on one side and the text on the other, alternating
+ *     left/right down the page (hero: phone right, then left, right, ...).
+ *   - As each section scrolls into view, the phone slides in from its side
+ *     and the text rises in from the opposite side. The hero animates on load.
+ *   - Natural scrolling only: no sticky pin, no scroll-position mapping, no
+ *     scroll hijacking. Robust across browsers and the Lenis smooth scroll.
  *
- * Architecture (FIXED overlay, not sticky):
- *   - A scroll-distance container (PANEL_COUNT × PANEL_HEIGHT_VH).
- *     Empty box that just provides scroll runway.
- *   - The phone + text layers are FIXED to the viewport (not sticky).
- *     This eliminates the ~100vh "post-sticky exit phase" that comes
- *     with position:sticky — there's no dead-scroll where the phone
- *     slowly slides up while the next section waits its turn.
- *   - useScroll uses offset ["start start", "end start"] so progress
- *     spans the full container height. The overlay opacity fades to 0
- *     as scroll progress nears 1, so by the time the user reaches the
- *     bottom of the container, the overlay is invisible and the next
- *     section (which starts immediately after) is fully revealed.
- *   - Five panels: Hero (intro), Activity, Insights, Budgets, Savings.
- *     Each panel = 30vh of scroll → total 150vh.
- *
- * Mobile: standard stacked cards.
+ * Mobile: the columns stack (phone above text), still with a gentle reveal.
+ * Reduced motion: everything renders statically, no animation.
  */
 
-import {
-  useRef,
-  useState,
-  useEffect,
-  type ComponentType,
-  type ReactNode,
-} from "react";
-import {
-  motion,
-  useScroll,
-  useTransform,
-  useMotionValueEvent,
-  AnimatePresence,
-  useReducedMotion,
-  type MotionValue,
-} from "framer-motion";
-import { useTheme } from "next-themes";
-import WaitlistForm from "@/components/WaitlistForm";
-import { useLenis } from "@/components/SmoothScroll";
+import { motion, useReducedMotion, type Variants } from "framer-motion";
+import { type ComponentType, type ReactNode } from "react";
 import {
   PhoneFrame,
   PHONE_FRAME_WIDTH,
   PHONE_FRAME_HEIGHT,
 } from "./PhoneFrame";
-import Phone3DSceneLoader from "./Phone3DSceneLoader";
-import type { PhonePose } from "./Phone3DScene";
 import { HomePopulated } from "./mockups/HomePopulated";
 import { Activity } from "./mockups/Activity";
 import { Insights } from "./mockups/Insights";
 import { Budgets } from "./mockups/Budgets";
-import { Savings } from "./mockups/Savings";
+import WaitlistForm from "../WaitlistForm";
 
 /* ── Panel definitions ─────────────────────────────────────────── */
 
 interface BasePanelDef {
   id: string;
-  label: string;
   phoneSide: "right" | "left";
   Mockup: ComponentType;
   ariaLabel: string;
@@ -73,6 +43,7 @@ interface HeroPanelDef extends BasePanelDef {
   eyebrow: string;
   headlinePrimary: string;
   headlineAccent: string;
+  subline: string;
   body: string;
   trust: ReadonlyArray<{ icon: ReactNode; label: string }>;
 }
@@ -87,62 +58,78 @@ interface ShowcasePanelDef extends BasePanelDef {
 
 type PanelDef = HeroPanelDef | ShowcasePanelDef;
 
+const icon = (path: ReactNode): ReactNode => (
+  <svg
+    width="14"
+    height="14"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    aria-hidden="true"
+  >
+    {path}
+  </svg>
+);
+
 const TRUST_ICONS: Record<string, ReactNode> = {
-  lock: (
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+  lock: icon(
+    <>
       <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
       <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-    </svg>
+    </>,
   ),
-  globe: (
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+  globe: icon(
+    <>
       <circle cx="12" cy="12" r="10" />
       <path d="M2 12h20" />
       <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
-    </svg>
+    </>,
   ),
-  message: (
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-    </svg>
+  tag: icon(
+    <>
+      <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z" />
+      <line x1="7" y1="7" x2="7.01" y2="7" />
+    </>,
   ),
 };
 
 const PANELS: ReadonlyArray<PanelDef> = [
   {
     id: "hero",
-    label: "Hero",
     phoneSide: "right",
     Mockup: HomePopulated,
     ariaLabel: "Home dashboard showing your month at a glance",
     type: "hero",
-    eyebrow: "Now in private beta",
-    headlinePrimary: "Your money,",
-    headlineAccent: "finally legible.",
+    eyebrow: "Now in private beta · Built for internationals",
+    headlinePrimary: "Understand your money,",
+    headlineAccent: "wherever you bank.",
+    subline:
+      "A money app built for internationals: connect your bank and finally make sense of your spending, automatically.",
     body:
-      "Connect your bank and every transaction arrives on its own, sorted into a picture you can actually read. Beautifully designed, quietly private, useful from day one. Encrypted with a key your phone holds, not ours.",
+      "Living abroad is hard enough. Your money shouldn't feel foreign too.",
     trust: [
-      { icon: TRUST_ICONS.lock, label: "End-to-end encrypted" },
+      { icon: TRUST_ICONS.tag, label: "Free to start, no card needed" },
       { icon: TRUST_ICONS.globe, label: "Hosted in the EU" },
-      { icon: TRUST_ICONS.message, label: "No data resale, ever" },
+      { icon: TRUST_ICONS.lock, label: "Read-only bank access, never sold" },
     ],
   },
   {
     id: "activity",
-    label: "Activity",
     phoneSide: "left",
     Mockup: Activity,
     ariaLabel: "Activity log of recent transactions",
     type: "showcase",
     number: "01",
-    headline: "Every spend, accounted for.",
+    headline: "Every transaction, accounted for.",
     subhead:
-      "Transactions flow in automatically from your bank, the moment they happen. Add cash by hand whenever you need to. Searchable, filterable, yours.",
+      "Transactions flow in automatically from your bank, the moment they happen, tidied up and easy to read. Add cash by hand whenever you need to.",
     support: "Tap any entry to see the full story behind it.",
   },
   {
     id: "insights",
-    label: "Insights",
     phoneSide: "right",
     Mockup: Insights,
     ariaLabel: "Insights screen with categories and weekly trend",
@@ -150,12 +137,11 @@ const PANELS: ReadonlyArray<PanelDef> = [
     number: "02",
     headline: "Patterns you'd miss in a bank statement.",
     subhead:
-      "Where your money actually went, by category and by trend. The recurring drips. The unusual weeks.",
+      "Where your money actually went, by category and trend, with your bank's merchant names made readable.",
     support: "The shape of your real life with money.",
   },
   {
     id: "budgets",
-    label: "Budgets",
     phoneSide: "left",
     Mockup: Budgets,
     ariaLabel: "Budgets screen with category caps and progress",
@@ -166,839 +152,196 @@ const PANELS: ReadonlyArray<PanelDef> = [
       "Set monthly limits, watch progress fill in real time, get a quiet nudge before you cross a line.",
     support: "No guilt-trip notifications. Just calm awareness.",
   },
-  {
-    id: "savings",
-    label: "Savings",
-    phoneSide: "right",
-    Mockup: Savings,
-    ariaLabel: "Savings goals with target and saved amounts",
-    type: "showcase",
-    number: "04",
-    headline: "Save toward what matters.",
-    subhead:
-      "Name your goals, set a target, and watch the runway shrink as you go.",
-    support:
-      "Encrypted on your device, synced privately to your other devices.",
-  },
 ];
 
-const PANEL_COUNT = PANELS.length;
-/** Per-panel scroll distance in vh. With offset ["start start", "end start"],
- *  scroll progress 0→1 spans exactly this × PANEL_COUNT vh (= 150vh total).
- *  No sticky-exit dead-scroll: the container is the scroll distance. */
-const PANEL_HEIGHT_VH = 30;
-/** Phone slide distance — computed dynamically from container width.
- *  Stored as state so it updates on resize. Fraction of container half-width. */
-const PHONE_SLIDE_FRAC = 0.31;
-/** Inward tilt at each rest position, in radians (~5.7°). */
-const PHONE_TILT_RAD = 0.10;
-/** Constant rear tilt for editorial depth (~2.3°). */
-const PHONE_BASE_TILT_X = -0.04;
-/** Phone scale across all panels — keeps visual continuity. */
-const PHONE_SCALE = 1.05;
-/** Half-width of the panel-boundary transition window, in scroll progress.
- *  0.025 = transition occupies 5% of scroll progress, which on a 250vh
- *  container is ~12vh of scroll, roughly one wheel tick. Wide enough that
- *  the phone glides rather than snaps, but tight enough that the
- *  midpoint moment is brief. */
-const TRANSITION_HALF = 0.025;
+const DESKTOP_SCALE = 0.82;
+const ease = [0.22, 0.61, 0.36, 1] as const;
 
-const xForSide = (side: "left" | "right", px: number) =>
-  side === "right" ? px : -px;
-const ryForSide = (side: "left" | "right") =>
-  side === "right" ? -PHONE_TILT_RAD : PHONE_TILT_RAD;
+/* ── Scaled phone (fixed 336x712 frame, scaled to fit a column) ──── */
 
-/* ══════════════════════════════════════════════════════════════════
-   Component
-   ══════════════════════════════════════════════════════════════════ */
-
-export default function ScrollExperience() {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const phoneContainerRef = useRef<HTMLDivElement>(null);
-  const reducedMotion = useReducedMotion() ?? false;
-  const { resolvedTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
-  useEffect(() => setMounted(true), []);
-  const isDark = mounted && resolvedTheme === "dark";
-
-  // Compute phone slide distance from the actual container width so the
-  // phone aligns with the grid columns, not arbitrary viewport pixels.
-  // Clamp so the phone frame never extends past the container edge.
-  // On short viewports the Phone3DScene fitScale shrinks the coordinate
-  // system, pulling the phone toward center — compensate by dividing
-  // the offset by that same factor so the visual position holds.
-  const [phoneSlidePx, setPhoneSlidePx] = useState(280);
-  useEffect(() => {
-    const el = phoneContainerRef.current;
-    if (!el) return;
-    const update = () => {
-      const w = el.offsetWidth;
-      const phoneNeeded = PHONE_FRAME_HEIGHT * PHONE_SCALE;
-      const availableH = el.clientHeight;
-      const fitScale = availableH < phoneNeeded ? availableH / phoneNeeded : 1;
-      const scaledPhoneHalf = (PHONE_FRAME_WIDTH * PHONE_SCALE * fitScale) / 2;
-      const maxOffset = (w / 2 - scaledPhoneHalf - 16) / fitScale;
-      const desired = (w * PHONE_SLIDE_FRAC) / fitScale;
-      setPhoneSlidePx(Math.min(desired, maxOffset));
-    };
-    update();
-    const ro = new ResizeObserver(update);
-    ro.observe(el);
-    return () => ro.disconnect();
-  }, []);
-
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start start", "end start"],
-  });
-
-  const overlayOpacity = useTransform(scrollYProgress, [0.97, 0.99], [1, 0]);
-
-  // ── Phone X / rotateY keyframes tied to panel boundaries ──
-  const xInputs: number[] = [];
-  const xOutputs: number[] = [];
-  const ryInputs: number[] = [];
-  const ryOutputs: number[] = [];
-  for (let i = 0; i < PANEL_COUNT; i++) {
-    const start = i / PANEL_COUNT;
-    const x = xForSide(PANELS[i].phoneSide, phoneSlidePx);
-    const ry = ryForSide(PANELS[i].phoneSide);
-    if (i === 0) {
-      xInputs.push(start); xOutputs.push(x);
-      ryInputs.push(start); ryOutputs.push(ry);
-    } else {
-      const prevX = xForSide(PANELS[i - 1].phoneSide, phoneSlidePx);
-      const prevRY = ryForSide(PANELS[i - 1].phoneSide);
-      xInputs.push(start - TRANSITION_HALF); xOutputs.push(prevX);
-      xInputs.push(start + TRANSITION_HALF); xOutputs.push(x);
-      ryInputs.push(start - TRANSITION_HALF); ryOutputs.push(prevRY);
-      ryInputs.push(start + TRANSITION_HALF); ryOutputs.push(ry);
-    }
-  }
-  xInputs.push(1); xOutputs.push(xForSide(PANELS[PANEL_COUNT - 1].phoneSide, phoneSlidePx));
-  ryInputs.push(1); ryOutputs.push(ryForSide(PANELS[PANEL_COUNT - 1].phoneSide));
-
-  const phoneX = useTransform(
-    scrollYProgress,
-    reducedMotion ? [0, 1] : xInputs,
-    reducedMotion ? [0, 0] : xOutputs,
+function PhoneShell({
+  panel,
+  scale,
+}: {
+  panel: PanelDef;
+  scale: number;
+}) {
+  const Mockup = panel.Mockup;
+  return (
+    <div
+      style={{
+        width: PHONE_FRAME_WIDTH * scale,
+        height: PHONE_FRAME_HEIGHT * scale,
+      }}
+    >
+      <div style={{ transform: `scale(${scale})`, transformOrigin: "top left" }}>
+        <PhoneFrame ariaLabel={panel.ariaLabel}>
+          <Mockup />
+        </PhoneFrame>
+      </div>
+    </div>
   );
-  const phoneRY = useTransform(
-    scrollYProgress,
-    reducedMotion ? [0, 1] : ryInputs,
-    reducedMotion ? [0, 0] : ryOutputs,
-  );
+}
 
-  // Stable pose ref — mutated every frame by the motion value subscriptions.
-  const poseRef = useRef<PhonePose>({
-    position: [xForSide(PANELS[0].phoneSide, phoneSlidePx), 0, 0],
-    rotation: [reducedMotion ? 0 : PHONE_BASE_TILT_X, ryForSide(PANELS[0].phoneSide), 0],
-    scale: PHONE_SCALE,
-  });
-  useMotionValueEvent(phoneX, "change", (v) => {
-    poseRef.current.position = [v, 0, 0];
-  });
-  useMotionValueEvent(phoneRY, "change", (v) => {
-    poseRef.current.rotation = [reducedMotion ? 0 : PHONE_BASE_TILT_X, v, 0];
-  });
+/* ── Text block ────────────────────────────────────────────────── */
 
-  // Active panel for mockup crossfade — derived from the spring.
-  const [activePanel, setActivePanel] = useState(0);
-  const [scrolledPast, setScrolledPast] = useState(false);
-  const [forceHidden, setForceHidden] = useState(false);
-  useMotionValueEvent(scrollYProgress, "change", (p) => {
-    const idx = Math.min(
-      PANEL_COUNT - 1,
-      Math.max(0, Math.floor(p * PANEL_COUNT)),
+function PanelText({ panel }: { panel: PanelDef }) {
+  if (panel.type === "hero") {
+    return (
+      <>
+        <p className="section-label mb-4">{panel.eyebrow}</p>
+        <h1
+          className="text-display text-4xl md:text-5xl lg:text-6xl tracking-tight mb-5"
+          style={{ color: "var(--text-primary)" }}
+        >
+          {panel.headlinePrimary}{" "}
+          <span className="text-gradient">{panel.headlineAccent}</span>
+        </h1>
+        <p
+          className="text-lg md:text-xl leading-relaxed mb-4 max-w-md"
+          style={{ color: "var(--text-primary)" }}
+        >
+          {panel.subline}
+        </p>
+        <p
+          className="text-base md:text-lg leading-relaxed mb-7 max-w-md"
+          style={{ color: "var(--text-secondary)" }}
+        >
+          {panel.body}
+        </p>
+        <div className="mb-8 max-w-md">
+          <WaitlistForm source="hero" />
+        </div>
+        <ul className="space-y-2.5">
+          {panel.trust.map((t) => (
+            <li
+              key={t.label}
+              className="flex items-center gap-2.5 text-sm"
+              style={{ color: "var(--text-secondary)" }}
+            >
+              <span style={{ color: "var(--eyebrow)" }}>{t.icon}</span>
+              {t.label}
+            </li>
+          ))}
+        </ul>
+      </>
     );
-    setActivePanel((prev) => (prev === idx ? prev : idx));
-    setScrolledPast(p >= 0.99);
-    if (forceHidden && p < 0.5) setForceHidden(false);
-  });
-
-  useEffect(() => {
-    const hide = () => setForceHidden(true);
-    window.addEventListener("scrollexperience:hide", hide);
-    return () => window.removeEventListener("scrollexperience:hide", hide);
-  }, []);
-
-  // Panel-locked scrolling: each wheel/touch gesture moves exactly one panel.
-  // Uses capture-phase listeners + stopImmediatePropagation to fully block
-  // Lenis from seeing wheel events while inside the section.
-  const lenis = useLenis();
-  const targetPanelRef = useRef(0);
-  const isAnimatingRef = useRef(false);
-  const exitCooldownRef = useRef(false);
-  const scrollCooldownRef = useRef(false);
-
-  const animateScrollTo = (target: number, duration: number, onDone?: () => void) => {
-    const start = window.scrollY;
-    const distance = target - start;
-    if (Math.abs(distance) < 1) { isAnimatingRef.current = false; onDone?.(); return; }
-    const startTime = performance.now();
-
-    function step(now: number) {
-      const elapsed = now - startTime;
-      const progress = Math.min(elapsed / duration, 1);
-      const eased = 1 - Math.pow(1 - progress, 3);
-      window.scrollTo(0, start + distance * eased);
-      if (progress < 1) {
-        requestAnimationFrame(step);
-      } else {
-        isAnimatingRef.current = false;
-        scrollCooldownRef.current = true;
-        setTimeout(() => { scrollCooldownRef.current = false; }, 80);
-        onDone?.();
-      }
-    }
-    requestAnimationFrame(step);
-  };
-
-  const getPanelScroll = (panel: number) => {
-    if (!containerRef.current) return 0;
-    const rect = containerRef.current.getBoundingClientRect();
-    const containerTop = rect.top + window.scrollY;
-    if (panel === 0) return 0;
-    const centerProgress = (panel + 0.5) / PANEL_COUNT;
-    return containerTop + centerProgress * rect.height;
-  };
-
-  const getExitScroll = () => {
-    if (!containerRef.current) return 0;
-    // containerRef is the spacer div. Its bottom edge is where the next
-    // section starts in the DOM. With useScroll offset ["start start",
-    // "end start"], progress=1 means spacer bottom = viewport top.
-    // So scrollY = containerTop + containerHeight puts the next section
-    // right at the viewport top.
-    const rect = containerRef.current.getBoundingClientRect();
-    return rect.top + window.scrollY + rect.height;
-  };
-
-  useEffect(() => {
-    if (!containerRef.current || reducedMotion) return;
-
-    const isInSection = () => {
-      if (exitCooldownRef.current) return false;
-      if (!containerRef.current) return false;
-      const rect = containerRef.current.getBoundingClientRect();
-      return rect.top <= 10 && rect.bottom > window.innerHeight * 0.5;
-    };
-
-    const handleScroll = (direction: 1 | -1) => {
-      if (isAnimatingRef.current || scrollCooldownRef.current) return;
-      const p = scrollYProgress.get();
-
-      if (p <= 0 && direction < 0) return;
-      if (p >= 0.99) return;
-      if (!isInSection()) return;
-
-      if (p <= 0.01 && direction > 0) {
-        targetPanelRef.current = 0;
-      }
-
-      const next = targetPanelRef.current + direction;
-
-      isAnimatingRef.current = true;
-
-      if (next < 0) {
-        if (!containerRef.current) { isAnimatingRef.current = false; return; }
-        const containerTop = containerRef.current.getBoundingClientRect().top + window.scrollY;
-        animateScrollTo(Math.max(0, containerTop - 1), 400);
-        return;
-      }
-
-      if (next >= PANEL_COUNT) {
-        setForceHidden(true);
-        exitCooldownRef.current = true;
-        animateScrollTo(getExitScroll(), 500, () => {
-          setTimeout(() => { exitCooldownRef.current = false; }, 600);
-        });
-        return;
-      }
-
-      targetPanelRef.current = next;
-      animateScrollTo(getPanelScroll(next), 500);
-    };
-
-    const onWheel = (e: WheelEvent) => {
-      const p = scrollYProgress.get();
-      if (p <= 0 && e.deltaY < 0) return;
-      if (p >= 0.99) return;
-      if (!isInSection()) return;
-
-      e.preventDefault();
-      e.stopImmediatePropagation();
-
-      if (Math.abs(e.deltaY) < 4) return;
-      handleScroll(e.deltaY > 0 ? 1 : -1);
-    };
-
-    let touchStartY = 0;
-    let touchHandled = false;
-
-    const onTouchStart = (e: TouchEvent) => {
-      if (!isInSection()) return;
-      touchStartY = e.touches[0].clientY;
-      touchHandled = false;
-    };
-
-    const onTouchMove = (e: TouchEvent) => {
-      const p = scrollYProgress.get();
-      if (p <= 0 && e.touches[0].clientY > touchStartY) return;
-      if (p >= 0.99) return;
-      if (!isInSection()) return;
-
-      e.preventDefault();
-      e.stopImmediatePropagation();
-
-      if (touchHandled) return;
-      const deltaY = touchStartY - e.touches[0].clientY;
-      if (Math.abs(deltaY) < 30) return;
-
-      touchHandled = true;
-      handleScroll(deltaY > 0 ? 1 : -1);
-    };
-
-    window.addEventListener("wheel", onWheel, { passive: false, capture: true });
-    window.addEventListener("touchstart", onTouchStart, { passive: true, capture: true });
-    window.addEventListener("touchmove", onTouchMove, { passive: false, capture: true });
-    return () => {
-      window.removeEventListener("wheel", onWheel, { capture: true });
-      window.removeEventListener("touchstart", onTouchStart, { capture: true });
-      window.removeEventListener("touchmove", onTouchMove, { capture: true });
-    };
-  }, [lenis, scrollYProgress, reducedMotion]);
-
-  // Per-panel surface color. 6 stops for 5 panels (one stop per panel
-  // boundary + final). Subtle within the cream/ink family.
-  const lightColors = ["#FAF8F1", "#F5F1E8", "#ECE7D7", "#F2EDE2", "#F8F3E8", "#F8F3E8"];
-  const darkColors  = ["#0F1117", "#15171F", "#1B1E27", "#15171F", "#0F1117", "#0F1117"];
-  const surfaceColor = useTransform(
-    scrollYProgress,
-    [0, 1 / PANEL_COUNT, 2 / PANEL_COUNT, 3 / PANEL_COUNT, 4 / PANEL_COUNT, 1],
-    isDark ? darkColors : lightColors,
+  }
+  return (
+    <>
+      <p
+        className="text-sm font-semibold mb-3"
+        style={{ letterSpacing: "0.2em", color: "var(--eyebrow)" }}
+      >
+        {panel.number}
+      </p>
+      <h2
+        className="text-display text-3xl md:text-4xl lg:text-5xl tracking-tight mb-5"
+        style={{ color: "var(--text-primary)" }}
+      >
+        {panel.headline}
+      </h2>
+      <p
+        className="text-base md:text-lg leading-relaxed mb-3 max-w-md"
+        style={{ color: "var(--text-secondary)" }}
+      >
+        {panel.subhead}
+      </p>
+      <p className="text-sm max-w-md" style={{ color: "var(--text-tertiary)" }}>
+        {panel.support}
+      </p>
+    </>
   );
+}
 
-  // Aurora opacity — visible in the Hero panel, fades out by panel 1.
-  const auroraOpacity = useTransform(
-    scrollYProgress,
-    [0, 0.5 / PANEL_COUNT, 1.0 / PANEL_COUNT],
-    [1, 0.85, 0],
-  );
+/* ── One alternating section ───────────────────────────────────── */
 
-  const ActiveMockup = PANELS[activePanel].Mockup;
+function FeatureSection({
+  panel,
+  index,
+}: {
+  panel: PanelDef;
+  index: number;
+}) {
+  const reduced = useReducedMotion() ?? false;
+  const isHero = panel.type === "hero";
+  const phoneRight = panel.phoneSide === "right";
+  // Alternate theme-responsive surfaces for a subtle rhythm.
+  const background =
+    index % 2 === 0 ? "var(--bg-primary)" : "var(--bg-secondary)";
+
+  // Phone slides in from its own side; text rises in from the opposite side.
+  const phoneVariants: Variants = {
+    hidden: { opacity: 0, x: reduced ? 0 : phoneRight ? 64 : -64 },
+    show: { opacity: 1, x: 0, transition: { duration: 0.7, ease } },
+  };
+  const textVariants: Variants = {
+    hidden: { opacity: 0, x: reduced ? 0 : phoneRight ? -48 : 48 },
+    show: {
+      opacity: 1,
+      x: 0,
+      transition: { duration: 0.7, ease, delay: 0.08 },
+    },
+  };
+
+  // Hero plays on mount; later sections play when scrolled into view.
+  const motionProps = isHero
+    ? { initial: "hidden" as const, animate: "show" as const }
+    : {
+        initial: "hidden" as const,
+        whileInView: "show" as const,
+        viewport: { once: true, amount: 0.35 },
+      };
 
   return (
     <section
-      id="hero"
-      aria-label="MonieTally - your money, finally legible"
-      className="relative"
+      aria-label={isHero ? "MonieTally hero" : `Feature: ${panel.id}`}
+      className={`relative overflow-hidden flex items-center ${
+        isHero ? "min-h-screen py-20" : "py-16 md:py-24"
+      }`}
+      style={{ background }}
     >
-      {/* ══════ Side scroll progress rail (fades with overlay) ══════ */}
-      <ScrollProgressRail
-        scrollYProgress={scrollYProgress}
-        activePanel={activePanel}
-        totalPanels={PANEL_COUNT}
-        opacity={overlayOpacity}
-      />
-
-      {/* ══════ Desktop scroll-distance container (empty) ══════
-          This box exists only to provide the scroll runway. The
-          phone + text are rendered as a FIXED overlay below, not
-          inside this container, so there's no sticky exit dead-scroll. */}
-      <div
-        ref={containerRef}
-        style={{ position: "relative" }}
-        aria-hidden="true"
-      >
-        <div className="hidden md:block" style={{ height: `${PANEL_COUNT * PANEL_HEIGHT_VH}vh` }}>
-          <div id="showcase" style={{ position: "absolute", top: `${PANEL_HEIGHT_VH}vh` }} />
-        </div>
-      </div>
-
-      {/* ══════ Desktop FIXED overlay (phone + text, full viewport) ══════
-          Fixed to viewport, so it appears regardless of where the user
-          has scrolled. Opacity is driven by scroll progress: 1 during
-          the experience, fading to 0 as the user reaches the bottom of
-          the scroll container so the next section reveals cleanly. */}
-      <motion.div
-        className="hidden md:block fixed inset-x-0 top-0 pointer-events-none"
-        style={{
-          height: "100vh",
-          opacity: overlayOpacity,
-          zIndex: 30,
-          visibility: scrolledPast || forceHidden ? "hidden" : "visible",
-        }}
-      >
-        {/* TEXT + BG LAYER (z-1, full viewport, surfaceColor bg) */}
-        <motion.div
-          className="absolute inset-0 overflow-hidden"
-          style={{
-            zIndex: 1,
-            background: surfaceColor,
-          }}
-        >
-          {/* Aurora layer — only visible during the Hero panel */}
-          <motion.div
-            aria-hidden="true"
-            className="absolute inset-0 aurora-bg animate-aurora pointer-events-none"
-            style={{ opacity: auroraOpacity }}
-          />
-          {/* Subtle dot grid (Hero feel) */}
-          <motion.div
-            aria-hidden="true"
-            className="absolute inset-0 grid-bg pointer-events-none"
-            style={{ opacity: useTransform(auroraOpacity, [0, 1], [0, 0.4]) }}
-          />
-
-          <div className="section-container w-full h-full">
-            <div className="relative w-full h-full">
-              {PANELS.map((panel, idx) => (
-                <PanelText
-                  key={panel.id}
-                  panel={panel}
-                  idx={idx}
-                  isActive={idx === activePanel}
-                  totalPanels={PANEL_COUNT}
-                  scrollYProgress={scrollYProgress}
-                  reducedMotion={reducedMotion}
-                />
-              ))}
-            </div>
-          </div>
-        </motion.div>
-
-        {/* PHONE LAYER (z-50, above text, only the phone is opaque)
-            Wrapped in section-container so the phone's X offset is
-            relative to the same max-w-7xl container as the text grid. */}
+      <div className="section-container relative w-full">
         <div
-          className="absolute inset-x-0 bottom-0 overflow-hidden pointer-events-none"
-          style={{ zIndex: 50, top: 56 }}
+          // flex-col-reverse on mobile puts the text ABOVE the phone, so the
+          // value proposition is read first instead of being pushed below a
+          // tall phone mockup. md+ restores the alternating side-by-side row.
+          className={`flex flex-col-reverse items-center gap-12 md:gap-16 ${
+            phoneRight ? "md:flex-row-reverse" : "md:flex-row"
+          }`}
         >
-          <div className="section-container w-full h-full">
-            <div ref={phoneContainerRef} className="relative w-full h-full">
-              {/* Soft halo behind the phone, follows it via translateX */}
-              <motion.div
-                aria-hidden="true"
-                className="absolute pointer-events-none"
-                style={{
-                  top: "50%",
-                  left: "50%",
-                  width: 600,
-                  height: 600,
-                  x: phoneX,
-                  translateY: "-50%",
-                  translateX: "-50%",
-                  background:
-                    "radial-gradient(ellipse at center, rgba(17, 166, 117, 0.32) 0%, rgba(201, 169, 97, 0.18) 45%, transparent 72%)",
-                  filter: "blur(28px)",
-                }}
-              />
-              <Phone3DSceneLoader
-                pose={poseRef.current}
-                idleRotation={false}
-                ariaLabel={PANELS[activePanel].ariaLabel}
-                className="w-full h-full"
-              >
-                <AnimatePresence mode="sync" initial={false}>
-                  <motion.div
-                    key={PANELS[activePanel].id}
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: reducedMotion ? 0 : 0.3 }}
-                    style={{ position: "absolute", inset: 0 }}
-                  >
-                    <ActiveMockup />
-                  </motion.div>
-                </AnimatePresence>
-              </Phone3DSceneLoader>
-            </div>
-          </div>
+          <motion.div
+            className="md:w-1/2 flex justify-center"
+            variants={phoneVariants}
+            {...motionProps}
+          >
+            <PhoneShell panel={panel} scale={DESKTOP_SCALE} />
+          </motion.div>
+          <motion.div
+            className="md:w-1/2 w-full"
+            variants={textVariants}
+            {...motionProps}
+          >
+            <PanelText panel={panel} />
+          </motion.div>
         </div>
-      </motion.div>
-
-      {/* ══════ Mobile ══════ */}
-      <div className="md:hidden">
-        <MobileStack panels={PANELS} />
       </div>
     </section>
   );
 }
 
-/* ══════════════════════════════════════════════════════════════════
-   ScrollProgressRail — vertical rail with a sliding emerald dot
-   that descends as the user scrolls. The visual signal that you
-   ARE going down the page, not just watching things switch.
-   ══════════════════════════════════════════════════════════════════ */
+/* ── Component ─────────────────────────────────────────────────── */
 
-/** Total rail height in CSS px. */
-const RAIL_HEIGHT = 220;
-/** Dot diameter. */
-const RAIL_DOT = 10;
-
-function ScrollProgressRail({
-  scrollYProgress,
-  activePanel,
-  totalPanels,
-  opacity,
-}: {
-  scrollYProgress: MotionValue<number>;
-  activePanel: number;
-  totalPanels: number;
-  opacity?: MotionValue<number>;
-}) {
-  const showcasePanels = totalPanels - 1;
-  const firstShowcaseStart = 1 / totalPanels;
-  const lastPanelStart = (totalPanels - 1) / totalPanels;
-  const dotTop = useTransform(scrollYProgress, [firstShowcaseStart, lastPanelStart], [0, RAIL_HEIGHT - RAIL_DOT]);
-  const fillHeight = useTransform(scrollYProgress, [firstShowcaseStart, lastPanelStart], [0, RAIL_HEIGHT - RAIL_DOT / 2]);
-  const railOpacity = useTransform(scrollYProgress, [firstShowcaseStart - 0.02, firstShowcaseStart], [0, 1]);
-
-  const displayPanel = Math.max(0, activePanel - 1);
-
-  return (
-    <motion.div
-      className="hidden xl:flex flex-col items-center gap-3 fixed right-6 top-1/2 -translate-y-1/2 pointer-events-none"
-      style={{ zIndex: 60, opacity: opacity ?? 1 }}
-      aria-hidden="true"
-    >
-      <motion.div style={{ opacity: railOpacity }}>
-      {/* Panel label, current / total */}
-      <div
-        className="text-[10px] uppercase font-medium"
-        style={{
-          letterSpacing: "0.22em",
-          color: "var(--text-tertiary)",
-          fontFeatureSettings: '"tnum"',
-        }}
-      >
-        {String(displayPanel + 1).padStart(2, "0")} / {String(showcasePanels).padStart(2, "0")}
-      </div>
-
-      {/* Vertical rail */}
-      <div
-        className="relative"
-        style={{
-          width: 2,
-          height: RAIL_HEIGHT,
-          background: "var(--border)",
-          borderRadius: 2,
-          overflow: "visible",
-        }}
-      >
-        {/* Filled portion (above the dot) */}
-        <motion.div
-          className="absolute left-0 right-0 top-0 rounded-full"
-          style={{
-            background: "linear-gradient(to bottom, var(--brand-emerald), var(--brand-emerald-light))",
-            height: fillHeight,
-            opacity: 0.65,
-          }}
-        />
-        {/* Sliding dot */}
-        <motion.div
-          className="absolute rounded-full"
-          style={{
-            left: "50%",
-            x: "-50%",
-            width: RAIL_DOT,
-            height: RAIL_DOT,
-            top: dotTop,
-            background: "var(--brand-emerald)",
-            boxShadow: "0 0 16px rgba(17, 166, 117, 0.7), 0 0 4px rgba(17, 166, 117, 1)",
-          }}
-        />
-      </div>
-      </motion.div>
-    </motion.div>
-  );
+export function Hero() {
+  return <FeatureSection panel={PANELS[0]} index={0} />;
 }
 
-/* ══════════════════════════════════════════════════════════════════
-   PanelText — renders either the Hero panel or a Showcase panel
-   ══════════════════════════════════════════════════════════════════ */
-
-function PanelText({
-  panel,
-  idx,
-  isActive,
-  totalPanels,
-  scrollYProgress,
-  reducedMotion,
-}: {
-  panel: PanelDef;
-  idx: number;
-  isActive: boolean;
-  totalPanels: number;
-  scrollYProgress: MotionValue<number>;
-  reducedMotion: boolean;
-}) {
-  const start = idx / totalPanels;
-  const end = (idx + 1) / totalPanels;
-  // Match the phone's TRANSITION_HALF so text and phone share timing.
-  const fade = TRANSITION_HALF;
-
-  const isFirst = idx === 0;
-  const isLast = idx === totalPanels - 1;
-
-  let inputs: number[];
-  let opacityOutputs: number[];
-  let yOutputs: number[];
-
-  // Stronger Y motion (60px in/out) makes the text panels feel like
-  // they're actually scrolling through the viewport — rolling in from
-  // below, rolling out to above — instead of just fading in place.
-  if (isFirst) {
-    inputs = [0, 0.0001, end - fade, end + fade];
-    opacityOutputs = [1, 1, 1, 0];
-    yOutputs = reducedMotion ? [0, 0, 0, 0] : [0, 0, 0, -64];
-  } else if (isLast) {
-    inputs = [start - fade, start + fade, 0.9999, 1];
-    opacityOutputs = [0, 1, 1, 1];
-    yOutputs = reducedMotion ? [0, 0, 0, 0] : [64, 0, 0, 0];
-  } else {
-    inputs = [start - fade, start + fade, end - fade, end + fade];
-    opacityOutputs = [0, 1, 1, 0];
-    yOutputs = reducedMotion ? [0, 0, 0, 0] : [64, 0, 0, -64];
-  }
-
-  const opacity = useTransform(scrollYProgress, inputs, opacityOutputs);
-  const y = useTransform(scrollYProgress, inputs, yOutputs);
-
+export default function Features() {
   return (
-    <motion.div
-      style={{
-        opacity,
-        y,
-        position: "absolute",
-        inset: 0,
-        display: "flex",
-        alignItems: "center",
-        pointerEvents: "none",
-        willChange: "opacity, transform",
-      }}
-    >
-      {panel.type === "hero"
-        ? <HeroPanelContent panel={panel} isActive={isActive} />
-        : <ShowcasePanelContent panel={panel} isActive={isActive} />}
-    </motion.div>
-  );
-}
-
-function HeroPanelContent({ panel, isActive }: { panel: HeroPanelDef; isActive: boolean }) {
-  return (
-    <div className="grid grid-cols-12 gap-6 lg:gap-10 items-center w-full" style={{ minHeight: "70vh", paddingTop: 80 }}>
-      <div
-        className="col-span-12 md:col-span-6 lg:col-span-8 relative z-10"
-        style={{ pointerEvents: isActive ? "auto" : "none" }}
-      >
-        {/* Eyebrow pill */}
-        <div
-          className="mb-6 inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium"
-          style={{
-            background: "var(--surface-card)",
-            border: "1px solid var(--border)",
-            backdropFilter: "blur(12px)",
-            WebkitBackdropFilter: "blur(12px)",
-          }}
-        >
-          <span
-            aria-hidden="true"
-            className="w-1.5 h-1.5 rounded-full animate-pulse-glow"
-            style={{ background: "var(--brand-emerald)", boxShadow: "0 0 12px var(--brand-emerald)" }}
-          />
-          <span style={{ color: "var(--text-secondary)" }}>{panel.eyebrow}</span>
-        </div>
-
-        <h1
-          className="text-display"
-          style={{
-            fontSize: "clamp(44px, 6.4vw, 96px)",
-            marginBottom: 24,
-            lineHeight: 1.02,
-            letterSpacing: "-0.035em",
-          }}
-        >
-          {panel.headlinePrimary}
-          <br />
-          <span className="text-gradient">{panel.headlineAccent}</span>
-        </h1>
-
-        <p
-          className="text-base md:text-lg leading-relaxed max-w-xl mb-10"
-          style={{ color: "var(--text-secondary)" }}
-        >
-          {panel.body}
-        </p>
-
-        <div className="max-w-md">
-          <WaitlistForm source="hero" />
-        </div>
-
-        <div className="mt-12 flex flex-wrap items-center gap-x-6 gap-y-2 text-xs" style={{ color: "var(--text-tertiary)" }}>
-          {panel.trust.map((item, i) => (
-            <span key={i} className="inline-flex items-center gap-2">
-              {item.icon}
-              {item.label}
-            </span>
-          ))}
-        </div>
-      </div>
-
-      {/* col 8-12 reserved for the sticky phone visually */}
-      <div className="hidden md:block md:col-span-6 lg:col-span-4" aria-hidden="true" />
-    </div>
-  );
-}
-
-function ShowcasePanelContent({ panel, isActive }: { panel: ShowcasePanelDef; isActive: boolean }) {
-  return (
-    <div
-      className="grid grid-cols-12 gap-6 lg:gap-10 items-center w-full"
-      style={{ minHeight: "60vh" }}
-    >
-      <div
-        className={`max-w-lg col-span-12 ${panel.phoneSide === "right" ? "md:col-start-1 md:col-span-6 lg:col-span-7" : "md:col-start-7 md:col-span-6 lg:col-start-6 lg:col-span-7"}`}
-        style={{
-          textAlign: panel.phoneSide === "right" ? "left" : "right",
-          pointerEvents: isActive ? "auto" : "none",
-        }}
-      >
-        <div
-          className="text-xs font-medium uppercase mb-4"
-          style={{
-            letterSpacing: "0.18em",
-            color: "var(--gold)",
-          }}
-        >
-          {panel.number} / {panel.label}
-        </div>
-        <h2
-          className="text-display"
-          style={{
-            fontSize: "clamp(38px, 4.6vw, 64px)",
-            color: "var(--text-primary)",
-            marginBottom: 18,
-          }}
-        >
-          {panel.headline}
-        </h2>
-        <p
-          className="text-lg md:text-xl leading-relaxed"
-          style={{
-            color: "var(--text-secondary)",
-            marginBottom: 16,
-          }}
-        >
-          {panel.subhead}
-        </p>
-        <p
-          className="text-base md:text-lg"
-          style={{ color: "var(--text-tertiary)" }}
-        >
-          {panel.support}
-        </p>
-      </div>
-    </div>
-  );
-}
-
-/* ══════════════════════════════════════════════════════════════════
-   MobileStack
-   ══════════════════════════════════════════════════════════════════ */
-
-function MobileStack({ panels }: { panels: ReadonlyArray<PanelDef> }) {
-  const SCALE = 0.7;
-  const SCALED_W = Math.round(PHONE_FRAME_WIDTH * SCALE);
-  const SCALED_H = Math.round(PHONE_FRAME_HEIGHT * SCALE);
-
-  return (
-    <div className="section-container py-16 flex flex-col" style={{ gap: 64 }}>
-      {panels.map((panel, idx) => {
-        const Mockup = panel.Mockup;
-        return (
-          <motion.article
-            key={panel.id}
-            initial={{ opacity: 0, y: 24 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-15% 0px" }}
-            transition={{ duration: 0.6, ease: [0.22, 0.61, 0.36, 1] }}
-            className="flex flex-col items-center text-center"
-          >
-            {panel.type !== "hero" && (
-              <div className="mx-auto" style={{ width: SCALED_W, height: SCALED_H, position: "relative", marginBottom: 24 }}>
-                <div
-                  style={{
-                    position: "absolute",
-                    top: 0,
-                    left: 0,
-                    transform: `scale(${SCALE})`,
-                    transformOrigin: "top left",
-                  }}
-                >
-                  <PhoneFrame ariaLabel={panel.ariaLabel}>
-                    <Mockup />
-                  </PhoneFrame>
-                </div>
-              </div>
-            )}
-
-            {panel.type === "hero" ? (
-              <div className="max-w-md text-center pt-20">
-                <div
-                  className="mb-5 inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium"
-                  style={{
-                    background: "var(--surface-card)",
-                    border: "1px solid var(--border)",
-                  }}
-                >
-                  <span aria-hidden="true" className="w-1.5 h-1.5 rounded-full" style={{ background: "var(--brand-emerald)" }} />
-                  <span style={{ color: "var(--text-secondary)" }}>{panel.eyebrow}</span>
-                </div>
-                <h1
-                  className="text-display"
-                  style={{
-                    fontSize: "clamp(36px, 9vw, 48px)",
-                    color: "var(--text-primary)",
-                    marginBottom: 16,
-                    lineHeight: 1.04,
-                  }}
-                >
-                  {panel.headlinePrimary}{" "}
-                  <span className="text-gradient">{panel.headlineAccent}</span>
-                </h1>
-                <p className="text-base leading-relaxed mb-8" style={{ color: "var(--text-secondary)" }}>
-                  {panel.body}
-                </p>
-                <WaitlistForm source="hero" />
-              </div>
-            ) : (
-              <div className="max-w-md text-left">
-                <div className="text-xs font-medium uppercase mb-3" style={{ letterSpacing: "0.18em", color: "var(--gold)" }}>
-                  {panel.number} / {panel.label}
-                </div>
-                <h2
-                  className="text-display"
-                  style={{
-                    fontSize: "clamp(28px, 7vw, 36px)",
-                    color: "var(--text-primary)",
-                    marginBottom: 12,
-                  }}
-                >
-                  {panel.headline}
-                </h2>
-                <p className="text-base leading-relaxed mb-2" style={{ color: "var(--text-secondary)" }}>
-                  {panel.subhead}
-                </p>
-                <p className="text-sm" style={{ color: "var(--text-tertiary)" }}>
-                  {panel.support}
-                </p>
-              </div>
-            )}
-          </motion.article>
-        );
-      })}
-    </div>
+    <>
+      {PANELS.slice(1).map((panel, i) => (
+        <FeatureSection key={panel.id} panel={panel} index={i} />
+      ))}
+    </>
   );
 }

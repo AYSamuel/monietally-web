@@ -47,11 +47,11 @@ export default function Navbar() {
               Home
             </Link>
             <Link
-              href="/#social-proof"
+              href="/#how-it-works"
               className="text-sm transition-colors duration-200"
               style={{ color: "var(--text-secondary)" }}
             >
-              Community
+              How it works
             </Link>
             <Link
               href="/about"
@@ -134,12 +134,12 @@ export default function Navbar() {
               Home
             </Link>
             <Link
-              href="/#social-proof"
+              href="/#how-it-works"
               onClick={() => setMobileOpen(false)}
               className="block py-2.5 text-sm"
               style={{ color: "var(--text-secondary)" }}
             >
-              Community
+              How it works
             </Link>
             <Link
               href="/about"

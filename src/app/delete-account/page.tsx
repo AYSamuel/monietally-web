@@ -33,7 +33,7 @@ You will be asked to type DELETE to confirm. The action is permanent and cannot 
 
 Removal from our servers happens within 60 seconds. The MonieTally app itself is not uninstalled, and any data that lives only on the device you are using stays there until you sign back in (or use Clear all data in Privacy & data).
 
-After deletion, MonieTally falls back to local-only mode on the device. You can keep using it offline, sign up again later with the same or a different email, or uninstall the app entirely. Your choice.`,
+After deletion, MonieTally falls back to local-only mode on the device, using whatever data is still cached there. You can keep using it offline, sign up again later with the same or a different email, or uninstall the app entirely. Your choice.`,
   },
   {
     id: "what-we-briefly-keep",
@@ -53,11 +53,12 @@ After 30 days, even those records are wiped. We never retain any financial data 
 We will verify your identity (typically by sending a verification link to the address on file) and process the deletion within 7 days. There is no separate web form because the email-based path is simpler and gives you a written confirmation when the deletion completes.`,
   },
   {
+    // TODO: confirm exact data-flow wording with legal counsel and finalise the open-banking provider before launch
     id: "third-parties",
-    title: "5. Third-party providers and bank sync",
-    content: `If you connected MonieTally to your bank via a regulated third-party bank-connection provider, deleting your MonieTally account revokes our access token with that provider. The aggregator may retain logs of past sync activity per their own policies. To purge any data the aggregator separately holds about you, contact them directly.
+    title: "5. Open-banking providers and bank sync",
+    content: `If you connected MonieTally to your bank via a regulated open-banking provider (such as GoCardless Bank Account Data or finAPI; provider to be finalised), deleting your MonieTally account revokes our access with that provider. The provider may retain logs of past sync activity per their own policies. To purge any data the provider separately holds about you, contact them directly.
 
-Transactions that were already synced to your devices are encrypted under your key. Once your account is deleted from our servers, those encrypted blobs become unreadable on every other device as well, because the auth check fails before the decryption ever runs.`,
+Once your account is deleted, your financial data is removed from our EU servers, and access from your other devices ends because the auth check fails before any data loads.`,
   },
   {
     id: "questions",

@@ -4,14 +4,14 @@
  * Why this exists: the ScrollShowcase pins one phone and morphs it through
  * five screens (Home → Activity → Insights → Budgets → Savings). For the
  * effect to feel like one consistent product, every phone has to render
- * the same numbers. If Home says "$2,847 left this month" and Activity
+ * the same numbers. If Home says "€2,847 left this month" and Activity
  * shows transactions that sum to a different total, the illusion breaks.
  *
  * One file, one story:
  *   month       = May 2026
- *   income      = $4,694.50
- *   spent       = $1,847.00
- *   net         = $2,847.50  ← anchor number, see SPEC.md §1, §9
+ *   income      = €4,694.50
+ *   spent       = €1,847.00
+ *   net         = €2,847.50  ← anchor number, see SPEC.md §1, §9
  *
  * All categories, transactions, budgets, and goals derive from those four
  * anchors. If you change a number here, run a sanity check that the totals
@@ -73,8 +73,8 @@ export type SampleGoal = {
 // ── Anchors ──────────────────────────────────────────────────────────────
 export const MONTH_LABEL = "May 2026";
 export const SHORT_MONTH = "May";
-export const CURRENCY = "USD";
-export const CURRENCY_SYMBOL = "$";
+export const CURRENCY = "EUR";
+export const CURRENCY_SYMBOL = "€";
 
 export const TOTAL_INCOME = 4694.5;
 export const TOTAL_SPENT = 1847.0;
@@ -100,11 +100,11 @@ export const CATEGORIES: SampleCategory[] = [
 // Mix of the most recent days. The ones tagged with their category color
 // match CATEGORIES so colors are consistent across phones.
 export const RECENT_TRANSACTIONS: SampleTransaction[] = [
-  { id: "tx-01", date: "2026-05-09", time: "9:14 AM",  merchant: "Blue Bottle",   category: "Coffee",    amount: -5.40,    icon: "coffee",   color: "#A8723F" },
-  { id: "tx-02", date: "2026-05-09", time: "8:02 AM",  merchant: "Whole Foods",   category: "Groceries", amount: -48.21,   icon: "cart",     color: "#2D8B5C" },
+  { id: "tx-01", date: "2026-05-09", time: "9:14 AM",  merchant: "The Barn",      category: "Coffee",    amount: -5.40,    icon: "coffee",   color: "#A8723F" },
+  { id: "tx-02", date: "2026-05-09", time: "8:02 AM",  merchant: "REWE",          category: "Groceries", amount: -48.21,   icon: "cart",     color: "#2D8B5C" },
   { id: "tx-03", date: "2026-05-08", time: "6:30 PM",  merchant: "Stripe payout", category: "Income",    amount: 1240.00,  icon: "bolt",     color: "#2D8B5C" },
-  { id: "tx-04", date: "2026-05-08", time: "12:48 PM", merchant: "Tube",          category: "Transport", amount: -2.90,    icon: "bus",      color: "#7A8FA8" },
-  { id: "tx-05", date: "2026-05-07", time: "8:20 PM",  merchant: "Curio Tapas",   category: "Dining",    amount: -42.10,   icon: "coffee",   color: "#B8503C" },
+  { id: "tx-04", date: "2026-05-08", time: "12:48 PM", merchant: "BVG",           category: "Transport", amount: -2.90,    icon: "bus",      color: "#7A8FA8" },
+  { id: "tx-05", date: "2026-05-07", time: "8:20 PM",  merchant: "Trattoria Roma",category: "Dining",    amount: -42.10,   icon: "coffee",   color: "#B8503C" },
   { id: "tx-06", date: "2026-05-06", time: "2:15 PM",  merchant: "Uniqlo",        category: "Shopping",  amount: -68.00,   icon: "shopping", color: "#C9A66B" },
   { id: "tx-07", date: "2026-05-05", time: "9:00 AM",  merchant: "Spotify",       category: "Subscriptions", amount: -11.99, icon: "phone",  color: "#9C7CB8" },
   { id: "tx-08", date: "2026-05-01", time: "9:00 AM",  merchant: "Rent",          category: "Housing",   amount: -1850.00, icon: "home",     color: "#5A7BB8" },
@@ -133,7 +133,7 @@ export const WEEKLY_TREND: number[] = [486, 512, 398, 564, 471, 442, 318];
 // ── Insight callouts (Insights screen) ──────────────────────────────────
 export const INSIGHT_CALLOUTS = [
   { id: "i-dining",    headline: "You spent 12% less on dining",    body: "Compared with last month." },
-  { id: "i-recurring", headline: "5 recurring charges this month", body: "$78 across subscriptions." },
+  { id: "i-recurring", headline: "5 recurring charges this month", body: "€78 across subscriptions." },
 ];
 
 // ── Formatting helpers (kept tiny and dependency-free) ──────────────────

@@ -92,9 +92,9 @@ export default function WaitlistCTA() {
                 fontVariationSettings: '"opsz" 96',
               }}
             >
-              Your money, clearly seen.
+              Understand your money,
               <br />
-              Encrypted so only you can read it.
+              wherever you bank.
             </h2>
 
             <p
@@ -104,8 +104,8 @@ export default function WaitlistCTA() {
                 maxWidth: 540,
               }}
             >
-              Be first when we launch. No spam, no data hoarding. We store
-              your email to notify you, nothing more.
+              Be first when we launch. No spam. We store your email to notify
+              you, nothing more.
             </p>
           </div>
         </motion.div>
@@ -139,7 +139,7 @@ export default function WaitlistCTA() {
                 background: "var(--gold)",
               }}
             />
-            End-to-end encrypted across your devices
+            Read-only access to your banks, no password stored
           </span>
           <span
             aria-hidden="true"
@@ -160,7 +160,7 @@ export default function WaitlistCTA() {
                 background: "var(--gold)",
               }}
             />
-            Your data lives in the EU. Privacy by design.
+            Your data lives in the EU. Never sold.
           </span>
         </motion.div>
       </div>

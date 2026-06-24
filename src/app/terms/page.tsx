@@ -18,9 +18,10 @@ Effective date: April 30, 2026.`,
   {
     id: "description",
     title: "2. Description of service",
-    content: `MonieTally is a personal finance application that helps users track spending, visualise financial data, and manage budgets. Users can enter transactions manually or optionally connect to financial institutions via regulated third-party bank-connection providers to sync transaction data automatically.
+    // TODO: confirm exact data-flow wording with legal counsel and finalise the open-banking provider before launch
+    content: `MonieTally is a personal finance application that helps users track spending, visualise financial data, and manage budgets. Users can enter transactions manually or connect to financial institutions via a regulated open-banking provider (such as GoCardless Bank Account Data or finAPI; provider to be finalised) to sync transaction data automatically using read-only access.
 
-All financial data is encrypted on the user's device and stored locally. Encrypted data may be synced across the user's devices. MonieTally does not provide banking services, investment advice, or any regulated financial service.`,
+Financial data is hosted on servers in the EU, encrypted in transit and at rest, and synced across the user's devices. MonieTally never receives or stores the user's bank login. MonieTally does not provide banking services, investment advice, or any regulated financial service.`,
   },
   {
     id: "responsibilities",

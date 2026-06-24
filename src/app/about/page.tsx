@@ -6,14 +6,14 @@ import WaitlistCTA from "../../components/sections/WaitlistCTA";
 export const metadata: Metadata = {
   title: "About | MonieTally",
   description:
-    "Why we built a finance app that doesn't want your data. Our mission, principles, and the architecture behind privacy-first personal finance.",
+    "Why we built a finance app for people the big finance apps overlook. Clear, in your language, wherever you bank.",
 };
 
 const principles = [
   {
-    title: "Privacy by architecture",
+    title: "Built for the overlooked",
     description:
-      "We did not bolt privacy on. The whole architecture starts with one question: does this keep your data unreadable to anyone but you? If the answer is no, we don't build it.",
+      "For internationals, newcomers and emerging markets, not just locals who fit the mould.",
     color: "#11A675",
     icon: (
       <svg
@@ -31,9 +31,9 @@ const principles = [
     ),
   },
   {
-    title: "Local-first",
+    title: "Clear, in your language",
     description:
-      "Your phone, your data, your call. Your records live on your device first. When you turn on sync or automatic bank import, everything travels encrypted, so only your devices can ever read it.",
+      "Your money in plain language, never a wall of jargon or a foreign tongue. More languages on the way.",
     color: "#00C98B",
     icon: (
       <svg
@@ -52,9 +52,9 @@ const principles = [
     ),
   },
   {
-    title: "Beautiful clarity",
+    title: "Connected to your banks",
     description:
-      "Numbers belong in a story, not a spreadsheet. MonieTally turns your transactions into charts and insights you'll actually want to look at.",
+      "Link your bank once and your spending arrives automatically, read-only, no password stored. Rolling out market by market.",
     color: "#0A6E4D",
     icon: (
       <svg
@@ -74,9 +74,9 @@ const principles = [
     ),
   },
   {
-    title: "Works where you bank",
+    title: "Private by default",
     description:
-      "Finance is universal. Banking is not. MonieTally connects across Europe, Africa, and North America so your money works wherever you do.",
+      "Read-only access, hosted in the EU under GDPR, never sold. Your money is yours.",
     color: "#F4B860",
     icon: (
       <svg
@@ -117,14 +117,14 @@ export default function AboutPage() {
           <div className="section-container relative text-center max-w-3xl mx-auto">
             <p className="section-label mb-4">Why we exist</p>
             <h1 className="text-display text-4xl md:text-5xl tracking-tight mb-6">
-              Why we don&apos;t want{" "}
-              <span className="text-gradient">your data.</span>
+              Clarity for everyone{" "}
+              <span className="text-gradient">the big apps overlook.</span>
             </h1>
             <p
               className="text-base md:text-lg leading-relaxed"
               style={{ color: "var(--text-secondary)" }}
             >
-              Most finance apps treat your transactions as a product to sell. We chose differently.
+              Most finance apps are built for locals who fit the mould. If you&apos;re an international, a newcomer, or you live somewhere the big apps ignore, your own money can feel like a foreign document.
             </p>
           </div>
         </section>
@@ -137,13 +137,13 @@ export default function AboutPage() {
               style={{ color: "var(--text-secondary)" }}
             >
               <p>
-                Most finance apps are working against you. They harvest your transaction data, profile your spending habits, and sell those insights to advertisers and lenders. The price of using them is your dignity.
+                We know the feeling. MonieTally is built by a Nigerian living in Germany, someone who has managed money across borders, banks and languages, and found that no app made it simple.
               </p>
               <p>
-                We started MonieTally with one rule: your money is yours to count, not ours to collect. So we built an app that physically cannot read your data. Your records are encrypted on your phone with a key only you hold, so even when they sync between your devices, all our servers ever store is scrambled bytes we cannot open.
+                So we are building one that does. MonieTally brings your accounts into one clear picture and explains your money in plain language, wherever you bank.
               </p>
               <p>
-                MonieTally counts your transactions on your phone and encrypts them there before anything ever syncs. We can&apos;t read them, and we don&apos;t want to.
+                We&apos;re starting in Germany, where internationals are locked out of local-language apps. Nearby countries follow, and Africa is next, our home market, where millions still have no clean way to see their money.
               </p>
             </div>
           </div>
@@ -201,13 +201,13 @@ export default function AboutPage() {
               <p className="section-label mb-3">What&apos;s next</p>
               <h2 className="section-heading mb-6">
                 More banks.{" "}
-                <span className="text-gradient">Same rules.</span>
+                <span className="text-gradient">More countries.</span>
               </h2>
               <p
                 className="text-base md:text-lg leading-relaxed"
                 style={{ color: "var(--text-secondary)" }}
               >
-                We&apos;re expanding to more regions, deepening bank integrations, and building optional community features. All within the same privacy-first architecture. More banks. More insight. Zero compromise on whose data this is.
+                After Germany, we&apos;re bringing MonieTally to Africa, starting with Nigeria, and on to more places the big apps overlook. More banks, more languages, the same simple promise: your money, finally clear.
               </p>
             </div>
           </div>

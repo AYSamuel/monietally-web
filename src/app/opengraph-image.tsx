@@ -81,7 +81,7 @@ export default function Image() {
               letterSpacing: '-0.5px',
             }}
           >
-            Your money, clearly seen.
+            Your money, finally clear.
           </div>
 
           {/* Privacy pill */}
@@ -97,7 +97,7 @@ export default function Image() {
             }}
           >
             <div style={{ fontSize: 20, color: '#6FE9B6' }}>
-              Encrypted so only you can read it.
+              Wherever you bank.
             </div>
           </div>
         </div>

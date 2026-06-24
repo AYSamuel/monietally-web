@@ -110,7 +110,7 @@ export function HomePopulated() {
           >
             ▲
           </span>
-          $340 vs April
+          €340 vs April
         </div>
       </div>
 

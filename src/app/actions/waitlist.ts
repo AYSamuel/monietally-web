@@ -33,9 +33,16 @@ async function domainHasMxRecord(domain: string): Promise<boolean> {
   }
 }
 
+export interface WaitlistDetails {
+  /** Free text, may list more than one bank, e.g. "Sparkasse, N26". */
+  bank?: string;
+  country?: string;
+}
+
 export async function submitWaitlist(
   email: string,
-  source: WaitlistSource = 'hero'
+  source: WaitlistSource = 'hero',
+  details: WaitlistDetails = {}
 ): Promise<WaitlistResult> {
   // Layer 1, format + disposable domain + suspicious pattern
   const validation = validateEmail(email);
@@ -53,9 +60,19 @@ export async function submitWaitlist(
   }
 
   // Layer 3, persist (unique constraint catches duplicate emails)
-  const { error } = await supabase
-    .from('waitlist')
-    .insert({ email: normalised, source });
+  const row: {
+    email: string;
+    source: WaitlistSource;
+    bank?: string;
+    country?: string;
+  } = { email: normalised, source };
+
+  const bank = details.bank?.trim().slice(0, 200);
+  const country = details.country?.trim().slice(0, 100);
+  if (bank) row.bank = bank;
+  if (country) row.country = country;
+
+  const { error } = await supabase.from('waitlist').insert(row);
 
   if (error) {
     console.error('[waitlist] Supabase error:', error.code, error.message);
