@@ -1,12 +1,11 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Inter, Fraunces } from "next/font/google";
 import { ThemeProvider } from "next-themes";
 import { SITE } from "../lib/constants";
 import { SmoothScroll } from "../components/SmoothScroll";
 import "./globals.css";
 
-// Single Inter face for both body and display — Linear/Arc family.
-// Inter handles -0.03em letter-spacing in display weights cleanly.
+// Inter for body text (Linear/Arc family).
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-body",
@@ -14,25 +13,28 @@ const inter = Inter({
   weight: ["400", "500", "600", "700"],
 });
 
-const interDisplay = Inter({
+// Fraunces: editorial serif for display and headlines. It's a variable font
+// carrying the optical-size (opsz) axis, so the `fontVariationSettings: "opsz" N`
+// the headlines set actually takes effect (Inter silently ignored it).
+const fraunces = Fraunces({
   subsets: ["latin"],
   variable: "--font-display",
   display: "swap",
-  weight: ["500", "600", "700", "800"],
+  axes: ["opsz"],
 });
 
 export const metadata: Metadata = {
-  title: "MonieTally | Your money, clearly seen.",
+  title: "MonieTally | Your money, finally clear.",
   description: SITE.description,
   metadataBase: new URL(SITE.url),
   openGraph: {
-    title: "MonieTally | Your money, clearly seen.",
+    title: "MonieTally | Your money, finally clear.",
     description: SITE.description,
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "MonieTally | Your money, clearly seen.",
+    title: "MonieTally | Your money, finally clear.",
     description: SITE.description,
   },
   icons: {
@@ -49,10 +51,10 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={`${inter.variable} ${interDisplay.variable}`}
+      className={`${inter.variable} ${fraunces.variable}`}
     >
       <body>
-        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <SmoothScroll>{children}</SmoothScroll>
         </ThemeProvider>
       </body>

@@ -13,6 +13,8 @@ type Status = "idle" | "loading" | "success" | "duplicate" | "no_mx" | "error";
 
 export default function WaitlistForm({ source = "hero", inverted = false }: WaitlistFormProps) {
   const [email, setEmail] = useState("");
+  const [bank, setBank] = useState("");
+  const [country, setCountry] = useState("");
   const [status, setStatus] = useState<Status>("idle");
   const [inlineError, setInlineError] = useState<string | null>(null);
 
@@ -45,11 +47,13 @@ export default function WaitlistForm({ source = "hero", inverted = false }: Wait
     setInlineError(null);
     setStatus("loading");
 
-    const result = await submitWaitlist(email, source);
+    const result = await submitWaitlist(email, source, { bank, country });
 
     if (result.success) {
       setStatus("success");
       setEmail("");
+      setBank("");
+      setCountry("");
     } else if (result.error === "duplicate") {
       setStatus("duplicate");
     } else if (result.error === "no_mx") {
@@ -102,10 +106,10 @@ export default function WaitlistForm({ source = "hero", inverted = false }: Wait
 
   return (
     <div className="w-full max-w-md space-y-2">
-      <form
-        onSubmit={handleSubmit}
-        className={`flex flex-col gap-3 w-full ${source === "hero" ? "lg:flex-row" : "sm:flex-row"}`}
-      >
+      <form onSubmit={handleSubmit} className="flex flex-col gap-3 w-full">
+        <div
+          className={`flex flex-col gap-3 w-full ${source === "hero" ? "lg:flex-row" : "sm:flex-row"}`}
+        >
         <input
           id="email"
           type="email"
@@ -149,6 +153,50 @@ export default function WaitlistForm({ source = "hero", inverted = false }: Wait
             "Get early access"
           )}
         </button>
+        </div>
+
+        {source === "cta" && (
+          <>
+            <div className="flex flex-col sm:flex-row gap-3">
+              <input
+                type="text"
+                value={bank}
+                onChange={(e) => setBank(e.target.value)}
+                placeholder="Which bank(s) do you use? (optional)"
+                aria-label="Which bank or banks do you use, optional"
+                disabled={status === "loading"}
+                className="flex-1 px-4 py-3 min-h-[44px] rounded-xl text-sm outline-none transition-all duration-200 focus:ring-2 disabled:opacity-60"
+                style={{
+                  background: inverted ? "var(--inv-surface)" : "var(--surface)",
+                  border: `1px solid ${inverted ? "var(--inv-border-subtle)" : "var(--border)"}`,
+                  color: inverted ? "var(--inv-text-primary)" : "var(--text-primary)",
+                }}
+              />
+              <input
+                type="text"
+                value={country}
+                onChange={(e) => setCountry(e.target.value)}
+                placeholder="Country (optional)"
+                aria-label="Country, optional"
+                disabled={status === "loading"}
+                className="flex-1 px-4 py-3 min-h-[44px] rounded-xl text-sm outline-none transition-all duration-200 focus:ring-2 disabled:opacity-60"
+                style={{
+                  background: inverted ? "var(--inv-surface)" : "var(--surface)",
+                  border: `1px solid ${inverted ? "var(--inv-border-subtle)" : "var(--border)"}`,
+                  color: inverted ? "var(--inv-text-primary)" : "var(--text-primary)",
+                }}
+              />
+            </div>
+
+            <p
+              className="text-xs"
+              style={{ color: inverted ? "var(--inv-text-secondary)" : "var(--text-secondary)" }}
+            >
+              Optional, and just the bank name, so we can prioritise it. We
+              never ask for your login, balance, or account number.
+            </p>
+          </>
+        )}
       </form>
 
       {/* Inline validation error (format / disposable / suspicious) */}

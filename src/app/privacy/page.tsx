@@ -5,63 +5,63 @@ import Footer from "../../components/Footer";
 export const metadata: Metadata = {
   title: "Privacy Policy | MonieTally",
   description:
-    "How MonieTally handles your data. Short version: your financial data is encrypted on your device. We only ever see ciphertext.",
+    "How MonieTally handles your data. Your bank connection is read-only, your data is hosted in the EU under GDPR, encrypted in transit and at rest, and never sold.",
 };
+
+// TODO: confirm exact data-flow wording with legal counsel and finalise the open-banking provider before launch
 
 const sections = [
   {
     id: "introduction",
     title: "1. Introduction",
-    content: `MonieTally ("we", "our", "the app") is a personal finance application built around end-to-end encryption. This Privacy Policy explains how we handle information in connection with the MonieTally app and this website (monietally.com).
+    content: `MonieTally ("we", "our", "the app") is a personal finance application built around data protection by default. This Privacy Policy explains how we handle information in connection with the MonieTally app and this website (monietally.com).
 
 Effective date: May 10, 2026.
 
-Our core principle: your financial data is encrypted on your device before it leaves your phone. The server stores only ciphertext it cannot decrypt. We could not read your records if a court asked us to.`,
+Our core principle: your bank connection is read-only via a regulated open-banking provider. Your data is hosted in the EU under GDPR, encrypted in transit and at rest, and never sold. We never receive or store your bank login.`,
   },
   {
     id: "what-we-collect",
     title: "2. Information we collect",
-    content: `Website only: if you submit your email address via our waitlist form, we store that email address to notify you when MonieTally launches. Emails are stored securely in our database, hosted in the EU. We do not share your address with third parties.
+    content: `Website only: if you submit your email address via our waitlist form, we store that email address to notify you when MonieTally launches. You can optionally tell us which bank or banks you use and your country, so we can prioritise which banks to support first. This is the bank's name only, never your login, balance, or account details. Your email and any details you provide are stored securely in our database, hosted in the EU. We do not share them with third parties.
 
-The app: MonieTally works with manual transaction entry by default. You may optionally connect your bank via third-party aggregators (Plaid, Tink, or Mono, depending on your region) to sync transactions automatically. Whether entered manually or synced, all financial data (transactions, balances, budgets, goals, and analytics) is encrypted on your device using AES-256-GCM before being stored or synced. What reaches our servers is ciphertext. We cannot decrypt it. The encryption key is generated on your device and synced to your other devices through your OS keychain (iCloud Keychain or Google Block Store). It never passes through our servers.`,
+The app: MonieTally lets you add transactions by hand, and you may connect your bank via a regulated open-banking provider (such as GoCardless Bank Account Data or finAPI; provider to be finalised) to sync transactions automatically. The provider retrieves your transaction data using read-only access; we never receive or store your bank login. Your financial data (transactions, balances, budgets, goals, and analytics) is hosted on our servers in the EU, encrypted in transit and at rest, and never sold.`,
   },
   {
     id: "how-we-use",
     title: "3. How we use information",
     content: `Waitlist emails are used solely to send you a launch notification and critical product updates. We will not send marketing emails, share your address with third parties, or contact you for any other reason without your explicit consent.
 
-Encrypted app data passes through our sync server as opaque blobs. We use it only to deliver those blobs to your other authenticated devices. We do not process, index, analyse, or monetise your data in any form.`,
+Your app data is stored on our EU servers to sync it across your authenticated devices and show you your spending. We do not sell, rent, or monetise your data, and we do not build advertising profiles from it.`,
   },
   {
     id: "encryption",
-    title: "4. Encryption architecture",
-    content: `MonieTally uses end-to-end encryption for all financial data:
+    title: "4. Data protection",
+    content: `MonieTally protects your financial data with industry-standard safeguards:
 
-1. A Data Encryption Key (DEK) is generated on your device at account creation.
-2. All records are encrypted locally with AES-256-GCM before leaving the device.
-3. Encrypted blobs are synced to our server for storage and delivery to your other devices.
-4. The DEK is stored in your OS keychain (iCloud Keychain on Apple, Google Block Store on Android) and syncs between your devices through those platform mechanisms. It never touches our servers.
-5. Decryption happens only on your authenticated devices.
-
-The server stores ciphertext and metadata needed for sync (timestamps, blob sizes). It cannot derive plaintext from what it holds.`,
+1. Your bank connection is read-only via a regulated open-banking provider. We never receive or store your bank login.
+2. Your data is hosted on servers in the EU, under GDPR.
+3. Data is encrypted in transit (TLS) and at rest.
+4. Access is limited to your authenticated devices and the systems needed to deliver the service.
+5. We do not sell your data, run ads, or build advertising profiles from it.`,
   },
   {
     id: "bank-sync",
-    title: "5. Bank sync and third-party aggregators",
-    content: `If you choose to enable bank sync, MonieTally connects to your bank via a regulated third-party bank-connection provider (the specific provider depends on your region). These providers retrieve your transaction data using read-only access. MonieTally never stores your bank login credentials. Bank sync is entirely optional. The app is fully functional with manual entry alone.
+    title: "5. Bank sync and open-banking providers",
+    content: `If you choose to enable bank sync, MonieTally connects to your bank via a regulated open-banking provider (such as GoCardless Bank Account Data or finAPI; provider to be finalised). The provider retrieves your transaction data using read-only access. MonieTally never receives or stores your bank login credentials. Bank sync is optional. The app is fully functional with manual entry alone.
 
-Once transactions reach your device, they are immediately encrypted with your local key before being stored or synced. The aggregator connection is used solely to fetch transaction data. We do not use it to initiate payments, transfers, or any other banking action.
+Transaction data fetched by the provider is then stored on our EU servers, encrypted in transit and at rest. The connection is used solely to fetch transaction data. We do not use it to initiate payments, transfers, or any other banking action.
 
 Your use of these bank sync services is also subject to their respective privacy policies and terms of service.`,
   },
   {
     id: "data-storage",
     title: "6. Data storage and hosting",
-    content: `Encrypted data: stored on servers hosted in the EU. Subject to GDPR.
+    content: `Financial data: hosted on servers in the EU, encrypted in transit and at rest. Subject to GDPR.
 
 Waitlist emails: stored in our database, also hosted in the EU.
 
-Local data: your device holds both the plaintext and the encrypted form. Local storage is managed by the app's database engine.`,
+On-device data: a copy may be cached on your device so the app works offline, managed by the app's local database engine.`,
   },
   {
     id: "cookies",
@@ -76,7 +76,7 @@ Local data: your device holds both the plaintext and the encrypted form. Local s
   {
     id: "data-deletion",
     title: "9. Data deletion",
-    content: `You can delete your account and all associated encrypted data at any time from the app settings. Once deleted, the ciphertext blobs are permanently removed from our servers within 30 days. We retain no backups of user-encrypted data beyond this window.
+    content: `You can delete your account and all associated data at any time from the app settings. Once deleted, your data is permanently removed from our servers within 30 days. We retain no backups of your financial data beyond this window.
 
 To remove your email from the waitlist, reply to any email from us or contact hello@monietally.com.`,
   },

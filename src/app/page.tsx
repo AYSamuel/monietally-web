@@ -1,8 +1,9 @@
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
-import ScrollExperience from "../components/landing/ScrollExperience";
+import Features, { Hero } from "../components/landing/ScrollExperience";
+import HowItWorks from "../components/sections/HowItWorks";
+import MissionBand from "../components/sections/MissionBand";
 import TrustBar from "../components/sections/TrustBar";
-import SocialProof from "../components/sections/SocialProof";
 import FAQ from "../components/sections/FAQ";
 import WaitlistCTA from "../components/sections/WaitlistCTA";
 
@@ -11,9 +12,11 @@ export default function Home() {
     <>
       <Navbar />
       <main>
-        <ScrollExperience />
+        <Hero />
+        <HowItWorks />
+        <MissionBand />
+        <Features />
         <TrustBar />
-        <SocialProof />
         <WaitlistCTA />
         <FAQ />
       </main>

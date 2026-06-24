@@ -139,7 +139,7 @@ export function Activity() {
           first
           name="Groceries"
           cat="Food"
-          amount="−$67.20"
+          amount="−€67.20"
           icon={
             <>
               <circle cx="9" cy="20" r="1.4" />
@@ -151,7 +151,7 @@ export function Activity() {
         <Txn
           name="Coffee shop"
           cat="Food"
-          amount="−$4.50"
+          amount="−€4.50"
           icon={
             <path d="M17 8h1a3 3 0 010 6h-1M3 8h14v9a4 4 0 01-4 4H7a4 4 0 01-4-4V8z" />
           }
@@ -162,7 +162,7 @@ export function Activity() {
           first
           name="Rent"
           cat="Bills"
-          amount="−$1,200.00"
+          amount="−€1,200.00"
           icon={
             <>
               <path d="M3 10v10h18V10" />
@@ -178,13 +178,13 @@ export function Activity() {
           income
           name="Salary"
           cat="Income"
-          amount="+$3,200.00"
+          amount="+€3,200.00"
           icon={<path d="M12 4v16M5 13l7 7 7-7" />}
         />
         <Txn
           name="Spotify"
           cat="Subscriptions"
-          amount="−$9.99"
+          amount="−€9.99"
           icon={
             <>
               <path d="M9 18V5l12-2v13" />

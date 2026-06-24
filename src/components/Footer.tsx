@@ -28,8 +28,9 @@ export default function Footer() {
               className="text-sm mt-4 max-w-md leading-relaxed"
               style={{ color: "var(--text-secondary)" }}
             >
-              A finance app that respects your privacy by default. Your money,
-              clearly seen. Encrypted with a key your phone holds, not ours.
+              The money app for people the big finance apps overlook. Starting
+              in Germany, built for internationals, with Africa next. Your data
+              kept in the EU.
             </p>
 
             <div
@@ -45,7 +46,7 @@ export default function Footer() {
                   background: "var(--gold)",
                 }}
               />
-              Your data lives in the EU. Privacy by design.
+              Your data lives in the EU. Never sold.
             </div>
 
             {/* Social links */}
@@ -83,7 +84,7 @@ export default function Footer() {
               className="text-xs font-medium uppercase mb-5"
               style={{
                 letterSpacing: "0.18em",
-                color: "var(--gold)",
+                color: "var(--eyebrow)",
               }}
             >
               Product
@@ -91,11 +92,11 @@ export default function Footer() {
             <ul className="space-y-3">
               <li>
                 <Link
-                  href="/#social-proof"
+                  href="/#how-it-works"
                   className="text-sm transition-opacity hover:opacity-100"
                   style={{ color: "var(--text-secondary)", opacity: 0.85 }}
                 >
-                  Community
+                  How it works
                 </Link>
               </li>
               <li>
@@ -116,7 +117,7 @@ export default function Footer() {
               className="text-xs font-medium uppercase mb-5"
               style={{
                 letterSpacing: "0.18em",
-                color: "var(--gold)",
+                color: "var(--eyebrow)",
               }}
             >
               Company
@@ -171,7 +172,7 @@ export default function Footer() {
             &copy; {currentYear} MonieTally. All rights reserved.
           </p>
           <p className="text-xs" style={{ color: "var(--text-muted)" }}>
-            Designed for clarity. Built for privacy.
+            Designed for clarity. Built for people far from home.
           </p>
         </div>
       </div>

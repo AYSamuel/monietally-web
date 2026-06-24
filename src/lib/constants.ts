@@ -1,8 +1,8 @@
 export const SITE = {
   name: "MonieTally",
-  tagline: "Your money, clearly seen. Encrypted so only you can read it.",
+  tagline: "Your money, finally clear. Wherever you bank.",
   description:
-    "Track your spending without anyone tracking you. Encrypted on your phone with a key only you hold, synced across your devices as data we can't read. Never sold.",
+    "MonieTally helps you see your money clearly, wherever you bank. Starting in Germany, built for internationals: connect your bank and understand your spending clearly. Africa next. Hosted in the EU, never sold.",
   url: "https://monietally.com",
   email: "hello@monietally.com",
 };

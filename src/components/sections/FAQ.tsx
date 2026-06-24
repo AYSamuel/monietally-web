@@ -18,17 +18,27 @@ const FAQS: ReadonlyArray<FAQItem> = [
   {
     question: "Do I have to enter every transaction by hand?",
     answer:
-      "No. Connect your bank once and your transactions arrive automatically, sorted and ready, with read-only access and no stored password. Prefer to add cash or a one-off by hand? You still can. Either way, every record is encrypted so only your devices can read it.",
+      "No. Connect your bank once and your transactions arrive automatically, sorted and easy to read, with read-only access and no password stored. Prefer to add cash or a one-off by hand? You still can.",
   },
   {
-    question: "How does encryption work?",
+    question: "How do you handle my data?",
     answer:
-      "Your data is encrypted on your device with a key that never leaves your phone. When it syncs to the cloud, only ciphertext travels. Our servers store data they physically cannot read. Even if someone broke in, they'd get noise.",
+      "Your bank connection is read-only through a regulated open-banking provider, so we never see or store your bank login. Your data is hosted in the EU under GDPR, encrypted in transit and at rest. We don't sell data, run ads, or build profiles.",
   },
   {
     question: "What data do you collect?",
     answer:
-      "Your email when you join the waitlist. That's it for now. Once you're using the app, your financial data stays encrypted on your device. We don't sell data, don't run ads, and don't build profiles.",
+      "Your email when you join the waitlist. In the app, the financial data needed to show you your spending, hosted in the EU and never sold. No ads, no profiles.",
+  },
+  {
+    question: "Is MonieTally only for Germany?",
+    answer:
+      "No. We're launching in Germany first, with nearby countries like Austria close behind, and Africa as our next major market. Join the waitlist and tell us where you bank, it helps us prioritise.",
+  },
+  {
+    question: "Which banks will work?",
+    answer:
+      "At launch, Monietally will connect to major banks via secure open banking (e.g. Sparkasse, Volksbank, N26, DKB, Commerzbank, ING), starting in Germany and adding more banks and countries over time. Bank connections aren't live yet. Tell us your bank on the waitlist and we'll prioritise it.",
   },
   {
     question: "Can I export my data?",
@@ -93,7 +103,7 @@ function FAQAccordionItem({
             strokeWidth="2"
             strokeLinecap="round"
             aria-hidden="true"
-            style={{ color: isOpen ? "var(--gold)" : "var(--text-tertiary)" }}
+            style={{ color: isOpen ? "var(--eyebrow)" : "var(--text-tertiary)" }}
           >
             <line x1="12" y1="5" x2="12" y2="19" />
             <line x1="5" y1="12" x2="19" y2="12" />
@@ -155,7 +165,7 @@ export default function FAQ() {
           >
             <p
               className="text-xs font-medium uppercase mb-5"
-              style={{ letterSpacing: "0.24em", color: "var(--gold)" }}
+              style={{ letterSpacing: "0.24em", color: "var(--eyebrow)" }}
             >
               Questions
             </p>
